@@ -25,7 +25,7 @@ Theorem ("Sturmian words start with arbitrarily long squares", {
 
 Theorem ("All Sturmian words contain squares", {
     @no_simplify[
-        forall a. bco_standard(a) => exists n. bco_positive(n) & bco_valid(a,n) & square(a,n)
+        forall a. bco_standard(a) => exists i, n. bco_positive(n) & bco_valid(a,i,n) & square(a,i,n)
     ]
 }) .
 
@@ -49,10 +49,11 @@ Define listAntisquares curNum $PREV_NUM :=
 // Example (ostrowskiFormat, { bco_standard(a) & bco_four(a, n) & antisquare(a, i, n) }).
 // Example (ostrowskiFormat, { bco_standard(a) & bco_five(a, n) & antisquare(a, i, n) }).
 
+antisquare_len(a, n) := exists i. bco_valid(a, i) & antisquare(a, i, n)
 Theorem ("All Sturmian words contain finitely many antisquares", {
     forall a. bco_standard(a) =>
     exists m. bco_valid(a, m) &
-    forall n. antisquare(a, n) => bco_leq(n, m)
+    forall n. antisquare_len(a, n) => bco_leq(n, m)
 }).
 
 Theorem ("All Sturmian words contain cubes", {
