@@ -59,12 +59,13 @@ bco_lt(x, y) := bco_leq(x, y) & !bco_eq(x,y)
 bco_zero(z) := exists a. bco_valid(a,z) & forall y. bco_valid(a,y) => bco_leq(z,y)
 bco_succ(a, x, y) := bco_valid2(a, x, y) & bco_leq(x, y) & (!bco_eq(x, y)) & forall z. bco_valid(a,z) => (bco_leq(z,x) | bco_leq(y,z))
 
+ostrowski_zero(alpha, z) := bco_valid(alpha, z) & bco_zero(z)
 x is ostrowski(alpha) := bco_valid(alpha, x)
 
 #type(ostrowski(alpha), {
     "adder": bco_adder(alpha, any, any, any),
-    "less": bco_leq(any, any),
+    "less": bco_lt(any, any),
     "equal": bco_eq(any, any),
-    "zero": bco_zero(any)
+    "zero": ostrowski_zero(alpha, any)
 })
 
