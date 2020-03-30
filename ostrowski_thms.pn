@@ -5,6 +5,8 @@
 #load("automata/eventually_periodic.aut", "hoa", eventually_periodic(a, p))
 #load("automata/square.aut", "hoa", square(a, i, n))
 #load("automata/cube.aut", "hoa", cube(a, i, n))
+#load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
+#load("automata/palindrome_prefix.aut", "hoa", palindrome_prefix(a, n))
 
 bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
 
@@ -21,15 +23,12 @@ Theorem ("Sturmian words start with arbitrarily long squares", {
     ]
 }) .
 
-// Example (ostrowskiFormat, { @no_simplify[bco_standard(a) & bco_positive(n) & square(a, i, n)] }).
+Theorem ("All Sturmian words contain squares", {
+    @no_simplify[
+        forall a. bco_standard(a) => exists n. bco_positive(n) & bco_valid(a,n) & square(a,n)
+    ]
+}) .
 
-// Theorem ("All Sturmian words contain squares", {
-//     @no_simplify[
-//         forall a. bco_standard(a) => exists n. bco_positive(n) & bco_valid(a,n) & square(a,n)
-//     ]
-// }) .
-
-#load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
 bco_one(a, x) := exists y. bco_zero(y) & bco_succ(a, y, x)
 bco_two(a, x) := exists y. bco_one(a, y) & bco_succ(a, y, x)
 bco_three(a, x) := exists y. bco_two(a, y) & bco_succ(a, y, x)
@@ -50,27 +49,17 @@ Define listAntisquares curNum $PREV_NUM :=
 // Example (ostrowskiFormat, { bco_standard(a) & bco_four(a, n) & antisquare(a, i, n) }).
 // Example (ostrowskiFormat, { bco_standard(a) & bco_five(a, n) & antisquare(a, i, n) }).
 
-// Theorem ("All Sturmian words contain finitely many antisquares", {
-//     forall a. bco_standard(a) =>
-//     exists m. bco_valid(a, m) &
-//     forall n. antisquare(a, n) => bco_leq(n, m)
-// }).
+Theorem ("All Sturmian words contain finitely many antisquares", {
+    forall a. bco_standard(a) =>
+    exists m. bco_valid(a, m) &
+    forall n. antisquare(a, n) => bco_leq(n, m)
+}).
 
 Theorem ("All Sturmian words contain cubes", {
     @no_simplify[
         forall a. bco_standard(a) => exists i, n. bco_positive(n) & bco_valid2(a,i,n) & cube(a,i,n)
     ]
 }) .
-
-// palindrome_prefix(a, n) :=
-//     @no_simplify[
-//         bco_positive(n) &
-//         forall i, n1, n1i.
-//             (@postprocess[bco_positive(i,n) & bco_valid2(a, i, n) & bco_leq(i, n) & bco_succ(a,n1,n)] & bco_adder(a,n1i,i,n1)) =>
-//             @postprocess[$C[i] = $C[n1i]]
-//     ]
-// #save_aut("palindrome_prefix.aut", palindrome_prefix)
-#load("automata/palindrome_prefix.aut", "hoa", palindrome_prefix(a, n))
 
 Example (ostrowskiFormat, { bco_standard(a) & bco_valid(a, n) & palindrome_prefix(a, n) }) .
 
