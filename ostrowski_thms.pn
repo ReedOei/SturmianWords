@@ -37,8 +37,8 @@ eventually_periodic(a, p) := @no_simplify[
 //         @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
 //             @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] = $C[jn]]]])]
 //     ]
-// #save_aut("square.aut", square)
-#load("square.aut", "hoa", square(a, i, n))
+// #save_aut("automata/square.aut", square)
+#load("automata/square.aut", "hoa", square(a, i, n))
 // Example (ostrowskiFormat, { @no_simplify[bco_standard(a) & bco_positive(n) & square(a, i, n)] }).
 
 // antisquare(a, i, n) :=
@@ -51,13 +51,22 @@ eventually_periodic(a, p) := @no_simplify[
 //         @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
 //             @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] != $C[jn]]]])]
 //     ]
-// #save_aut("antisquare.aut", antisquare)
-#load("antisquare.aut", "hoa", antisquare(a, i, n))
+// #save_aut("automata/antisquare.aut", antisquare)
+#load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
 bco_one(a, x) := exists y. bco_zero(y) & bco_succ(a, y, x)
 bco_two(a, x) := exists y. bco_one(a, y) & bco_succ(a, y, x)
 bco_three(a, x) := exists y. bco_two(a, y) & bco_succ(a, y, x)
 bco_four(a, x) := exists y. bco_three(a, y) & bco_succ(a, y, x)
 bco_five(a, x) := exists y. bco_four(a, y) & bco_succ(a, y, x)
+
+Define listAntisquares curNum $PREV_NUM :=
+    let $NEXT_NUM := "bco_" ^ (toString curNum)
+    in do
+        print ("Trying: " ^ (toString curNum));
+        emit { $NEXT_NUM(a, x) := exists y. $PREV_NUM(a, y) & bco_succ(a, y, x) };
+        print (example ostrowskiFormat { bco_standard(a) & $NEXT_NUM(a, n) & @no_simplify[antisquare(a, i, n)] });
+        listAntisquares (curNum + 1) $NEXT_NUM .
+// Execute listAntisquares 2 bco_one .
 // Example (ostrowskiFormat, { bco_standard(a) & bco_one(a, n) & antisquare(a, i, n) }).
 // Example (ostrowskiFormat, { bco_standard(a) & bco_two(a, n) & antisquare(a, i, n) }).
 // Example (ostrowskiFormat, { bco_standard(a) & bco_three(a, n) & antisquare(a, i, n) }).
@@ -76,42 +85,37 @@ bco_five(a, x) := exists y. bco_four(a, y) & bco_succ(a, y, x)
 //     ]
 // }) .
 
-inner(a, i, n, bound, temp) :=
-    @no_simplify[
-        !(@postprocess[bco_adder(a,i,n,temp) & bco_adder(a, temp, temp, bound) & bco_valid2(a,bound,temp)] =>
-        @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
-            @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] = $C[jn]]]])
-    ]
-#save_aut("inner.aut", inner)
-
-cube(a, i, n) :=
-    @no_simplify[
-        // exists i.
-        bco_valid2(a, i, n) &
-        bco_positive(n) &
-        bco_positive(i) &
-        !(exists bound, temp. @postprocess[inner(a, i, n, bound, temp)])
-        // @postprocess[(@postprocess[bco_adder(a,i,n,temp) & bco_adder(a, temp, temp, bound) & bco_valid2(a,bound,temp)] =>
-        // @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
-        //     @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] = $C[jn]]]])]
-    ]
-#save_aut("cube.aut", cube)
-
-// Theorem ("All Sturmian words contain cubes", {
+// inner(a, i, n, bound, temp) :=
 //     @no_simplify[
-//         forall a. bco_standard(a) => exists n. bco_positive(n) & bco_valid(a,n) & cube(a,n)
+//         !(@postprocess[bco_adder(a,i,n,temp) & bco_adder(a, temp, temp, bound) & bco_valid2(a,bound,temp)] =>
+//         @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
+//             @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] = $C[jn]]]])
 //     ]
-// }) .
+// #save_aut("inner.aut", inner)
+// #load("temp-aut/inner.aut", "hoa", inner(a, i, n, bound, temp))
 
-palindrome_prefix(a, n) :=
+// cube(a, i, n) := @no_simplify[
+//     square(a, i, n) &
+//     exists ni. bco_adder(a, i, n, ni) => square(a, ni, n)
+// ]
+// #save_aut("cube.aut", cube)
+#load("automata/cube.aut", "hoa", cube(a, i, n))
+
+Theorem ("All Sturmian words contain cubes", {
     @no_simplify[
-        bco_positive(n) &
-        forall i, n1, n1i.
-            (@postprocess[bco_positive(i,n) & bco_valid2(a, i, n) & bco_leq(i, n) & bco_succ(a,n1,n)] & bco_adder(a,n1i,i,n1)) =>
-            @postprocess[$C[i] = $C[n1i]]
+        forall a. bco_standard(a) => exists i, n. bco_positive(n) & bco_valid2(a,i,n) & cube(a,i,n)
     ]
-#save_aut("palindrome_prefix.aut", palindrome_prefix)
-// #load("palindrome_prefix.aut", "hoa", palindrome_prefix(a, n))
+}) .
+
+// palindrome_prefix(a, n) :=
+//     @no_simplify[
+//         bco_positive(n) &
+//         forall i, n1, n1i.
+//             (@postprocess[bco_positive(i,n) & bco_valid2(a, i, n) & bco_leq(i, n) & bco_succ(a,n1,n)] & bco_adder(a,n1i,i,n1)) =>
+//             @postprocess[$C[i] = $C[n1i]]
+//     ]
+// #save_aut("palindrome_prefix.aut", palindrome_prefix)
+#load("automata/palindrome_prefix.aut", "hoa", palindrome_prefix(a, n))
 
 Example (ostrowskiFormat, { bco_standard(a) & bco_valid(a, n) & palindrome_prefix(a, n) }) .
 
