@@ -39,10 +39,9 @@ antisquare(a, i, n) :=
     ]
 #save_aut("automata/antisquare.aut", antisquare)
 
-cube(a, i, n) := @no_simplify[
+cube(a, i, n) :=
     square(a, i, n) &
     exists ni. bco_adder(a, i, n, ni) & square(a, ni, n)
-]
 #save_aut("automata/cube.aut", cube)
 
 palindrome_prefix(a, n) :=
