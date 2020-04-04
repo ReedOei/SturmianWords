@@ -67,10 +67,9 @@ Theorem ("All Sturmian words contain fourth powers", {
     ]
 }) .
 
-// Theorem ("All Sturmian words start with arbitarily long palindromes", {
-//     forall a. bco_standard(a) =>
-// }) .
-
-// Restrict i, n are ostrowski(a).
-// Example (ostrowskiFormat, { fib_alpha(a) & bco_valid(a, n) & n > 50 & palindrome_prefix(a, n) }) .
+Theorem ("All Sturmian words start with arbitarily long palindromes", {
+    forall a.
+    forall n.
+    exists m. m > n & palindrome_prefix(a, m)
+}) .
 
