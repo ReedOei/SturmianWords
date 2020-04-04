@@ -13,40 +13,29 @@
 
 bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
 
-// Theorem ("Sturmian words are not eventually periodic", {
-//     forall a, p. (bco_standard(a) & bco_valid(a, p)) => !eventually_periodic(a, p)
-// }) .
+Restrict a is bco_standard.
+Restrict i, j, p, n, m are ostrowski(a).
 
-// Theorem ("Sturmian words start with arbitrarily long squares", {
-//     @no_simplify[
-//         forall a. bco_standard(a) =>
-//         forall n is ostrowski(a).
-//         exists m is ostrowski(a). m > n &
-//         forall j is ostrowski(a). @postprocess[(0 < j & j <= m)] => $C[j] = $C[j + m]
-//     ]
-// }) .
+Theorem ("Sturmian words are not eventually periodic", {
+    forall a, p. !eventually_periodic(a, p)
+}) .
 
-// Theorem ("All Sturmian words contain squares", {
-//     @no_simplify[
-//         forall a. bco_standard(a) => exists i, n. bco_positive(n) & bco_valid2(a,i,n) & square(a,i,n)
-//     ]
-// }) .
+Theorem ("Sturmian words start with arbitrarily long squares", {
+    @no_simplify[
+        forall a.
+        forall n.
+        exists m. m > n &
+        forall j. @postprocess[(0 < j & j <= m)] => $C[j] = $C[j + m]
+    ]
+}) .
+
+Theorem ("All Sturmian words contain squares", {
+    @no_simplify[
+        forall a. exists i, n. bco_positive(n) & square(a,i,n)
+    ]
+}) .
 
 #load("fib_word.txt", "walnut", fib_alpha(a))
-
-bco_1(a, x) := exists y. bco_zero(y) & bco_succ(a, y, x)
-Define bcoConst curNum :=
-    let $PREV_NUM := "bco_" ^ (toString (curNum - 1)) in
-    let $NEXT_NUM := "bco_" ^ (toString curNum) in
-        emit { $NEXT_NUM(a, x) := exists y. $PREV_NUM(a, y) & bco_succ(a, y, x) } .
-Define bcoConsts ns :=
-    match ns with
-    case [] => print "Done."
-    case x :: xs => do
-        print ("Creating " ^ (toString x));
-        bcoConst x;
-        bcoConsts xs
-    end.
 
 // Define listAntisquares curNum $PREV_NUM :=
 //     let $NEXT_NUM := "bco_" ^ (toString curNum)
@@ -57,26 +46,31 @@ Define bcoConsts ns :=
 //         listAntisquares (curNum + 1) $NEXT_NUM .
 // // Execute listAntisquares 2 bco_one .
 
-// Theorem ("All Sturmian words contain finitely many antisquares", {
-//     forall a. bco_standard(a) =>
-//     exists m. bco_valid(a, m) &
-//     forall i, n. antisquare(a, i, n) => bco_leq(n, m)
-// }).
+Theorem ("All Sturmian words contain finitely many antisquares", {
+    forall a.
+    exists m.
+    forall i, n. antisquare(a, i, n) => bco_leq(n, m)
+}).
 
-// Theorem ("All Sturmian words contain cubes", {
-//     @no_simplify[
-//         forall a. bco_standard(a) => exists i, n. bco_positive(n) & bco_valid2(a,i,n) & cube(a,i,n)
-//     ]
-// }) .
+Theorem ("All Sturmian words contain cubes", {
+    @no_simplify[
+        forall a. exists i, n. bco_positive(n) & cube(a,i,n)
+    ]
+}) .
 
-no_fourth_pow(a) := forall i, n. (bco_positive(n) & bco_valid2(a,i,n)) => !fourth_pow(a, i, n)
+no_fourth_pow(a) := forall i, n. bco_positive(n) => !fourth_pow(a, i, n)
 Example (ostrowskiFormat, { bco_standard(a) & no_fourth_pow(a) }).
 
 Theorem ("All Sturmian words contain fourth powers", {
     @no_simplify[
-        forall a. bco_standard(a) => exists i, n. bco_positive(n) & bco_valid2(a,i,n) & fourth_pow(a,i,n)
+        forall a. exists i, n. bco_positive(n) & fourth_pow(a,i,n)
     ]
 }) .
 
-// Example (ostrowskiFormat, { bco_standard(a) & bco_valid(a, n) & palindrome_prefix(a, n) }) .
+// Theorem ("All Sturmian words start with arbitarily long palindromes", {
+//     forall a. bco_standard(a) =>
+// }) .
+
+// Restrict i, n are ostrowski(a).
+// Example (ostrowskiFormat, { fib_alpha(a) & bco_valid(a, n) & n > 50 & palindrome_prefix(a, n) }) .
 

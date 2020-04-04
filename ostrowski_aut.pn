@@ -4,51 +4,43 @@
 
 bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
 
-Restrict i, p, n are ostrowski(a).
-eventually_periodic(a, p) := p > 0 & exists n. forall i. i > n => $C[i] = $C[i + p]
-#save_aut("automata/eventually_periodic.aut", eventually_periodic)
-#forget(p)
-#forget(n)
-#forget(i)
+// Restrict i, p, n are ostrowski(a).
+// eventually_periodic(a, p) := p > 0 & exists n. forall i. i > n => $C[i] = $C[i + p]
+// #save_aut("automata/eventually_periodic.aut", eventually_periodic)
+// #forget(p)
+// #forget(n)
+// #forget(i)
 
-square(a, i, n) :=
-    @no_simplify[
-        bco_valid2(a, i, n) &
-        bco_positive(i) &
-        forall bound.
-        @postprocess[(@postprocess[bco_valid(a, bound) & bco_adder(a, i, n, bound)] =>
-        @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
-            @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] = $C[jn]]]])]
-    ]
-#save_aut("automata/square.aut", square)
+// square(a, i, n) :=
+//     @no_simplify[
+//         bco_valid2(a, i, n) &
+//         bco_positive(i) &
+//         forall bound.
+//         @postprocess[(@postprocess[bco_valid(a, bound) & bco_adder(a, i, n, bound)] =>
+//         @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
+//             @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] = $C[jn]]]])]
+//     ]
+// #save_aut("automata/square.aut", square)
 
-antisquare(a, i, n) :=
-    @no_simplify[
-        bco_valid2(a, i, n) &
-        bco_positive(i) &
-        forall bound.
-        @postprocess[(@postprocess[bco_valid(a, bound) & bco_adder(a, i, n, bound)] =>
-        @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
-            @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] != $C[jn]]]])]
-    ]
-#save_aut("automata/antisquare.aut", antisquare)
+// antisquare(a, i, n) :=
+//     @no_simplify[
+//         bco_valid2(a, i, n) &
+//         bco_positive(i) &
+//         forall bound.
+//         @postprocess[(@postprocess[bco_valid(a, bound) & bco_adder(a, i, n, bound)] =>
+//         @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
+//             @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] != $C[jn]]]])]
+//     ]
+// #save_aut("automata/antisquare.aut", antisquare)
 
-cube(a, i, n) :=
-    square(a, i, n) &
-    exists ni. bco_adder(a, i, n, ni) & square(a, ni, n)
-#save_aut("automata/cube.aut", cube)
+Restrict i, n are ostrowski(a).
+// cube(a, i, n) := square(a, i, n) & square(a, i + n, n)
+// #save_aut("automata/cube.aut", cube)
 
-fourth_pow(a, i, n) :=
-    cube(a, i, n) &
-    exists ni, nni. bco_adder(a, i, n, ni) & bco_adder(a, ni, n, nni) & square(a, nni, n)
-#save_aut("automata/fourth_pow.aut", fourth_pow)
+// fourth_pow(a, i, n) := cube(a, i, n) & cube(a, i + n, n)
+// #save_aut("automata/fourth_pow.aut", fourth_pow)
 
 palindrome_prefix(a, n) :=
-    @no_simplify[
-        bco_positive(n) &
-        forall i, n1, n1i.
-            (@postprocess[bco_positive(i,n) & bco_valid2(a, i, n) & bco_leq(i, n) & bco_succ(a,n1,n)] & bco_adder(a,n1i,i,n1)) =>
-            @postprocess[$C[i] = $C[n1i]]
-    ]
+    bco_positive(n) & forall i. (0 < i & i <= n & bco_succ(a, n1, n)) => $C[i] = $C[(n - 1) + i]
 #save_aut("automata/palindrome_prefix.aut", palindrome_prefix)
 
