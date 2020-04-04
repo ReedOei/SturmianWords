@@ -62,10 +62,10 @@ bco_succ(a, x, y) := bco_valid2(a, x, y) & bco_leq(x, y) & (!bco_eq(x, y)) & for
 ostrowski_zero(alpha, z) := bco_valid(alpha, z) & bco_zero(z)
 x is ostrowski(alpha) := bco_valid(alpha, x)
 
-#type(ostrowski(alpha), {
+Structure ostrowski(alpha) defining {
     "adder": bco_adder(alpha, any, any, any),
     "less": bco_lt(any, any),
     "equal": bco_eq(any, any),
     "zero": ostrowski_zero(alpha, any)
-})
+}
 
