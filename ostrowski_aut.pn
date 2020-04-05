@@ -11,7 +11,7 @@ bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
 // #forget(n)
 // #forget(i)
 
-// square(a, i, n) :=
+// pow_2(a, i, n) :=
 //     @no_simplify[
 //         bco_valid2(a, i, n) &
 //         bco_positive(i) &
@@ -33,12 +33,21 @@ bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
 //     ]
 // #save_aut("automata/antisquare.aut", antisquare)
 
-Restrict i, n are ostrowski(a).
-// cube(a, i, n) := square(a, i, n) & square(a, i + n, n)
-// #save_aut("automata/cube.aut", cube)
+pow_2(a, i, n) := square(a, i, n)
 
-// fourth_pow(a, i, n) := cube(a, i, n) & cube(a, i + n, n)
-// #save_aut("automata/fourth_pow.aut", fourth_pow)
+Restrict i, n are ostrowski(a).
+
+Define nthPow num :=
+    let $PREV_POW := "pow_" ^ (toString (num - 1)) in
+    let $POW_NAME := "pow_" ^ (toString num) in
+    let fname := "automata/" ^ $POW_NAME in do
+        emit { $POW_NAME(a, i, n) := square(a, i, n) & $PREV_POW(a, i + n, n) };
+        emit { #save_aut(fname, $POW_NAME) }.
+
+Execute genNthPow 3.
+Execute genNthPow 4.
+Execute genNthPow 5.
+Execute genNthPow 6.
 
 palindrome_prefix(a, n) :=
     bco_positive(n) & forall i. (0 < i & i <= n & bco_succ(a, n1, n)) => $C[i] = $C[(n - 1) + i]

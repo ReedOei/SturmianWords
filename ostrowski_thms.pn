@@ -9,7 +9,7 @@
 #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
 #load("automata/palindrome_prefix.aut", "hoa", palindrome_prefix(a, n))
 
-#load("eventually_one.txt", "pecan", eventually_one(a))
+#load("test_alpha.txt", "walnut", bounded_alpha(a))
 
 bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
 
@@ -36,7 +36,6 @@ Restrict i, j, p, n, m are ostrowski(a).
 // }) .
 
 #load("fib_word.txt", "walnut", fib_alpha(a))
-#load("test_alpha.txt", "walnut", bounded_alpha(a))
 
 // Define listAntisquares curNum $PREV_NUM :=
 //     let $NEXT_NUM := "bco_" ^ (toString curNum)
@@ -58,6 +57,12 @@ Restrict i, j, p, n, m are ostrowski(a).
 //         forall a. exists i, n. bco_positive(n) & cube(a,i,n)
 //     ]
 // }) .
+
+#load("eventually_one.txt", "pecan", eventually_one(a))
+
+no_fourth_pow(a) := forall i, n. bco_positive(n) => !fourth_pow(a, i, n)
+has_fourth_pow(a) := exists i, n. bco_positive(n) & fourth_pow(a, i, n)
+Example (ostrowskiFormat, { bco_standard(a) & has_fourth_pow(a) & eventually_one(a) }).
 
 Theorem ("All Sturmian words that are not eventually one contain fourth powers", {
     @no_simplify[
