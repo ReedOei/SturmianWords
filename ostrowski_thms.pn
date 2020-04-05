@@ -3,9 +3,9 @@
 #load("ostrowski/sturmian_word.txt", "pecan", $C(n))
 
 #load("automata/eventually_periodic.aut", "hoa", eventually_periodic(a, p))
-#load("automata/square.aut", "hoa", square(a, i, n))
-#load("automata/cube.aut", "hoa", cube(a, i, n))
-#load("automata/fourth_pow.aut", "hoa", fourth_pow(a, i, n))
+#load("automata/pow_2.aut", "hoa", pow_2(a, i, n))
+#load("automata/pow_3.aut", "hoa", pow_3(a, i, n))
+#load("automata/pow_4.aut", "hoa", pow_4(a, i, n))
 #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
 #load("automata/palindrome_prefix.aut", "hoa", palindrome_prefix(a, n))
 
@@ -31,7 +31,7 @@ Restrict i, j, p, n, m are ostrowski(a).
 
 // Theorem ("All Sturmian words contain squares", {
 //     @no_simplify[
-//         forall a. exists i, n. bco_positive(n) & square(a,i,n)
+//         forall a. exists i, n. bco_positive(n) & pow_2(a,i,n)
 //     ]
 // }) .
 
@@ -54,19 +54,19 @@ Restrict i, j, p, n, m are ostrowski(a).
 
 // Theorem ("All Sturmian words contain cubes", {
 //     @no_simplify[
-//         forall a. exists i, n. bco_positive(n) & cube(a,i,n)
+//         forall a. exists i, n. bco_positive(n) & pow_3(a,i,n)
 //     ]
 // }) .
 
 #load("eventually_one.txt", "pecan", eventually_one(a))
 
-no_fourth_pow(a) := forall i, n. bco_positive(n) => !fourth_pow(a, i, n)
-has_fourth_pow(a) := exists i, n. bco_positive(n) & fourth_pow(a, i, n)
+no_fourth_pow(a) := forall i, n. bco_positive(n) => !pow_4(a, i, n)
+has_fourth_pow(a) := exists i, n. bco_positive(n) & pow_4(a, i, n)
 Example (ostrowskiFormat, { bco_standard(a) & has_fourth_pow(a) & eventually_one(a) }).
 
 Theorem ("All Sturmian words that are not eventually one contain fourth powers", {
     @no_simplify[
-        forall a. (!eventually_one(a)) => exists i, n. bco_positive(n) & fourth_pow(a,i,n)
+        forall a. (!eventually_one(a)) => exists i, n. bco_positive(n) & pow_4(a,i,n)
     ]
 }) .
 
