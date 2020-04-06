@@ -64,3 +64,11 @@ test_bco_adder_order_comp() := forall a. forall x. forall y. forall z. forall u.
 test_bco_adder_order_def() := forall a. forall x. forall y. bco_valid2(a,x,y) => (bco_leq(x,y) <=> exists z. bco_adder(a,x,z,y))
 #assert_prop(true, test_bco_adder_order_def)
 
+// This was the original definition of bco_eq
+bco_eq_temp(x, y) := bco_leq(x, y) & bco_leq(y, x)
+// However, it produces a larger automaton than just comparing for strict equality, which is the same ASSUMING BOTH REPRESENTATIONS ARE USING THE NUMERATION SYSTEM
+// But we just check that they are equivalent in all cases that we care about:
+Theorem ("Definitions of bco_eq are equivalent", {
+    forall a. bco_standard(a) => forall x, y. bco_valid2(a, x, y) => (bco_eq(x, y) <=> bco_eq_temp(x, y))
+}).
+
