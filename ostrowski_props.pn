@@ -15,10 +15,13 @@ bco_succ_total() := forall a, x. bco_valid(a, x) => exists u. bco_succ(a,x,u)
 bco_valid_zero() := forall z. bco_zero(z) => exists a. bco_valid(a, z)
 #assert_prop(true, bco_valid_zero)
 
-test_bco_adder_base_case() := forall a. forall x. forall y. forall z. (bco_zero(x) & bco_valid3(a, x, y, z)) => (bco_adder(a,x,y,z) <=> bco_eq(y,z))
-#assert_prop(true, test_bco_adder_base_case)
-test_bco_adder_inductive_case() := forall a. forall x,y,z. bco_valid3(a,x,y,z) => forall u,v. (bco_succ(a,u,x) & bco_succ(a,v,z)) => (bco_adder(a,x,y,z) <=> bco_adder(a,u,y,v))
-#assert_prop(true, test_bco_adder_inductive_case)
+Theorem ("Addition base case.", {
+    forall a. forall x, y, z. if bco_zero(x) & bco_valid3(a, x, y, z) then (bco_adder(a, x, y, z) <=> bco_eq(y, z))
+}).
+
+Theorem ("Addition inductive case.", {
+    forall a. forall x,y,z. bco_valid3(a,x,y,z) => forall u,v. (bco_succ(a,u,x) & bco_succ(a,v,z)) => (bco_adder(a,x,y,z) <=> bco_adder(a,u,y,v))
+}).
 
 test_bco_pred() := forall a, x. if bco_valid(a,x) then (bco_zero(x) | (exists u. bco_succ(a,u,x)))
 #assert_prop(true, test_bco_pred)
