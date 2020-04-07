@@ -1,0 +1,25 @@
+{0,1,2}
+
+start: 0
+2 -> not_yet_one
+
+// Represents reading a number in the continued fraction when we have not reached the part that is all ones
+not_yet_one: 0
+0 -> not_one
+1 -> all_ones_loop
+1 -> not_one
+2 -> not_yet_one
+
+// When the number we are reading is not 1 (or simply not part of eventually one part)
+not_one: 0
+0 -> not_one
+1 -> not_one
+2 -> not_yet_one
+
+all_ones_start: 1
+1 -> all_ones_loop
+
+all_ones_loop: 1
+0 -> all_ones_loop
+2 -> all_ones_start
+

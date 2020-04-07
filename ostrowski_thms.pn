@@ -1,17 +1,23 @@
 #import("ostrowski_defs.pn")
 
-#load("ostrowski/sturmian_word.txt", "pecan", $C(n))
+#load("ostrowski-automata/sturmian_word.txt", "pecan", $C(n))
 
 #load("automata/eventually_periodic.aut", "hoa", eventually_periodic(a, p))
 #load("automata/pow_2.aut", "hoa", pow_2(a, i, n))
 #load("automata/pow_3.aut", "hoa", pow_3(a, i, n))
 #load("automata/pow_4.aut", "hoa", pow_4(a, i, n))
+#load("automata/pow_5.aut", "hoa", pow_5(a, i, n))
+#load("automata/pow_6.aut", "hoa", pow_6(a, i, n))
+#load("automata/pow_7.aut", "hoa", pow_7(a, i, n))
+#load("automata/pow_8.aut", "hoa", pow_8(a, i, n))
 #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
 #load("automata/palindrome_prefix.aut", "hoa", palindrome_prefix(a, n))
+#load("automata/palindrome.aut", "hoa", palindrome(a, i, j))
 
-#load("test_alpha.txt", "walnut", bounded_alpha(a))
+#load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
-bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
+#load("automata/fib_alpha.txt", "walnut", fib_alpha(a))
+#load("automata/eventually_one.txt", "pecan", eventually_one(a))
 
 Restrict a is bco_standard.
 Restrict i, j, p, n, m are ostrowski(a).
@@ -24,8 +30,7 @@ Restrict i, j, p, n, m are ostrowski(a).
 //     @no_simplify[
 //         forall a.
 //         forall n.
-//         exists m. m > n &
-//         forall j. @postprocess[(0 < j & j <= m)] => $C[j] = $C[j + m]
+//         exists m. m > n & exists j. j = 1 & pow_2(a, j, m)
 //     ]
 // }) .
 
@@ -35,8 +40,6 @@ Restrict i, j, p, n, m are ostrowski(a).
 //     ]
 // }) .
 
-#load("fib_word.txt", "walnut", fib_alpha(a))
-
 // Define listAntisquares curNum $PREV_NUM :=
 //     let $NEXT_NUM := "bco_" ^ (toString curNum)
 //     in do
@@ -44,35 +47,59 @@ Restrict i, j, p, n, m are ostrowski(a).
 //         emit { $NEXT_NUM(a, x) := exists y. $PREV_NUM(a, y) & bco_succ(a, y, x) };
 //         print (example ostrowskiFormat { bco_standard(a) & bounded_alpha(a) & $NEXT_NUM(a, n) & @no_simplify[antisquare(a, i, n)] });
 //         listAntisquares (curNum + 1) $NEXT_NUM .
-// // Execute listAntisquares 2 bco_one .
+#load("test_alpha.txt", "walnut", bounded_alpha(a))
+// Execute listAntisquares 2 bco_one .
 
 // Theorem ("All Sturmian words contain finitely many antisquares", {
 //     forall a.
 //     exists m.
-//     forall i, n. antisquare(a, i, n) => bco_leq(n, m)
+//     forall i, n. if antisquare(a, i, n) then n <= m
 // }).
 
 // Theorem ("All Sturmian words contain cubes", {
 //     @no_simplify[
-//         forall a. exists i, n. bco_positive(n) & pow_3(a,i,n)
+//         forall a. exists i, n. n > 0 & pow_3(a,i,n)
 //     ]
 // }) .
 
-#load("eventually_one.txt", "pecan", eventually_one(a))
+// Theorem ("Sturmian words start with arbitrarily long cubes.", {
+//     @no_simplify[
+//         forall a. (!eventually_one(a)) <=>
+//         forall n.
+//         exists m. m > n & exists j. j = 1 & pow_3(a, j, m)
+//     ]
+// }) .
 
-no_fourth_pow(a) := forall i, n. bco_positive(n) => !pow_4(a, i, n)
-has_fourth_pow(a) := exists i, n. bco_positive(n) & pow_4(a, i, n)
-Example (ostrowskiFormat, { bco_standard(a) & has_fourth_pow(a) & eventually_one(a) }).
+Define genHasNthPow num :=
+    let $NTH_POW := "pow_" ^ (toString num) in
+    let $HAS_NTH := "has_" ^ $NTH_POW in
+        emit { $HAS_NTH(a) := exists i, n. n > 0 & $NTH_POW(a, i, n) } .
+Execute genHasNthPow 4.
+Execute genHasNthPow 5.
+Execute genHasNthPow 6.
+Execute genHasNthPow 7.
+Execute genHasNthPow 8.
 
-Theorem ("All Sturmian words that are not eventually one contain fourth powers", {
-    @no_simplify[
-        forall a. (!eventually_one(a)) => exists i, n. bco_positive(n) & pow_4(a,i,n)
-    ]
-}) .
+// Theorem ("All Sturmian words that are not eventually one contain fourth powers", {
+//     @no_simplify[
+//         forall a. if !eventually_one(a) then has_pow_4(a)
+//     ]
+// }) .
 
 // Theorem ("All Sturmian words start with arbitarily long palindromes", {
 //     forall a.
 //     forall n.
 //     exists m. m > n & palindrome_prefix(a, m)
 // }) .
+
+palindrome_len(a, i, n) := palindrome(a, i, i + n)
+Theorem ("Sturmian words contain palindromes of every length.", {
+    forall a, n. if n > 0 then exists i. palindrome_len(a, i, n)
+}).
+
+Theorem ("The Fibonacci word is mirror invariant.", {
+    forall a, i, j.
+    if fib_alpha(a) then
+        mirror_invariant(a, i, j)
+}).
 
