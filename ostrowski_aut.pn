@@ -92,13 +92,12 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #save_aut("automata/not_reverse_factor.aut", not_reverse_factor)
 // #load("automata/not_reverse_factor.aut", "hoa", not_reverse_factor(a, i, j, l))
 
-factor(a, i, n, j) :=
-    bco_positive(i) & bco_positive(k) &
-    forall t, jt, jti. @postprocess[
-        if @postprocess[bco_valid3(a,t,jt,jti) & bco_leq(i, t) & bco_lt(t, j) & bco_adder(a,j,t,jt) & bco_adder(a,jti,i,jt)] then
-            $C[t] = $C[jti]
-    ]
-#save_aut("automata/factor.aut", factor)
+// factor(a, i, n, j) :=
+//     @no_simplify[forall t, it, jt. @postprocess[
+//         if @postprocess[bco_valid3(a,t,it,jt) & bco_lt(t, n) & bco_adder(a,i,t,it) & bco_adder(a,j,t,jt)] then
+//             $C[it] = $C[jt]
+//     ]]
+// #save_aut("automata/factor.aut", factor)
 // #load("automata/factor.aut", "hoa", factor(a, i, n, j))
 
 // True when $C_a[i..j] = \overline{C_a[k..l]}$ where $l = k + j - i$.
@@ -112,18 +111,12 @@ factor(a, i, n, j) :=
 //     ]
 // #save_aut("automata/anti_factor.aut", anti_factor)
 
-// reverse_anti_factor(a, i, j, l) :=
-//     @postprocess[
-//         bco_valid3(a,i,j,l) &
-//         bco_positive(i) &
-//         bco_positive(l) &
-//         i < j
-//     ] & @no_simplify[
-//         forall t, li, lit. @postprocess[
-//             if @postprocess[bco_valid3(a,t,li,lit) & bco_leq(i, t) & bco_lt(t, j) & bco_adder(a, l, i, li) & bco_adder(a, lit, t, li)] then
-//                 $C[t] != $C[lit]
-//         ]
+// reverse_anti_factor(a, i, j, l) := @no_simplify[
+//     forall t, li, lit. @postprocess[
+//         if @postprocess[bco_valid3(a,t,li,lit) & bco_leq(i, t) & bco_lt(t, j) & bco_adder(a, l, i, li) & bco_adder(a, lit, t, li)] then
+//             $C[t] != $C[lit]
 //     ]
+// ]
 // #save_aut("automata/reverse_anti_factor.aut", reverse_anti_factor)
 // #load("automata/reverse_anti_factor.aut", "hoa", reverse_anti_factor(a, i, j, l))
 
@@ -141,4 +134,31 @@ factor(a, i, n, j) :=
 // palindrome(a, i, j) := @postprocess[@no_simplify[reverse_factor(a, i, j, j)]]
 // #save_aut("automata/palindrome.aut", palindrome)
 // #load("automata/palindrome.aut", "hoa", palindrome(a, i, j))
+
+// antipalindrome(a, i, j) := @postprocess[
+//     forall t, ji, jit. @postprocess[
+//         if @postprocess[bco_valid3(a,t,ji,jit) & bco_leq(i, t) & bco_lt(t, j) & bco_adder(a, j, i, ji) & bco_adder(a, jit, t, ji)] then
+//             $C[t] != $C[jit]
+// ]]
+// #save_aut("automata/antipalindrome.aut", antipalindrome)
+#load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, j))
+antipalindrome_len(a, i, n) := @no_simplify[antipalindrome(a, i, i + n)]
+#save_aut("automata/antipalindrome_len.aut", antipalindrome_len)
+
+// not_period(a, p, i ,j) := @postprocess[
+//     !(forall t, tp.
+//         if @postprocess[bco_valid2(a, t, tp) & bco_leq(i, t) & bco_leq(tp, j) & bco_adder(a,t,p,tp)] then
+//             $C[t] = $C[tp])
+// ]
+// #save_aut("automata/not_period.aut", not_period)
+// #load("automata/not_period.aut", "hoa", not_period(a, p, i, j))
+
+// period(a, p, i, j) := @no_simplify[!not_period(a, p, i, j)]
+// #save_aut("automata/period.aut", period)
+// #load("automata/period.aut", "hoa", period(a, p, i, j))
+
+// least_period(a, p, i, j) := @no_simplify[
+//     period(a, p, i, j) & forall p2. if @postprocess[bco_valid(a, p2) & bco_positive(p2) & bco_lt(p2, p)] then !period(a, p2, i, j)
+// ]
+// #save_aut("automata/least_period.aut", least_period)
 

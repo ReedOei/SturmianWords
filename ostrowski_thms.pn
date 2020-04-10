@@ -11,10 +11,11 @@
 #load("automata/pow_7.aut", "hoa", pow_7(a, i, n))
 #load("automata/pow_8.aut", "hoa", pow_8(a, i, n))
 #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
+#load("automata/antipalindrome_len.aut", "hoa", antipalindrome_len(a, i, n))
 #load("automata/palindrome_prefix.aut", "hoa", palindrome_prefix(a, n))
 #load("automata/palindrome.aut", "hoa", palindrome(a, i, j))
 
-#load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
+// #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
 #load("automata/fib_alpha.txt", "walnut", fib_alpha(a))
 #load("automata/eventually_one.txt", "pecan", eventually_one(a))
@@ -70,15 +71,15 @@ Restrict i, j, p, n, m are ostrowski(a).
 //     ]
 // }) .
 
-Define genHasNthPow num :=
-    let $NTH_POW := "pow_" ^ (toString num) in
-    let $HAS_NTH := "has_" ^ $NTH_POW in
-        emit { $HAS_NTH(a) := exists i, n. n > 0 & $NTH_POW(a, i, n) } .
-Execute genHasNthPow 4.
-Execute genHasNthPow 5.
-Execute genHasNthPow 6.
-Execute genHasNthPow 7.
-Execute genHasNthPow 8.
+// Define genHasNthPow num :=
+//     let $NTH_POW := "pow_" ^ (toString num) in
+//     let $HAS_NTH := "has_" ^ $NTH_POW in
+//         emit { $HAS_NTH(a) := exists i, n. n > 0 & $NTH_POW(a, i, n) } .
+// Execute genHasNthPow 4.
+// Execute genHasNthPow 5.
+// Execute genHasNthPow 6.
+// Execute genHasNthPow 7.
+// Execute genHasNthPow 8.
 
 // Theorem ("All Sturmian words that are not eventually one contain fourth powers", {
 //     @no_simplify[
@@ -92,14 +93,16 @@ Execute genHasNthPow 8.
 //     exists m. m > n & palindrome_prefix(a, m)
 // }) .
 
-palindrome_len(a, i, n) := palindrome(a, i, i + n)
-Theorem ("Sturmian words contain palindromes of every length.", {
-    forall a, n. if n > 0 then exists i. palindrome_len(a, i, n)
-}).
+// palindrome_len(a, i, n) := palindrome(a, i, i + n)
+// Theorem ("Sturmian words contain palindromes of every length.", {
+//     forall a, n. if n > 0 then exists i. palindrome_len(a, i, n)
+// }).
 
-Theorem ("The Fibonacci word is mirror invariant.", {
-    forall a, i, j.
-    if fib_alpha(a) then
-        mirror_invariant(a, i, j)
+Theorem ("All Sturmian words contain finitely many antipalindromes.", {
+    @no_simplify[
+        forall a.
+        exists m.
+        forall i, n. if antipalindrome_len(a, i, n) then n <= m
+    ]
 }).
 
