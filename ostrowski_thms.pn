@@ -27,11 +27,11 @@ Restrict i, j, p, n, m are ostrowski(a).
 //     forall a, p. !eventually_periodic(a, p)
 // }) .
 
-// Theorem ("Sturmian words start with arbitrarily long squares", {
+// Theorem ("All suffixes of Sturmian words start with arbitrarily long squares", {
 //     @no_simplify[
-//         forall a.
-//         forall n.
-//         exists m. m > n & exists j. j = 1 & pow_2(a, j, m)
+//         forall a, j.
+//         if j > 0 then
+//             forall n. exists m. m > n & pow_2(a, j, m)
 //     ]
 // }) .
 
@@ -40,16 +40,6 @@ Restrict i, j, p, n, m are ostrowski(a).
 //         forall a. exists i, n. bco_positive(n) & pow_2(a,i,n)
 //     ]
 // }) .
-
-// Define listAntisquares curNum $PREV_NUM :=
-//     let $NEXT_NUM := "bco_" ^ (toString curNum)
-//     in do
-//         print ("Trying: " ^ (toString curNum));
-//         emit { $NEXT_NUM(a, x) := exists y. $PREV_NUM(a, y) & bco_succ(a, y, x) };
-//         print (example ostrowskiFormat { bco_standard(a) & bounded_alpha(a) & $NEXT_NUM(a, n) & @no_simplify[antisquare(a, i, n)] });
-//         listAntisquares (curNum + 1) $NEXT_NUM .
-// #load("test_alpha.txt", "walnut", bounded_alpha(a))
-// Execute listAntisquares 2 bco_one .
 
 // Theorem ("All Sturmian words contain finitely many antisquares", {
 //     forall a.
@@ -63,11 +53,13 @@ Restrict i, j, p, n, m are ostrowski(a).
 //     ]
 // }) .
 
-// Theorem ("Sturmian words start with arbitrarily long cubes.", {
+// Theorem ("All suffixes of Sturmian words start with arbitrarily long cubes.", {
 //     @no_simplify[
 //         forall a. (!eventually_one(a)) <=>
-//         forall n.
-//         exists m. m > n & exists j. j = 1 & pow_3(a, j, m)
+//         forall j.
+//         if j > 0 then
+//             forall n.
+//             exists m. m > n & pow_3(a, j, m)
 //     ]
 // }) .
 
@@ -87,27 +79,61 @@ Restrict i, j, p, n, m are ostrowski(a).
 //     ]
 // }) .
 
-// Theorem ("All Sturmian words start with arbitarily long palindromes", {
-//     forall a.
-//     forall n.
-//     exists m. m > n & palindrome_prefix(a, m)
+// Theorem ("All suffixes of Sturmian words start with arbitarily long palindromes", {
+//     forall a, j.
+//     if j > 0 then
+//         forall n.
+//         exists m. m > n & palindrome(a, j, m)
 // }) .
 
 // Theorem ("Sturmian words contain palindromes of every length.", {
 //     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
 // }).
 
-Theorem ("All Sturmian words contain finitely many antipalindromes.", {
-    @no_simplify[
-        forall a.
-        exists m.
-        forall i, n. if antipalindrome(a, i, n) then n <= m
-    ]
-}).
+// Theorem ("All Sturmian words contain finitely many antipalindromes.", {
+//     @no_simplify[
+//         forall a.
+//         exists m.
+//         forall i, n. if antipalindrome(a, i, n) then n <= m
+//     ]
+// }).
 
-// Define listAntipalindromes curNum := do
-//     print ("Trying: " ^ (toString curNum));
-//     print (example ostrowskiFormat { @postprocess[bco_standard(a) & n = curNum] & @no_simplify[antipalindrome_len(a, i, n)] });
-//     listAntipalindromes (curNum + 1) .
-// Execute listAntipalindromes 1 .
+// TODO: Doesn't quite work
+// I want to say that a is the smallest slope (i.e., with the lowest cf coefficients) such that it has a palindrome of length n (if it exists at all)
+// Actually, that's probably not even well-defined.
+// #load("ostrowski-automata/cf_shorter_len.txt", "pecan", cf_shorter_len(a, b))
+// has_antipalindrome_len(c, len) := exists idx is ostrowski(c). bco_positive(idx) & antipalindrome(c, idx, len)
+// bco_comparable(a, b) := bco_leq(a, b) | bco_leq(b, a)
+// Define listSmallestCfWithAntipalindrome curNum :=
+//     let $PRED := "smallest_antipalindrome_cf_" ^ (toString curNum) in do
+//         print ("Trying: " ^ (toString curNum));
+//         emit {
+//             $PRED(a) :=
+//                 (exists j. j = curNum & has_antipalindrome_len(a, j)) &
+//                 (forall b is bco_standard.
+//                     if exists len is ostrowski(b). len = curNum & has_antipalindrome_len(b, len) then
+//                         (bco_leq(a, b) | cf_shorter_len(a, b))
+//                 )
+//         };
+//         print (example ostrowskiFormat { bco_standard(a) & $PRED(a) });
+//         listSmallestCfWithAntipalindrome (curNum + 2). // Note that it is impossible to have an antipalindrome of odd length.
+// Execute listSmallestCfWithAntipalindrome 2 .
+
+antipalindrome_square(a, i, n) := pow_2(a, i, n) & antipalindrome(a, i, n)
+Define listExamples $PRED curNum := do
+    print ("Trying (pred is " ^ $PRED ^ "): " ^ (toString curNum));
+    print (example ostrowskiFormat { bco_standard(a) & n = curNum & $PRED(a, i, n) });
+    listExamples $PRED (curNum + 2) . // Note that it is impossible to have an antipalindrome of odd length.
+Execute listExamples antipalindrome_square 2 .
+// Execute listExamples antipalindrome 2 .
+
+// Define listAntisquares curNum $PREV_NUM :=
+//     let $NEXT_NUM := "bco_" ^ (toString curNum)
+//     in do
+//         print ("Trying: " ^ (toString curNum));
+//         emit { $NEXT_NUM(a, x) := exists y. $PREV_NUM(a, y) & bco_succ(a, y, x) };
+//         print (example ostrowskiFormat { bco_standard(a) & bounded_alpha(a) & $NEXT_NUM(a, n) & @no_simplify[antisquare(a, i, n)] });
+//         listAntisquares (curNum + 1) $NEXT_NUM .
+// #load("test_alpha.txt", "walnut", bounded_alpha(a))
+// Execute listAntisquares 2 bco_one .
 

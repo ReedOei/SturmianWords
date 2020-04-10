@@ -1,8 +1,18 @@
 #load("ostrowski-automata/bco_valid.txt", "walnut", bco_lsd_valid(a, x))
 #load("ostrowski-automata/bco_leq.txt", "walnut", bco_leq(x, y))
+
 #load("ostrowski-automata/bco_adder.aut", "hoa", bco_adder(a, x, y, z))
+#load("ostrowski-automata/bco_adder_valid.aut", "hoa", bco_adder_valid(a, x, y, z))
+// bco_adder_valid(a,x,y,z) := bco_adder(a,x,y,z)
+
+// Postprocessing twice seems to help
+// bco_adder_valid(a,x,y,z) := @postprocess[@postprocess[bco_adder(a,x,y,z) & bco_valid3(a,x,y,z)]]
+// #save_aut("ostrowski-automata/bco_adder_valid.aut", bco_adder_valid)
+
 #load("ostrowski-automata/bco_finite_rep.txt", "walnut", bco_finite_rep(n))
 #load("ostrowski-automata/bco_standard.txt", "walnut", bco_standard(n))
+
+#load("ostrowski-automata/cf_comp_len.txt", "pecan", cf_comp_len(a, b))
 
 Define fromBase3Pair x y :=
     match (x, y) with
@@ -57,8 +67,6 @@ Execute genEqual 3.
 bco_eq(x, y) := equal_3(x, y)
 bco_lt(x, y) := bco_leq(x, y) & !bco_eq(x,y)
 
-// bco_adder(a,x,y,z) := bco_adder_no_check(a,x,y,z) & bco_valid3(a,x,y,z)
-
 bco_zero(z) := exists a. bco_valid(a,z) & forall y. bco_valid(a,y) => bco_leq(z,y)
 bco_succ(a, x, y) := bco_valid2(a, x, y) & bco_leq(x, y) & (!bco_eq(x, y)) & forall z. bco_valid(a,z) => (bco_leq(z,x) | bco_leq(y,z))
 
@@ -73,7 +81,4 @@ Structure ostrowski(alpha) defining {
 }
 
 bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
-
-other_adder(a,x,y,z) := @postprocess[@postprocess[bco_adder(a,x,y,z) & bco_valid3(a,x,y,z)]]
-#save_aut("test.aut", other_adder)
 

@@ -75,7 +75,7 @@ Restrict i, j, k, l, n are ostrowski(a).
 //     ] &
 //     @no_simplify[inner_reverse_complement(a, i, j, l)]
 // #save_aut("automata/reverse_factor.aut", reverse_factor)
-#load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
+// #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
 
 // not_reverse_factor(a, i, j, l) :=
 //     @postprocess[
@@ -95,7 +95,7 @@ Restrict i, j, k, l, n are ostrowski(a).
 // factor(a, i, n, j) :=
 //     bco_valid3(a,i,n,j) &
 //     @no_simplify[forall t, it, jt. @simplify[@postprocess[
-//         if @postprocess[@postprocess[bco_valid3(a,t,it,jt) & @postprocess[bco_valid3(a,i,n,j) & bco_lt(t, n)]] & @postprocess[bco_adder(a,i,t,it) & bco_adder(a,j,t,jt)]] then
+//         if @postprocess[bco_lt(t, n) & @postprocess[@no_simplify[bco_adder_valid(a,i,t,it) & bco_adder_valid(a,j,t,jt)]]] then
 //             $C[it] = $C[jt]
 //     ]]]
 // #save_aut("automata/factor.aut", factor)
@@ -132,19 +132,26 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #save_aut("automata/mirror_invariant.aut", mirror_invariant)
 // #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
-// palindrome(a, i, j) := @postprocess[@no_simplify[reverse_factor(a, i, i + n, i + n)]]
+// Postprocessing twice seems to help
+// palindrome(a, i, n) := @postprocess[@postprocess[@no_simplify[exists ni. bco_adder_valid(a, i, n, ni) & reverse_factor(a, i, ni, ni)]]]
 // #save_aut("automata/palindrome.aut", palindrome)
-// #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
+#load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
+
+palindrome_eq(a, i, j, n) :=
+    forall t, it, jt.
+        if @postprocess[@postprocess[palindrome(a, i, n) & palindrome(a, j, n)] & bco_lt(t, n) & @postprocess[@no_simplify[bco_adder_valid(a, i, t, it) & bco_adder_valid(a, j, t, jt)]]] then
+            $C[it] = $C[jt]
+#save_aut("automata/palindrome_eq.aut", palindrome_eq)
 
 // antipalindrome(a, i, n) := @postprocess[
 //     bco_valid2(a, i, n) &
-//     exists j. j = i + n &
+//     exists j, k. bco_succ(a, j, k) & k = i + n &
 //     @no_simplify[forall t, ji, jit. @simplify[@postprocess[
-//         if @postprocess[bco_valid3(a,t,ji,jit) & bco_valid2(a, i, j) & bco_leq(i, t) & bco_lt(t, j) & @postprocess[bco_adder(a, j, i, ji) & bco_adder(a, jit, t, ji)]] then
+//         if @postprocess[bco_leq(i, t) & bco_leq(t, j) & @postprocess[@no_simplify[bco_adder_valid(a, j, i, ji) & bco_adder(a, jit, t, ji)]]] then
 //             $C[t] != $C[jit]
 //     ]]
 // ]]
-// #save_aut("automata/antipalindrome_len.aut", antipalindrome)
+// #save_aut("automata/antipalindrome.aut", antipalindrome)
 // #load("automata/antipalindrome_len.aut", "hoa", antipalindrome_len(a, i, n))
 
 // not_period(a, p, i ,j) := @postprocess[
