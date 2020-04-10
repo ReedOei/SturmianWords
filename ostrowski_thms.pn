@@ -11,9 +11,9 @@
 #load("automata/pow_7.aut", "hoa", pow_7(a, i, n))
 #load("automata/pow_8.aut", "hoa", pow_8(a, i, n))
 #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
-#load("automata/antipalindrome_len.aut", "hoa", antipalindrome_len(a, i, n))
+#load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
 #load("automata/palindrome_prefix.aut", "hoa", palindrome_prefix(a, n))
-#load("automata/palindrome.aut", "hoa", palindrome(a, i, j))
+#load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
 
 // #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
@@ -48,7 +48,7 @@ Restrict i, j, p, n, m are ostrowski(a).
 //         emit { $NEXT_NUM(a, x) := exists y. $PREV_NUM(a, y) & bco_succ(a, y, x) };
 //         print (example ostrowskiFormat { bco_standard(a) & bounded_alpha(a) & $NEXT_NUM(a, n) & @no_simplify[antisquare(a, i, n)] });
 //         listAntisquares (curNum + 1) $NEXT_NUM .
-#load("test_alpha.txt", "walnut", bounded_alpha(a))
+// #load("test_alpha.txt", "walnut", bounded_alpha(a))
 // Execute listAntisquares 2 bco_one .
 
 // Theorem ("All Sturmian words contain finitely many antisquares", {
@@ -93,16 +93,21 @@ Restrict i, j, p, n, m are ostrowski(a).
 //     exists m. m > n & palindrome_prefix(a, m)
 // }) .
 
-// palindrome_len(a, i, n) := palindrome(a, i, i + n)
 // Theorem ("Sturmian words contain palindromes of every length.", {
-//     forall a, n. if n > 0 then exists i. palindrome_len(a, i, n)
+//     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
 // }).
 
 Theorem ("All Sturmian words contain finitely many antipalindromes.", {
     @no_simplify[
         forall a.
         exists m.
-        forall i, n. if antipalindrome_len(a, i, n) then n <= m
+        forall i, n. if antipalindrome(a, i, n) then n <= m
     ]
 }).
+
+// Define listAntipalindromes curNum := do
+//     print ("Trying: " ^ (toString curNum));
+//     print (example ostrowskiFormat { @postprocess[bco_standard(a) & n = curNum] & @no_simplify[antipalindrome_len(a, i, n)] });
+//     listAntipalindromes (curNum + 1) .
+// Execute listAntipalindromes 1 .
 
