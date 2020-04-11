@@ -21,7 +21,7 @@
 #load("automata/eventually_one.txt", "pecan", eventually_one(a))
 
 Restrict a is bco_standard.
-Restrict i, j, p, n, m are ostrowski(a).
+Restrict i, j, k, l, p, n, m are ostrowski(a).
 
 // Theorem ("Sturmian words are not eventually periodic", {
 //     forall a, p. !eventually_periodic(a, p)
@@ -63,11 +63,11 @@ Restrict i, j, p, n, m are ostrowski(a).
 //     ]
 // }) .
 
-// Define genHasNthPow num :=
-//     let $NTH_POW := "pow_" ^ (toString num) in
-//     let $HAS_NTH := "has_" ^ $NTH_POW in
-//         emit { $HAS_NTH(a) := exists i, n. n > 0 & $NTH_POW(a, i, n) } .
-// Execute genHasNthPow 4.
+Define genHasNthPow num :=
+    let $NTH_POW := "pow_" ^ (toString num) in
+    let $HAS_NTH := "has_" ^ $NTH_POW in
+        emit { $HAS_NTH(a) := exists i, n. n > 0 & $NTH_POW(a, i, n) } .
+Execute genHasNthPow 4.
 // Execute genHasNthPow 5.
 // Execute genHasNthPow 6.
 // Execute genHasNthPow 7.
@@ -119,13 +119,11 @@ Restrict i, j, p, n, m are ostrowski(a).
 //         listSmallestCfWithAntipalindrome (curNum + 2). // Note that it is impossible to have an antipalindrome of odd length.
 // Execute listSmallestCfWithAntipalindrome 2 .
 
-antipalindrome_square(a, i, n) := pow_2(a, i, n) & antipalindrome(a, i, n)
-Define listExamples $PRED curNum := do
+Define listExamplesIdx $PRED curNum := do
     print ("Trying (pred is " ^ $PRED ^ "): " ^ (toString curNum));
     print (example ostrowskiFormat { bco_standard(a) & n = curNum & $PRED(a, i, n) });
-    listExamples $PRED (curNum + 2) . // Note that it is impossible to have an antipalindrome of odd length.
-Execute listExamples antipalindrome_square 2 .
-// Execute listExamples antipalindrome 2 .
+    listExamplesIdx $PRED (curNum + 2) .
+// Execute listExamplesIdx antipalindrome 2 .
 
 // Define listAntisquares curNum $PREV_NUM :=
 //     let $NEXT_NUM := "bco_" ^ (toString curNum)
@@ -136,4 +134,92 @@ Execute listExamples antipalindrome_square 2 .
 //         listAntisquares (curNum + 1) $NEXT_NUM .
 // #load("test_alpha.txt", "walnut", bounded_alpha(a))
 // Execute listAntisquares 2 bco_one .
+
+// Define listExamples $PRED curNum := do
+//     print ("Trying (pred is " ^ $PRED ^ "): " ^ (toString curNum));
+//     print (example ostrowskiFormat { bco_standard(a) & n = curNum & $PRED(a, n) });
+//     listExamples $PRED (curNum + 1) .
+// Execute listExamples antisquare_bound 2 .
+
+// Build an automaton recognizing sequences that start with at most `limit` non-zero entries
+Define genDigitLimit limit :=
+    let aut := mkAut ["n"] [3] in
+    let mkName := (\n => "digit_" ^ (toString n)) in
+    let autStates := withStates aut (
+                        [("start", true), (mkName (limit + 1), true)] @
+                        (map (\n => (mkName n, true)) [1..limit])
+                    ) in
+    let finalAut := withTransitions autStates (
+                        [("start", "digit_1", "2"),
+                         (mkName (limit + 1), mkName (limit + 1), "0"),
+                         (mkName (limit + 1), mkName (limit + 1), "2")] @
+                        (flatMap (\n => [(mkName n, mkName n, "0"),
+                                         (mkName n, mkName n, "1"),
+                                         (mkName n, mkName (n + 1), "2")]) [1..limit])
+                    ) in
+    let built := buildAut finalAut in
+    let $NAME := "is_" ^ (toString limit) ^ "_digits" in do
+        emit { $NAME(n) := built } .
+
+Execute genDigitLimit 3.
+Execute genDigitLimit 4.
+Execute genDigitLimit 5.
+Execute genDigitLimit 6.
+
+antisquare_len(a, i, n) := exists m. 2*m = n & antisquare(a, i, m)
+antisquare_len_bound(a, n) := forall m. if exists i. antisquare_len(a, i, m) then m <= n
+least_antisquare_len_bound(a, n) :=
+    antisquare_len_bound(a, n) & forall m. if antisquare_len_bound(a, m) then n <= m
+antisquare_bound(a, n) := forall m. if exists i. antisquare(a, i, m) then m <= n
+least_antisquare_bound(a, n) :=
+    antisquare_bound(a, n) & forall m. if antisquare_bound(a, m) then n <= m
+// Example (ostrowskiFormat, { bco_standard(a) & n = 1 & least_antisquare_bound(a, n) }).
+
+Theorem ("The least_antisquare_len_bound is unique.", {
+    forall a, n, m.
+        if least_antisquare_len_bound(a, n) & least_antisquare_len_bound(a, m) then
+            n = m
+}).
+
+Theorem ("The least_antisquare_bound is unique.", {
+    forall a, n, m.
+        if least_antisquare_bound(a, n) & least_antisquare_bound(a, m) then
+            n = m
+}).
+
+Theorem ("Maximum length of antisquares.", {
+    forall a, n. if least_antisquare_len_bound(a, n) then is_6_digits(n)
+}).
+
+Theorem ("Maximum order of antisquares.", {
+    forall a, n. if least_antisquare_bound(a, n) then is_4_digits(n)
+}).
+
+antipalindrome_bound(a, n) := forall m. if exists i. antipalindrome(a, i, m) then m <= n
+least_antipalindrome_bound(a, n) :=
+    antipalindrome_bound(a, n) & forall m. if antipalindrome_bound(a, m) then n <= m
+
+Theorem ("Maximum length of antipalindromes.", {
+    forall a, n. if least_antipalindrome_bound(a, n) then is_4_digits(n)
+}).
+
+Theorem ("The least_antipalindrome_bound is unique.", {
+    forall a, n, m.
+        if least_antipalindrome_bound(a, n) & least_antipalindrome_bound(a, m) then
+            n = m
+}).
+
+Theorem ("The maximum length of palindromes in a Sturmian word is bounded by the maximum order of its antisquares and the maximum length of its antisquare.", {
+    (
+        forall a.
+            least_antisquare_bound(a) <= least_antipalindrome_bound(a) &
+            least_antipalindrome_bound(a) <= least_antisquare_len_bound(a)
+    )
+    &
+    (exists a. least_antisquare_bound(a) = least_antipalindrome_bound(a))
+    &
+    (exists a. least_antisquare_len_bound(a) = least_antipalindrome_bound(a))
+}).
+
+// Example (ostrowskiFormat, { bco_standard(a) & bco_valid(a, n) & least_antipalindrome_bound(a, n) & least_antisquare_bound(a, n) }) .
 

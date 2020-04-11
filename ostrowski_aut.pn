@@ -94,10 +94,10 @@ Restrict i, j, k, l, n are ostrowski(a).
 
 // factor(a, i, n, j) :=
 //     bco_valid3(a,i,n,j) &
-//     @no_simplify[forall t, it, jt. @simplify[@postprocess[
+//     forall t, it, jt. @postprocess[
 //         if @postprocess[bco_lt(t, n) & @postprocess[@no_simplify[bco_adder_valid(a,i,t,it) & bco_adder_valid(a,j,t,jt)]]] then
 //             $C[it] = $C[jt]
-//     ]]]
+//     ]
 // #save_aut("automata/factor.aut", factor)
 // #load("automata/factor.aut", "hoa", factor(a, i, n, j))
 
@@ -133,15 +133,16 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
 // Postprocessing twice seems to help
-// palindrome(a, i, n) := @postprocess[@postprocess[@no_simplify[exists ni. bco_adder_valid(a, i, n, ni) & reverse_factor(a, i, ni, ni)]]]
+// palindrome(a, i, n) := @postprocess[@postprocess[@no_simplify[exists ni. bco_adder_valid(a, i, n, ni) & @postprocess[reverse_factor(a, i, ni, ni)]]]]
 // #save_aut("automata/palindrome.aut", palindrome)
-#load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
+// #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
 
-palindrome_eq(a, i, j, n) :=
-    forall t, it, jt.
-        if @postprocess[@postprocess[palindrome(a, i, n) & palindrome(a, j, n)] & bco_lt(t, n) & @postprocess[@no_simplify[bco_adder_valid(a, i, t, it) & bco_adder_valid(a, j, t, jt)]]] then
-            $C[it] = $C[jt]
-#save_aut("automata/palindrome_eq.aut", palindrome_eq)
+// Too big need to wait for the factor automaton, probably.
+// palindrome_eq(a, i, j, n) :=
+//     forall t, it, jt.
+//         if @postprocess[@postprocess[palindrome(a, i, n) & palindrome(a, j, n)] & bco_lt(t, n) & @postprocess[@no_simplify[bco_adder_valid(a, i, t, it) & bco_adder_valid(a, j, t, jt)]]] then
+//             $C[it] = $C[jt]
+// #save_aut("automata/palindrome_eq.aut", palindrome_eq)
 
 // antipalindrome(a, i, n) := @postprocess[
 //     bco_valid2(a, i, n) &
@@ -164,7 +165,9 @@ palindrome_eq(a, i, j, n) :=
 
 // period(a, p, i, j) := @no_simplify[!not_period(a, p, i, j)]
 // #save_aut("automata/period.aut", period)
-// #load("automata/period.aut", "hoa", period(a, p, i, j))
+#load("automata/period.aut", "hoa", period(a, p, i, j))
+period2(a, p, i ,j) := @no_simplify[@simplify[bco_valid3(a, p, i, j)] & period(a, p, i, j)]
+#save_aut("automata/period2.aut", period2)
 
 // least_period(a, p, i, j) := @no_simplify[
 //     period(a, p, i, j) & forall p2. if @postprocess[bco_valid(a, p2) & bco_positive(p2) & bco_lt(p2, p)] then !period(a, p2, i, j)
