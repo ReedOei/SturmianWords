@@ -92,13 +92,33 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #save_aut("automata/not_reverse_factor.aut", not_reverse_factor)
 // #load("automata/not_reverse_factor.aut", "hoa", not_reverse_factor(a, i, j, l))
 
+factor3(a, i, k, j) :=
+    bco_valid3(a,i,k,j) &
+    forall ji. @postprocess[
+        if @postprocess[@no_simplify[bco_adder_valid(a,ji,i,j)]] then
+            forall t. @postprocess[
+                if @postprocess[bco_valid(a, t) & bco_leq(t, i) & bco_lt(t, k)] then
+                    forall jit. @postprocess[
+                        if @postprocess[@no_simplify[bco_adder_valid(a, ji, t, jit)]] then
+                            $C[t] = $C[jit]
+                    ]
+            ]
+        ]
+#save_aut("automata/factor3.aut", factor3)
+
 // factor(a, i, n, j) :=
 //     bco_valid3(a,i,n,j) &
-//     forall t, it, jt. @postprocess[
-//         if @postprocess[bco_lt(t, n) & @postprocess[@no_simplify[bco_adder_valid(a,i,t,it) & bco_adder_valid(a,j,t,jt)]]] then
-//             $C[it] = $C[jt]
-//     ]
-// #save_aut("automata/factor.aut", factor)
+//     forall t. @postprocess[
+//         if @postprocess[bco_valid2(a, t, n) & bco_lt(t, n)] then
+//             forall it. @postprocess[
+//                 if @postprocess[@no_simplify[bco_adder_valid(a,i,t,it)]] then
+//                     forall jt. @postprocess[
+//                         if @postprocess[@no_simplify[bco_adder_valid(a,j,t,jt)]] then
+//                             $C[it] = $C[jt]
+//                     ]
+//                 ]
+//             ]
+// #save_aut("automata/factor2.aut", factor)
 // #load("automata/factor.aut", "hoa", factor(a, i, n, j))
 
 // True when $C_a[i..j] = \overline{C_a[k..l]}$ where $l = k + j - i$.
@@ -165,9 +185,9 @@ Restrict i, j, k, l, n are ostrowski(a).
 
 // period(a, p, i, j) := @no_simplify[!not_period(a, p, i, j)]
 // #save_aut("automata/period.aut", period)
-#load("automata/period.aut", "hoa", period(a, p, i, j))
-period2(a, p, i ,j) := @no_simplify[@simplify[bco_valid3(a, p, i, j)] & period(a, p, i, j)]
-#save_aut("automata/period2.aut", period2)
+// #load("automata/period.aut", "hoa", period(a, p, i, j))
+// period2(a, p, i ,j) := @no_simplify[@simplify[bco_valid3(a, p, i, j)] & period(a, p, i, j)]
+// #save_aut("automata/period2.aut", period2)
 
 // least_period(a, p, i, j) := @no_simplify[
 //     period(a, p, i, j) & forall p2. if @postprocess[bco_valid(a, p2) & bco_positive(p2) & bco_lt(p2, p)] then !period(a, p2, i, j)

@@ -1,0 +1,52 @@
+// Was trying to see if there was a max number of antisquares ever in some Sturmian word.
+// Seems to not be the case, but unsure of how I can prove the opposite (i.e., for every length there's some sturmian word that has at least that many antisquares)
+first_antisquare(a, n) := @postprocess[
+    bco_positive(n) & @postprocess[
+    exists i.
+        antisquare(a, i, n) &
+        // Adding this constraint makes the automaton smaller, for whatever reason
+        @postprocess[forall j. if antisquare(a, j, n) then j >= i]
+]]
+
+first_antisquare2(a, n, m) := @postprocess[
+    first_antisquare(a, n) &
+    first_antisquare(a, m)
+]
+first_antisquare3(a, n, m, p) := @postprocess[
+    first_antisquare2(a, n, m) & first_antisquare(a, p)
+]
+
+bco_distinct2(a, x, y) := @postprocess[
+    bco_valid2(a, x, y) & x < y
+]
+
+blah(a, x, z) := @postprocess[
+    exists y.
+        @postprocess[@simplify[
+            bco_distinct2(a, x, y) &
+            bco_distinct2(a, y, z)
+        ]] &
+        first_antisquare3(a, x, y, z)
+]
+
+blah2(a, x, z) := @postprocess[
+    exists y.
+        blah(a, x, y) &
+        blah(a, y, z)
+]
+
+Define hasAtLeastNAntisquares curNum maxNum $PREV_CALL $PREV :=
+    if curNum > maxNum then do
+        print $PREV_CALL;
+        $PREV_CALL
+    else
+        let $CUR := freshVar in do
+            emit { Restrict $CUR is ostrowski(a). };
+
+            let $CUR_CALL := { exists $PREV. @postprocess[ $PREV_CALL ] & blah2(a, $PREV, $CUR) } in do
+                hasAtLeastNAntisquares (curNum + 1) maxNum $CUR_CALL $CUR .
+
+Example (ostrowskiFormat,
+    hasAtLeastNAntisquares 1 25
+        { exists n. blah2(a, n, m) }
+        "m").
