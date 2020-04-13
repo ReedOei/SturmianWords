@@ -83,4 +83,5 @@ Structure ostrowski(alpha) defining {
 }
 
 bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
+ostrowski_even(a, n) := exists m. bco_adder(a,m,m,n)
 

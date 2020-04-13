@@ -14,6 +14,8 @@
 #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
 #load("automata/palindrome_prefix.aut", "hoa", palindrome_prefix(a, n))
 #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
+// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, k, j))
+// #load("automata/not_same_factor.aut", "hoa", not_same_factor(a, i, n, j))
 
 // #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
@@ -180,6 +182,32 @@ max_antisquare(a, n) := has_antisquare(a, n) & forall m. if has_antisquare(a, m)
 max_antisquare_len(a, n) := has_antisquare_len(a, n) & forall m. if has_antisquare_len(a, m) then m <= n
 max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipalindrome(a, m) then m <= n
 
+not_all_zero(a, i, n) := @postprocess[
+    exists j. j < n & $C[i + j] = 1
+]
+
+not_all_one(a, i, n) := @postprocess[
+    exists j. j < n & $C[i + j] = 0
+]
+
+not_all_same(a, i, n) := @postprocess[
+    not_all_one(a, i, n) | not_all_zero(a, i, n)
+]
+
+#load("automata/has_multipalindromes.aut", "hoa", has_multipalindromes(a, n))
+
+Theorem ("If n is even there is only 1 palindrome factor of length n", { @no_simplify[
+    forall a,n.
+        @postprocess[ostrowski_even(a, n)] <=> !has_multipalindromes(a,n)
+]}).
+
+// square2(a, i, n) := @no_simplify[factor_lt(a, i, i + n, i + n)]
+// Theorem ("Sanity check that factor_lt let's us redefine something equivalent to square.", { @no_simplify[
+//     forall a, i, n.
+//         if i > 0 & n > 0 then
+//             square2(a, i, n) <=> pow_2(a, i, n)
+// ]}).
+
 // Theorem ("max_antisquare is a function.", {
 //     (forall a. exists n. max_antisquare(a, n))
 //     &
@@ -215,16 +243,18 @@ max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipali
 //         max_antisquare_len(a) = 2*max_antisquare(a)
 // }).
 
-// Theorem ("Maximum length of antisquares is 6 digits long.", {
-//     forall a, n. if max_antisquare_len(a, n) then is_6_digits(n)
+// Theorem ("Each of max_antisquare, max_antisquare_len, and max_antipalindrome is nonzero.", {
+//     forall a.
+//         max_antisquare(a) >= 1 &
+//         max_antisquare_len(a) >= 2 &
+//         max_antipalindrome(a) >= 2
 // }).
 
-// Theorem ("Maximum order of antisquares is 4 digits long.", {
-//     forall a, n. if max_antisquare(a, n) then is_4_digits(n)
-// }).
-
-// Theorem ("Maximum length of antipalindromes is 4 digits long.", {
-//     forall a, n. if max_antipalindrome(a, n) then is_4_digits(n)
+// Theorem ("Maximum order of antisquares and maximum length of palindromes is 4 digits long, and maximum length of antisquares is 6 digits long.", {
+//     forall a.
+//         is_4_digits(max_antisquare(a)) &
+//         is_4_digits(max_antipalindrome(a)) &
+//         is_6_digits(max_antisquare_len(a))
 // }).
 
 // Theorem ("The maximum length of palindromes in a Sturmian word is bounded by the maximum order of its antisquares and the maximum length of its antisquare.", {
@@ -238,4 +268,7 @@ max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipali
 //     &
 //     (exists a. max_antisquare_len(a) = max_antipalindrome(a))
 // }).
+
+// OstEx  { bco_standard(a) & max_antisquare(a, n) & max_antipalindrome(a, n) } .
+// OstEx  { bco_standard(a) & max_antisquare_len(a, n) & max_antipalindrome(a, n) } .
 

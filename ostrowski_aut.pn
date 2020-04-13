@@ -64,7 +64,7 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #save_aut("automata/inner_reverse_complement.aut", inner_reverse_complement)
 // #load("automata/inner_reverse_complement.aut", "hoa", inner_reverse_complement(a, i, j, l))
 
-// True when C_a[i..j] = C_a[k..l]^R
+// True when C_a[i..j] = C_a[k + 1..l + 1]^R
 // where l - k = j - i
 // reverse_factor(a, i, j, l) :=
 //     @postprocess[
@@ -92,21 +92,45 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #save_aut("automata/not_reverse_factor.aut", not_reverse_factor)
 // #load("automata/not_reverse_factor.aut", "hoa", not_reverse_factor(a, i, j, l))
 
-// #load("factor_inner.aut", "hoa", factor_inner(a, i, k, j))
-factor3(a, i, k, j) :=
-    bco_valid3(a,i,k,j) & // !@no_simplify[factor_inner(a, i, k, j)]
-    bco_lt(i,j) &
-    exists ji. @postprocess[
-        @no_simplify[bco_adder_valid(a,ji,i,j)] &
-            forall t. @postprocess[
-                if @postprocess[bco_valid2(a, k, t) & bco_leq(t, i) & bco_lt(t, k)] then
-                    forall jit. @postprocess[
-                        if @no_simplify[bco_adder_valid(a, ji, t, jit)] then
-                            $C[t] = $C[jit]
-                    ]
-            ]
-        ]
-#save_aut("automata/factor5.aut", factor3)
+// not_same_factor(a, i, n, j) := @no_simplify[
+//     exists t. @postprocess[
+//         bco_lt(t, n) &
+//         exists it. @postprocess[
+//             @no_simplify[bco_adder_valid(a, i, t, it)] &
+//             exists jt. @postprocess[
+//                 @no_simplify[bco_adder_valid(a, j, t, jt)] &
+//                 $C[it] != $C[jt]
+//             ]
+//         ]
+//     ]
+// ]
+// #save_aut("automata/not_same_factor.aut", not_same_factor)
+// #load("automata/not_same_factor.aut", "hoa", not_same_factor(a, i, n, j))
+
+// factor_lt(a, i, k, j) := @no_simplify[
+//     @postprocess[bco_lt(i, k)] &
+//     exists ji.
+//         @no_simplify[bco_adder(a,ji,i,j)] &
+//         @postprocess[bco_valid3(a,i,j,k)] &
+//         @simplify[
+//             forall t. @postprocess[
+//                 if @postprocess[bco_valid(a, t) & bco_leq(i, t) & bco_lt(t, k)] then
+//                     forall jit. @postprocess[
+//                         if @no_simplify[bco_adder_valid(a, ji, t, jit)] then
+//                             $C[t] = $C[jit]
+//                     ]
+//             ]
+//         ]
+// ]
+// #save_aut("automata/factor_lt.aut", factor_lt)
+// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, k, j))
+
+// factor_lt_len(a, i, n, j) := @no_simplify[factor_lt(a, i, i + n, j)]
+// #save_aut("automata/factor_lt_len.aut", factor_lt_len)
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+
+// factor_lt_test(a, i, k, j) := @no_simplify[factor_lt_small(a, i, k, j) & bco_positive(i) & bco_positive(j)]
+// #save_aut("automata/factor_lt_test.aut", factor_lt_test)
 
 // factor(a, i, n, j) :=
 //     bco_valid3(a,i,n,j) &
@@ -120,7 +144,7 @@ factor3(a, i, k, j) :=
 //                     ]
 //                 ]
 //             ]
-// #save_aut("automata/factor2.aut", factor)
+// #save_aut("automata/factor.aut", factor)
 // #load("automata/factor.aut", "hoa", factor(a, i, n, j))
 
 // True when $C_a[i..j] = \overline{C_a[k..l]}$ where $l = k + j - i$.
@@ -155,16 +179,16 @@ factor3(a, i, k, j) :=
 // #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
 // Postprocessing twice seems to help
-// palindrome(a, i, n) := @postprocess[@postprocess[@no_simplify[exists ni. bco_adder_valid(a, i, n, ni) & @postprocess[reverse_factor(a, i, ni, ni)]]]]
+// palindrome(a, i, n) := @postprocess[
+//     bco_valid2(a, i, n) &
+//     exists j, k. bco_succ(a, j, k) & k = i + n &
+//     @no_simplify[forall t, ji, jit. @simplify[@postprocess[
+//         if @postprocess[bco_leq(i, t) & bco_leq(t, j) & @postprocess[@no_simplify[bco_adder_valid(a, j, i, ji) & bco_adder(a, jit, t, ji)]]] then
+//             $C[t] = $C[jit]
+//     ]]
+// ]]
 // #save_aut("automata/palindrome.aut", palindrome)
 // #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
-
-// Too big need to wait for the factor automaton, probably.
-// palindrome_eq(a, i, j, n) :=
-//     forall t, it, jt.
-//         if @postprocess[@postprocess[palindrome(a, i, n) & palindrome(a, j, n)] & bco_lt(t, n) & @postprocess[@no_simplify[bco_adder_valid(a, i, t, it) & bco_adder_valid(a, j, t, jt)]]] then
-//             $C[it] = $C[jt]
-// #save_aut("automata/palindrome_eq.aut", palindrome_eq)
 
 // antipalindrome(a, i, n) := @postprocess[
 //     bco_valid2(a, i, n) &
@@ -195,4 +219,8 @@ factor3(a, i, k, j) :=
 //     period(a, p, i, j) & forall p2. if @postprocess[bco_valid(a, p2) & bco_positive(p2) & bco_lt(p2, p)] then !period(a, p2, i, j)
 // ]
 // #save_aut("automata/least_period.aut", least_period)
+
+// multipalindromes(a, i, j, n) := @no_simplify[ bco_positive(i) & bco_positive(j) & palindrome(a, i, n) & palindrome(a, j, n) & not_same_factor(a, i, n, j) ]
+has_multipalindromes(a, n) := @no_simplify[exists s, t. multipalindromes(a,s,t,n) ]
+#save_aut("automata/has_multipalindromes.aut", has_multipalindromes)
 
