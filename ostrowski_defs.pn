@@ -1,5 +1,7 @@
-#load("ostrowski-automata/bco_valid.txt", "walnut", bco_lsd_valid(a, x))
-#load("ostrowski-automata/bco_leq.txt", "walnut", bco_leq(x, y))
+// #load("ostrowski-automata/bco_valid.txt", "walnut", bco_lsd_valid(a, x))
+#load("ostrowski-automata/bco_lsd_valid.aut", "hoa", bco_lsd_valid(a, x))
+// #load("ostrowski-automata/bco_leq.txt", "walnut", bco_leq(x, y))
+#load("ostrowski-automata/bco_leq.aut", "hoa", bco_leq(x, y))
 
 #load("ostrowski-automata/bco_finite_rep.txt", "walnut", bco_finite_rep(n))
 #load("ostrowski-automata/bco_standard.txt", "walnut", bco_standard(n))

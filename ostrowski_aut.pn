@@ -1,6 +1,6 @@
 #import("ostrowski_defs.pn")
 
-#load("ostrowski-automata/sturmian_word.txt", "pecan", $C(n))
+#load("ostrowski-automata/sturmian_word.aut", "hoa", $C(n))
 
 // Restrict i, p, n are ostrowski(a).
 // eventually_periodic(a, p) := @postprocess[p > 0 & exists n. forall i. i > n => $C[i] = $C[i + p]]
@@ -92,19 +92,21 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #save_aut("automata/not_reverse_factor.aut", not_reverse_factor)
 // #load("automata/not_reverse_factor.aut", "hoa", not_reverse_factor(a, i, j, l))
 
+// #load("factor_inner.aut", "hoa", factor_inner(a, i, k, j))
 factor3(a, i, k, j) :=
-    bco_valid3(a,i,k,j) &
-    forall ji. @postprocess[
-        if @postprocess[@no_simplify[bco_adder_valid(a,ji,i,j)]] then
+    bco_valid3(a,i,k,j) & // !@no_simplify[factor_inner(a, i, k, j)]
+    bco_lt(i,j) &
+    exists ji. @postprocess[
+        @no_simplify[bco_adder_valid(a,ji,i,j)] &
             forall t. @postprocess[
-                if @postprocess[bco_valid(a, t) & bco_leq(t, i) & bco_lt(t, k)] then
+                if @postprocess[bco_valid2(a, k, t) & bco_leq(t, i) & bco_lt(t, k)] then
                     forall jit. @postprocess[
-                        if @postprocess[@no_simplify[bco_adder_valid(a, ji, t, jit)]] then
+                        if @no_simplify[bco_adder_valid(a, ji, t, jit)] then
                             $C[t] = $C[jit]
                     ]
             ]
         ]
-#save_aut("automata/factor3.aut", factor3)
+#save_aut("automata/factor5.aut", factor3)
 
 // factor(a, i, n, j) :=
 //     bco_valid3(a,i,n,j) &

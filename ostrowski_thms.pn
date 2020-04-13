@@ -23,6 +23,8 @@
 Restrict a is bco_standard.
 Restrict i, j, k, l, p, n, m are ostrowski(a).
 
+Alias "OstEx" ==> Example (\t => (ostrowskiFormat, t)) .
+
 // Theorem ("Sturmian words are not eventually periodic", {
 //     forall a, p. !eventually_periodic(a, p)
 // }) .
@@ -169,75 +171,71 @@ Execute genDigitLimit 5.
 Execute genDigitLimit 6.
 
 antisquare_len(a, i, n) := exists m. 2*m = n & antisquare(a, i, m)
-antisquare_len_bound(a, n) := forall m. if exists i. antisquare_len(a, i, m) then m <= n
-least_antisquare_len_bound(a, n) :=
-    antisquare_len_bound(a, n) & forall m. if antisquare_len_bound(a, m) then n <= m
-antisquare_bound(a, n) := forall m. if exists i. antisquare(a, i, m) then m <= n
-least_antisquare_bound(a, n) :=
-    antisquare_bound(a, n) & forall m. if antisquare_bound(a, m) then n <= m
 
-antipalindrome_bound(a, n) := forall m. if exists i. antipalindrome(a, i, m) then m <= n
-least_antipalindrome_bound(a, n) :=
-    antipalindrome_bound(a, n) & forall m. if antipalindrome_bound(a, m) then n <= m
+has_antisquare(a, n) := exists i. antisquare(a, i, n)
+has_antisquare_len(a, n) := exists i. antisquare_len(a, i, n)
+has_antipalindrome(a, n) := exists i. antipalindrome(a, i, n)
 
-Theorem ("least_antisquare_bound is a function.", {
-    (forall a. exists n. least_antisquare_bound(a, n))
-    &
-    (
-        forall a, n, m.
-            if least_antisquare_bound(a, n) & least_antisquare_bound(a, m) then
-                n = m
-    )
-}).
+max_antisquare(a, n) := has_antisquare(a, n) & forall m. if has_antisquare(a, m) then m <= n
+max_antisquare_len(a, n) := has_antisquare_len(a, n) & forall m. if has_antisquare_len(a, m) then m <= n
+max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipalindrome(a, m) then m <= n
 
-Theorem ("least_antisquare_len_bound is a function.", {
-    (forall a. exists n. least_antisquare_len_bound(a, n))
-    &
-    (
-        forall a, n, m.
-            if least_antisquare_len_bound(a, n) & least_antisquare_len_bound(a, m) then
-                n = m
-    )
-}).
+// Theorem ("max_antisquare is a function.", {
+//     (forall a. exists n. max_antisquare(a, n))
+//     &
+//     (
+//         forall a, n, m.
+//             if max_antisquare(a, n) & max_antisquare(a, m) then
+//                 n = m
+//     )
+// }).
 
-Theorem ("least_antipalindrome_bound is a function.", {
-    (forall a. exists n. least_antipalindrome_bound(a, n))
-    &
-    (
-        forall a, n, m.
-            if least_antipalindrome_bound(a, n) & least_antipalindrome_bound(a, m) then
-                n = m
-    )
-}).
+// Theorem ("max_antisquare_len is a function.", {
+//     (forall a. exists n. max_antisquare_len(a, n))
+//     &
+//     (
+//         forall a, n, m.
+//             if max_antisquare_len(a, n) & max_antisquare_len(a, m) then
+//                 n = m
+//     )
+// }).
 
-// Theorem ("The least_antisquare_bound is half the least_antisquare_len_bound.", {
+// Theorem ("max_antipalindrome is a function.", {
+//     (forall a. exists n. max_antipalindrome(a, n))
+//     &
+//     (
+//         forall a, n, m.
+//             if max_antipalindrome(a, n) & max_antipalindrome(a, m) then
+//                 n = m
+//     )
+// }).
+
+// Theorem ("The max_antisquare is half the max_antisquare_len.", {
 //     forall a.
-//         least_antisquare_len_bound(a) = 2*least_antisquare_bound(a)
+//         max_antisquare_len(a) = 2*max_antisquare(a)
 // }).
 
 // Theorem ("Maximum length of antisquares is 6 digits long.", {
-//     forall a, n. if least_antisquare_len_bound(a, n) then is_6_digits(n)
+//     forall a, n. if max_antisquare_len(a, n) then is_6_digits(n)
 // }).
 
 // Theorem ("Maximum order of antisquares is 4 digits long.", {
-//     forall a, n. if least_antisquare_bound(a, n) then is_4_digits(n)
+//     forall a, n. if max_antisquare(a, n) then is_4_digits(n)
 // }).
 
 // Theorem ("Maximum length of antipalindromes is 4 digits long.", {
-//     forall a, n. if least_antipalindrome_bound(a, n) then is_4_digits(n)
+//     forall a, n. if max_antipalindrome(a, n) then is_4_digits(n)
 // }).
 
 // Theorem ("The maximum length of palindromes in a Sturmian word is bounded by the maximum order of its antisquares and the maximum length of its antisquare.", {
 //     (
 //         forall a.
-//             least_antisquare_bound(a) <= least_antipalindrome_bound(a) &
-//             least_antipalindrome_bound(a) <= least_antisquare_len_bound(a)
+//             max_antisquare(a) <= max_antipalindrome(a) &
+//             max_antipalindrome(a) <= max_antisquare_len(a)
 //     )
 //     &
-//     (exists a. least_antisquare_bound(a) = least_antipalindrome_bound(a))
+//     (exists a. max_antisquare(a) = max_antipalindrome(a))
 //     &
-//     (exists a. least_antisquare_len_bound(a) = least_antipalindrome_bound(a))
+//     (exists a. max_antisquare_len(a) = max_antipalindrome(a))
 // }).
-
-// Example (ostrowskiFormat, { bco_standard(a) & bco_valid(a, n) & least_antipalindrome_bound(a, n) & least_antisquare_bound(a, n) }) .
 
