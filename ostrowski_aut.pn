@@ -108,19 +108,18 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #load("automata/not_same_factor.aut", "hoa", not_same_factor(a, i, n, j))
 
 // factor_lt(a, i, k, j) := @no_simplify[
-//     @postprocess[bco_lt(i, k)] &
-//     exists ji.
-//         @no_simplify[bco_adder(a,ji,i,j)] &
-//         @postprocess[bco_valid3(a,i,j,k)] &
-//         @simplify[
-//             forall t. @postprocess[
-//                 if @postprocess[bco_valid(a, t) & bco_leq(i, t) & bco_lt(t, k)] then
-//                     forall jit. @postprocess[
-//                         if @no_simplify[bco_adder_valid(a, ji, t, jit)] then
-//                             $C[t] = $C[jit]
-//                     ]
-//             ]
-//         ]
+    // @postprocess[bco_lt(i, k) & bco_valid3(a,i,j,k)] &
+    // exists ji.
+    //     @no_simplify[bco_adder(a,ji,i,j)] &
+    //     @simplify[
+    //         forall t. @postprocess[
+    //             if bco_leq(i, t) & bco_lt(t, k) then
+    //                 forall jit. @postprocess[
+    //                     if @no_simplify[bco_adder_valid(a, ji, t, jit)] then
+    //                         $C[t] = $C[jit]
+    //                 ]
+    //         ]
+    //     ]
 // ]
 // #save_aut("automata/factor_lt.aut", factor_lt)
 // #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, k, j))

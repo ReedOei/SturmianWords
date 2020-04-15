@@ -12,7 +12,6 @@
 #load("automata/pow_8.aut", "hoa", pow_8(a, i, n))
 #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
 #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
-// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, k, j))
 // #load("automata/not_same_factor.aut", "hoa", not_same_factor(a, i, n, j))
 
 // #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
@@ -81,23 +80,51 @@ Execute genHasNthPow 4.
 //     ]
 // }) .
 
+#load("automata/palindrome.aut", "hoa", palindrome(a, i, j))
 #load("automata/palindrome_len.aut", "hoa", palindrome_len(a, i, n))
-Theorem ("All suffixes of Sturmian words start with arbitarily long palindromes", {
-    forall a, j.
-    if j > 0 then
-        forall n.
-        exists m. m > n & palindrome_len(a, j, m)
-}) .
 
-Theorem ("Sturmian words contain palindromes of every length.", {
-    forall a, n. if n > 0 then exists i. palindrome_len(a, i, n)
-}).
+#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, k, j))
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
 
-#load("automata/has_multipalindromes.aut", "hoa", has_multipalindromes(a, n))
-Theorem ("If n is even there is only 1 palindrome factor of length n", { @no_simplify[
-    forall a,n.
-        if @postprocess[ostrowski_even(a, n)] then !has_multipalindromes(a,n)
-]}).
+palin_eq(a, i, j, k, l) :=
+    @no_simplify[
+    (
+        (
+            @merge_states[exists ji. @merge_states[
+                @postprocess[
+                    bco_adder_valid(a, ji, i, j) &
+                    palindrome_len(a, k, ji)
+                ] &
+                palindrome_len(a, l, ji)
+            ]]
+        ) &
+        (
+            palindrome(a, i, j) &
+            @merge_states[@no_simplify[factor_lt(a, i, j, k)]]
+        )
+    ) &
+    @merge_states[@no_simplify[factor_lt(a, i, j, l)]]
+]
+#save_aut("palin_eq.aut", palin_eq)
+
+#load("palin_eq.aut", "hoa", palin_eq(a, i, j, k))
+
+// Theorem ("All suffixes of Sturmian words start with arbitarily long palindromes", {
+//     forall a, j.
+//     if j > 0 then
+//         forall n.
+//         exists m. m > n & palindrome_len(a, j, m)
+// }) .
+
+// Theorem ("Sturmian words contain palindromes of every length.", {
+//     forall a, n. if n > 0 then exists i. palindrome_len(a, i, n)
+// }).
+
+// #load("automata/has_multipalindromes.aut", "hoa", has_multipalindromes(a, n))
+// Theorem ("If n is even there is only 1 palindrome factor of length n", { @no_simplify[
+//     forall a,n.
+//         if @postprocess[ostrowski_even(a, n)] then !has_multipalindromes(a,n)
+// ]}).
 
 // Theorem ("All Sturmian words contain finitely many antipalindromes.", {
 //     @no_simplify[
@@ -199,7 +226,6 @@ not_all_same(a, i, n) := @postprocess[
     not_all_one(a, i, n) | not_all_zero(a, i, n)
 ]
 
-// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
 // first_palindrome(a, i, n) :=
 //     palindrome(a, i, n) & !(exists j. palindrome(a, j, n) & factor_lt_len(a, j, n, i))
 // #save_aut("first_palindrome.aut", first_palindrome)
