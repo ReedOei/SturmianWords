@@ -92,7 +92,25 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #save_aut("automata/not_reverse_factor.aut", not_reverse_factor)
 // #load("automata/not_reverse_factor.aut", "hoa", not_reverse_factor(a, i, j, l))
 
-// not_same_factor(a, i, n, j) := @no_simplify[
+// not_same_factor_lt(a, i, j, k) := @postprocess[
+//     @postprocess[
+//         bco_valid3(a,i,j,k) &
+//         bco_lt(i,j)
+//     ] &
+//     @no_simplify[exists ki. @simplify[
+//         bco_adder(a, ki, i, k) &
+//         exists t. @postprocess[
+//             @postprocess[bco_valid(a, t) & bco_leq(i, t) & bco_lt(t, j)] &
+//             exists jit. @postprocess[
+//                 bco_adder(a, ji, t, jit) & $C[t] != $C[jit]
+//             ]
+//         ]
+//     ]]
+// ]
+// #save_aut("automata/not_same_factor_lt.aut", not_same_factor_lt)
+// #load("automata/not_same_factor_lt.aut", "hoa", not_same_factor_lt(a, i, j, k))
+
+// not_same_factor_len(a, i, n, j) := @no_simplify[
 //     exists t. @postprocess[
 //         bco_lt(t, n) &
 //         exists it. @postprocess[
@@ -104,29 +122,36 @@ Restrict i, j, k, l, n are ostrowski(a).
 //         ]
 //     ]
 // ]
-// #save_aut("automata/not_same_factor.aut", not_same_factor)
-// #load("automata/not_same_factor.aut", "hoa", not_same_factor(a, i, n, j))
+// #save_aut("automata/not_same_factor_len.aut", not_same_factor_len)
+// #load("automata/not_same_factor_len.aut", "hoa", not_same_factor_len(a, i, n, j))
 
-// factor_lt(a, i, k, j) := @no_simplify[
-    // @postprocess[bco_lt(i, k) & bco_valid3(a,i,j,k)] &
-    // exists ji.
-    //     @no_simplify[bco_adder(a,ji,i,j)] &
-    //     @simplify[
-    //         forall t. @postprocess[
-    //             if bco_leq(i, t) & bco_lt(t, k) then
-    //                 forall jit. @postprocess[
-    //                     if @no_simplify[bco_adder_valid(a, ji, t, jit)] then
-    //                         $C[t] = $C[jit]
-    //                 ]
-    //         ]
-    //     ]
-// ]
+// factor_lt(a, i, j, k) := @no_simplify[@postprocess[
+//     @postprocess[bco_lt(i, j) & bco_valid3(a,i,j,k)] &
+//     exists ki.
+//         @no_simplify[bco_adder(a,ki,i,k)] &
+//         @simplify[
+//             forall t. @postprocess[
+//                 if bco_leq(i, t) & bco_lt(t, j) then
+//                     forall kit. @postprocess[
+//                         if @no_simplify[bco_adder_valid(a, ki, t, kit)] then
+//                             $C[t] = $C[kit]
+//                     ]
+//             ]
+//         ]
+// ]]
 // #save_aut("automata/factor_lt.aut", factor_lt)
-// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, k, j))
+#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
 
-// factor_lt_len(a, i, n, j) := @no_simplify[factor_lt(a, i, i + n, j)]
-// #save_aut("automata/factor_lt_len.aut", factor_lt_len)
+factor_lt_len(a, i, n, j) := @no_simplify[@postprocess[
+    factor_lt(a, i, i + n, j)
+]]
+#save_aut("automata/factor_lt_len.aut", factor_lt_len)
 // #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+
+factor(a, i, n, j) := @no_simplify[@postprocess[
+    factor_lt_len(a, i, n, j) | factor_lt_len(a, j, n, i)
+]]
+#save_aut("automata/factor.aut", factor)
 
 // factor_lt_test(a, i, k, j) := @no_simplify[factor_lt_small(a, i, k, j) & bco_positive(i) & bco_positive(j)]
 // #save_aut("automata/factor_lt_test.aut", factor_lt_test)

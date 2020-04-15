@@ -12,7 +12,6 @@
 #load("automata/pow_8.aut", "hoa", pow_8(a, i, n))
 #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
 #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
-// #load("automata/not_same_factor.aut", "hoa", not_same_factor(a, i, n, j))
 
 // #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
@@ -83,31 +82,37 @@ Execute genHasNthPow 4.
 #load("automata/palindrome.aut", "hoa", palindrome(a, i, j))
 #load("automata/palindrome_len.aut", "hoa", palindrome_len(a, i, n))
 
-#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, k, j))
-// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+#load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+#load("automata/not_same_factor_len.aut", "hoa", not_same_factor_len(a, i, n, j))
 
-palin_eq(a, i, j, k, l) :=
-    @no_simplify[
-    (
-        (
-            @merge_states[exists ji. @merge_states[
-                @postprocess[
-                    bco_adder_valid(a, ji, i, j) &
-                    palindrome_len(a, k, ji)
-                ] &
-                palindrome_len(a, l, ji)
-            ]]
-        ) &
-        (
-            palindrome(a, i, j) &
-            @merge_states[@no_simplify[factor_lt(a, i, j, k)]]
-        )
-    ) &
-    @merge_states[@no_simplify[factor_lt(a, i, j, l)]]
-]
-#save_aut("palin_eq.aut", palin_eq)
+// first_palindrome(a, i, j) := @no_simplify[
+//     palindrome(a, i, j) &
+//         !(
+//             exists t, ji.
+//                 not_same_factor_len(a, i, ji, t) &
+//                 @postprocess[bco_adder(a, ji, i, j) & palindrome_len(a, t, ji)]
+//         )
+// ]
+// #save_aut("first_palindrome.aut", first_palindrome)
 
-#load("palin_eq.aut", "hoa", palin_eq(a, i, j, k))
+// palin_eq(a, i, j, k, l) :=
+//     @no_simplify[exists ji.
+//         palindrome(a, i, j) &
+//         @merge_states[
+//             @merge_states[
+//                 @postprocess[
+//                     bco_adder_valid(a, ji, i, j) &
+//                     palindrome_len(a, k, ji)
+//                 ] &
+//                 palindrome_len(a, l, ji)
+//             ] & not_same_factor(a, i, ji, k)
+//         ]
+//         & not_same_factor(a, i, ji, l)
+//     ]
+// #save_aut("palin_eq.aut", palin_eq)
+
+// #load("palin_eq.aut", "hoa", palin_eq(a, i, j, k))
 
 // Theorem ("All suffixes of Sturmian words start with arbitarily long palindromes", {
 //     forall a, j.
