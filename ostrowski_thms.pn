@@ -79,40 +79,25 @@ Execute genHasNthPow 4.
 //     ]
 // }) .
 
-#load("automata/palindrome.aut", "hoa", palindrome(a, i, j))
-#load("automata/palindrome_len.aut", "hoa", palindrome_len(a, i, n))
+#load("automata/first_palindrome_len.aut", "hoa", first_palindrome_len(a, i, n))
 
-#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
-#load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
-#load("automata/not_same_factor_len.aut", "hoa", not_same_factor_len(a, i, n, j))
+// Theorem ("There are no natural numbers for which there are three distinct palindromes of a given length.", { @no_simplify[
+//     !(exists a, n.
+//         !ostrowski_even(a, n) &
+//         exists i,j,k.
+//             first_palindrome_len(a,i,n) & first_palindrome_len(a, j, n) & first_palindrome_len(a, k, n)
+//             & i < j & j < k
+//     )
+// ] }).
 
-// first_palindrome(a, i, j) := @no_simplify[
-//     palindrome(a, i, j) &
-//         !(
-//             exists t, ji.
-//                 not_same_factor_len(a, i, ji, t) &
-//                 @postprocess[bco_adder(a, ji, i, j) & palindrome_len(a, t, ji)]
-//         )
-// ]
-// #save_aut("first_palindrome.aut", first_palindrome)
-
-// palin_eq(a, i, j, k, l) :=
-//     @no_simplify[exists ji.
-//         palindrome(a, i, j) &
-//         @merge_states[
-//             @merge_states[
-//                 @postprocess[
-//                     bco_adder_valid(a, ji, i, j) &
-//                     palindrome_len(a, k, ji)
-//                 ] &
-//                 palindrome_len(a, l, ji)
-//             ] & not_same_factor(a, i, ji, k)
-//         ]
-//         & not_same_factor(a, i, ji, l)
-//     ]
-// #save_aut("palin_eq.aut", palin_eq)
-
-// #load("palin_eq.aut", "hoa", palin_eq(a, i, j, k))
+Theorem ("Testing", {
+    forall a, n.
+    exists s, t.
+        bco_valid2(a,s,t) &
+        forall k.
+            if !ostrowski_even(a, n) & first_palindrome_len(a, k, n) then
+                (bco_eq(k,s) | bco_eq(k,t))
+}).
 
 // Theorem ("All suffixes of Sturmian words start with arbitarily long palindromes", {
 //     forall a, j.
@@ -218,22 +203,6 @@ has_antipalindrome(a, n) := exists i. antipalindrome(a, i, n)
 max_antisquare(a, n) := has_antisquare(a, n) & forall m. if has_antisquare(a, m) then m <= n
 max_antisquare_len(a, n) := has_antisquare_len(a, n) & forall m. if has_antisquare_len(a, m) then m <= n
 max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipalindrome(a, m) then m <= n
-
-not_all_zero(a, i, n) := @postprocess[
-    exists j. j < n & $C[i + j] = 1
-]
-
-not_all_one(a, i, n) := @postprocess[
-    exists j. j < n & $C[i + j] = 0
-]
-
-not_all_same(a, i, n) := @postprocess[
-    not_all_one(a, i, n) | not_all_zero(a, i, n)
-]
-
-// first_palindrome(a, i, n) :=
-//     palindrome(a, i, n) & !(exists j. palindrome(a, j, n) & factor_lt_len(a, j, n, i))
-// #save_aut("first_palindrome.aut", first_palindrome)
 
 // square2(a, i, n) := @no_simplify[factor_lt(a, i, i + n, i + n)]
 // Theorem ("Sanity check that factor_lt let's us redefine something equivalent to square.", { @no_simplify[
