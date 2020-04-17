@@ -23,6 +23,13 @@ Restrict i, j, k, l, p, n, m are ostrowski(a).
 
 Alias "OstEx" ==> Example (\t => (ostrowskiFormat, t)) .
 
+// square2(a, i, n) := @no_simplify[factor_lt(a, i, i + n, i + n)]
+// Theorem ("Sanity check that factor_lt let's us redefine something equivalent to square.", { @no_simplify[
+//     forall a, i, n.
+//         if i > 0 & n > 0 then
+//             square2(a, i, n) <=> pow_2(a, i, n)
+// ]}).
+
 // Theorem ("Sturmian words are not eventually periodic", {
 //     forall a, p. !eventually_periodic(a, p)
 // }) .
@@ -79,23 +86,24 @@ Execute genHasNthPow 4.
 //     ]
 // }) .
 
-#load("automata/first_palindrome_len.aut", "hoa", first_palindrome_len(a, i, n))
+#load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
 
 // Theorem ("There are no natural numbers for which there are three distinct palindromes of a given length.", { @no_simplify[
 //     !(exists a, n.
 //         !ostrowski_even(a, n) &
 //         exists i,j,k.
-//             first_palindrome_len(a,i,n) & first_palindrome_len(a, j, n) & first_palindrome_len(a, k, n)
+//             first_palindrome(a,i,n) & first_palindrome(a, j, n) & first_palindrome(a, k, n)
 //             & i < j & j < k
 //     )
 // ] }).
 
-Theorem ("Testing", {
+Theorem ("If n is odd, there are exactly two palindromes", {
     forall a, n.
     exists s, t.
         bco_valid2(a,s,t) &
+        !bco_eq(s, t) &
         forall k.
-            if !ostrowski_even(a, n) & first_palindrome_len(a, k, n) then
+            if !ostrowski_even(a, n) & first_palindrome(a, k, n) then
                 (bco_eq(k,s) | bco_eq(k,t))
 }).
 
@@ -103,11 +111,11 @@ Theorem ("Testing", {
 //     forall a, j.
 //     if j > 0 then
 //         forall n.
-//         exists m. m > n & palindrome_len(a, j, m)
+//         exists m. m > n & palindrome(a, j, m)
 // }) .
 
 // Theorem ("Sturmian words contain palindromes of every length.", {
-//     forall a, n. if n > 0 then exists i. palindrome_len(a, i, n)
+//     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
 // }).
 
 // #load("automata/has_multipalindromes.aut", "hoa", has_multipalindromes(a, n))
@@ -128,16 +136,16 @@ Theorem ("Testing", {
 // I want to say that a is the smallest slope (i.e., with the lowest cf coefficients) such that it has a palindrome of length n (if it exists at all)
 // Actually, that's probably not even well-defined.
 // #load("ostrowski-automata/cf_shorter_len.txt", "pecan", cf_shorter_len(a, b))
-// has_antipalindrome_len(c, len) := exists idx is ostrowski(c). bco_positive(idx) & antipalindrome(c, idx, len)
+// has_antipalindrome(c, len) := exists idx is ostrowski(c). bco_positive(idx) & antipalindrome(c, idx, len)
 // bco_comparable(a, b) := bco_leq(a, b) | bco_leq(b, a)
 // Define listSmallestCfWithAntipalindrome curNum :=
 //     let $PRED := "smallest_antipalindrome_cf_" ^ (toString curNum) in do
 //         print ("Trying: " ^ (toString curNum));
 //         emit {
 //             $PRED(a) :=
-//                 (exists j. j = curNum & has_antipalindrome_len(a, j)) &
+//                 (exists j. j = curNum & has_antipalindrome(a, j)) &
 //                 (forall b is bco_standard.
-//                     if exists len is ostrowski(b). len = curNum & has_antipalindrome_len(b, len) then
+//                     if exists len is ostrowski(b). len = curNum & has_antipalindrome(b, len) then
 //                         (bco_leq(a, b) | cf_shorter_len(a, b))
 //                 )
 //         };
@@ -145,10 +153,10 @@ Theorem ("Testing", {
 //         listSmallestCfWithAntipalindrome (curNum + 2). // Note that it is impossible to have an antipalindrome of odd length.
 // Execute listSmallestCfWithAntipalindrome 2 .
 
-Define listExamplesIdx $PRED curNum := do
-    print ("Trying (pred is " ^ $PRED ^ "): " ^ (toString curNum));
-    print (example ostrowskiFormat { bco_standard(a) & n = curNum & $PRED(a, i, n) });
-    listExamplesIdx $PRED (curNum + 2) .
+// Define listExamplesIdx $PRED curNum := do
+//     print ("Trying (pred is " ^ $PRED ^ "): " ^ (toString curNum));
+//     print (example ostrowskiFormat { bco_standard(a) & n = curNum & $PRED(a, i, n) });
+//     listExamplesIdx $PRED (curNum + 2) .
 // Execute listExamplesIdx antipalindrome 2 .
 
 // Define listAntisquares curNum $PREV_NUM :=
@@ -168,48 +176,41 @@ Define listExamplesIdx $PRED curNum := do
 // Execute listExamples antisquare_bound 2 .
 
 // Build an automaton recognizing sequences that start with at most `limit` non-zero entries
-Define genDigitLimit limit :=
-    let aut := mkAut ["num"] [3] in
-    let mkName := (\n => "digit_" ^ (toString n)) in
-    let autStates := withStates aut (
-                        [("start", true), (mkName (limit + 1), true)] @
-                        (map (\n => (mkName n, true)) [1..limit])
-                    ) in
-    let finalAut := withTransitions autStates (
-                        [("start", "digit_1", "2"),
-                         (mkName (limit + 1), mkName (limit + 1), "0"),
-                         (mkName (limit + 1), mkName (limit + 1), "2")] @
-                        (flatMap (\n => [(mkName n, mkName n, "0"),
-                                         (mkName n, mkName n, "1"),
-                                         (mkName n, mkName (n + 1), "2")]) [1..limit])
-                    ) in
-    let built := buildAut finalAut in
-    let $NAME := "is_" ^ (toString limit) ^ "_digits" in do
-        emit { $NAME(num) := built } .
+// Define genDigitLimit limit :=
+//     let aut := mkAut ["num"] [3] in
+//     let mkName := (\n => "digit_" ^ (toString n)) in
+//     let autStates := withStates aut (
+//                         [("start", true), (mkName (limit + 1), true)] @
+//                         (map (\n => (mkName n, true)) [1..limit])
+//                     ) in
+//     let finalAut := withTransitions autStates (
+//                         [("start", "digit_1", "2"),
+//                          (mkName (limit + 1), mkName (limit + 1), "0"),
+//                          (mkName (limit + 1), mkName (limit + 1), "2")] @
+//                         (flatMap (\n => [(mkName n, mkName n, "0"),
+//                                          (mkName n, mkName n, "1"),
+//                                          (mkName n, mkName (n + 1), "2")]) [1..limit])
+//                     ) in
+//     let built := buildAut finalAut in
+//     let $NAME := "is_" ^ (toString limit) ^ "_digits" in do
+//         emit { $NAME(num) := built } .
 
-Execute genDigitLimit 1.
-Execute genDigitLimit 2.
-Execute genDigitLimit 3.
-Execute genDigitLimit 4.
-Execute genDigitLimit 5.
-Execute genDigitLimit 6.
+// Execute genDigitLimit 1.
+// Execute genDigitLimit 2.
+// Execute genDigitLimit 3.
+// Execute genDigitLimit 4.
+// Execute genDigitLimit 5.
+// Execute genDigitLimit 6.
 
-antisquare_len(a, i, n) := exists m. 2*m = n & antisquare(a, i, m)
+// antisquare_len(a, i, n) := exists m. 2*m = n & antisquare(a, i, m)
 
-has_antisquare(a, n) := exists i. antisquare(a, i, n)
-has_antisquare_len(a, n) := exists i. antisquare_len(a, i, n)
-has_antipalindrome(a, n) := exists i. antipalindrome(a, i, n)
+// has_antisquare(a, n) := exists i. antisquare(a, i, n)
+// has_antisquare_len(a, n) := exists i. antisquare_len(a, i, n)
+// has_antipalindrome(a, n) := exists i. antipalindrome(a, i, n)
 
-max_antisquare(a, n) := has_antisquare(a, n) & forall m. if has_antisquare(a, m) then m <= n
-max_antisquare_len(a, n) := has_antisquare_len(a, n) & forall m. if has_antisquare_len(a, m) then m <= n
-max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipalindrome(a, m) then m <= n
-
-// square2(a, i, n) := @no_simplify[factor_lt(a, i, i + n, i + n)]
-// Theorem ("Sanity check that factor_lt let's us redefine something equivalent to square.", { @no_simplify[
-//     forall a, i, n.
-//         if i > 0 & n > 0 then
-//             square2(a, i, n) <=> pow_2(a, i, n)
-// ]}).
+// max_antisquare(a, n) := has_antisquare(a, n) & forall m. if has_antisquare(a, m) then m <= n
+// max_antisquare_len(a, n) := has_antisquare_len(a, n) & forall m. if has_antisquare_len(a, m) then m <= n
+// max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipalindrome(a, m) then m <= n
 
 // Theorem ("max_antisquare is a function.", {
 //     (forall a. exists n. max_antisquare(a, n))
