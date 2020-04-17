@@ -88,23 +88,31 @@ Execute genHasNthPow 4.
 
 #load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
 
-// Theorem ("There are no natural numbers for which there are three distinct palindromes of a given length.", { @no_simplify[
-//     !(exists a, n.
-//         !ostrowski_even(a, n) &
-//         exists i,j,k.
-//             first_palindrome(a,i,n) & first_palindrome(a, j, n) & first_palindrome(a, k, n)
-//             & i < j & j < k
-//     )
-// ] }).
+Theorem ("If n is even, there is exactly one palindrome of length n.", {@no_simplify[
+    forall a,n.
+        if ostrowski_even(a,n) & n > 0 then
+            (
+                @simplify[
+                exists s. @postprocess[
+                    bco_valid(a,s) &
+                    @no_simplify[forall k. @postprocess[
+                        if first_palindrome(a, k, n) then bco_eq(k,s)
+                    ]]
+                ]]
+            ) &
+            exists i. first_palindrome(a,i,n)
+]}).
 
-Theorem ("If n is odd, there are exactly two palindromes", {
+Theorem ("If n is odd, there are exactly two palindromes of length n.", {
     forall a, n.
-    exists s, t.
-        bco_valid2(a,s,t) &
-        !bco_eq(s, t) &
-        forall k.
+    (
+        exists s, t. bco_valid2(a,s,t) & !bco_eq(s, t) &
+        forall k. @postprocess[
             if !ostrowski_even(a, n) & first_palindrome(a, k, n) then
                 (bco_eq(k,s) | bco_eq(k,t))
+        ]
+    ) &
+    if !ostrowski_even(a,n) then exists i,j. first_palindrome(a,i,n) & first_palindrome(a,j,n)
 }).
 
 // Theorem ("All suffixes of Sturmian words start with arbitarily long palindromes", {
@@ -117,12 +125,6 @@ Theorem ("If n is odd, there are exactly two palindromes", {
 // Theorem ("Sturmian words contain palindromes of every length.", {
 //     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
 // }).
-
-// #load("automata/has_multipalindromes.aut", "hoa", has_multipalindromes(a, n))
-// Theorem ("If n is even there is only 1 palindrome factor of length n", { @no_simplify[
-//     forall a,n.
-//         if @postprocess[ostrowski_even(a, n)] then !has_multipalindromes(a,n)
-// ]}).
 
 // Theorem ("All Sturmian words contain finitely many antipalindromes.", {
 //     @no_simplify[

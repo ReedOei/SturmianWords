@@ -51,10 +51,6 @@ Restrict i, j, k, l, n are ostrowski(a).
 // Execute genNthPow 7.
 // Execute genNthPow 8.
 
-// palindrome_prefix(a, n) :=
-//     @postprocess[n > 0 & forall i. (0 < i & i <= n) => $C[i] = $C[(n - i) + 1]]
-// #save_aut("automata/palindrome_prefix.aut", palindrome_prefix)
-
 // inner_reverse_complement(a,i,j,l) := @no_simplify[
 //     forall t, li, lit.  @postprocess[
 //         if @postprocess[bco_valid3(a,t,li,lit) & bco_leq(i, t) & bco_lt(t, j) & bco_adder(a, l, i, li) & bco_adder(a, lit, t, li)] then
@@ -66,27 +62,27 @@ Restrict i, j, k, l, n are ostrowski(a).
 
 // True when C_a[i..j] = C_a[k..l]^R
 // where l - k = j - i
-reverse_factor(a, i, j, l) := @postprocess[
-    @postprocess[
-        bco_positive(i) &
-        bco_positive(l) &
-        bco_valid3(a, i, j, l) &
-        i < j
-    ] &
-    @no_simplify[exists li. @simplify[
-        bco_adder(a, l, i, li) &
-        forall t. @postprocess[
-            if @postprocess[bco_leq(i, t) & bco_lt(t, j)] then
-                forall lit. @postprocess[
-                    if bco_adder_valid(a, lit, t, li) then
-                        $C[t] = $C[lit]
-                ]
-            ]
-        ]
-    ]
-]
-#save_aut("automata/reverse_factor.aut", reverse_factor)
-// #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
+// reverse_factor(a, i, j, l) := @postprocess[
+//     @postprocess[
+//         bco_positive(i) &
+//         bco_positive(l) &
+//         bco_valid3(a, i, j, l) &
+//         i < j
+//     ] &
+//     @no_simplify[exists li. @simplify[
+//         bco_adder(a, l, i, li) &
+//         forall t. @postprocess[
+//             if @postprocess[bco_leq(i, t) & bco_lt(t, j)] then
+//                 forall lit. @postprocess[
+//                     if bco_adder_valid(a, lit, t, li) then
+//                         $C[t] = $C[lit]
+//                 ]
+//             ]
+//         ]
+//     ]
+// ]
+// #save_aut("automata/reverse_factor.aut", reverse_factor)
+#load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
 
 // not_reverse_factor(a, i, j, l) :=
 //     @postprocess[
@@ -209,8 +205,8 @@ reverse_factor(a, i, j, l) := @postprocess[
 // mirror_invariant_len(a,i,n) := @no_simplify[ exists t, ni. bco_adder(a, i, n, ni) & reverse_factor(a, i, ni, t) ]
 // #save_aut("automata/mirror_invariant_len.aut", mirror_invariant_len)
 
-// mirror_invariant(a,i,j) := @no_simplify[ exists t. reverse_factor(a, i, j, t) ]
-// #save_aut("automata/mirror_invariant.aut", mirror_invariant)
+mirror_invariant(a,i,j) := exists t. @no_simplify[reverse_factor(a, i, j, t)]
+#save_aut("automata/mirror_invariant.aut", mirror_invariant)
 // #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
 // palindrome_idx(a, i, j) := @postprocess[
