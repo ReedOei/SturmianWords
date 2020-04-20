@@ -75,13 +75,17 @@ bco_succ(a, x, y) := bco_valid2(a, x, y) & bco_leq(x, y) & (!bco_eq(x, y)) & for
 ostrowski_zero(alpha, z) := bco_valid(alpha, z) & bco_zero(z)
 x is ostrowski(alpha) := bco_valid(alpha, x)
 
+ostrowski_even(a, n) := exists m. bco_adder(a,m,m,n)
+ostrowski_odd(a, n) := !ostrowski_even(a,n)
+
 Structure ostrowski(alpha) defining {
     "adder": bco_adder(alpha, any, any, any),
     "less": bco_lt(any, any),
     "equal": bco_eq(any, any),
-    "zero": ostrowski_zero(alpha, any)
+    "zero": ostrowski_zero(alpha, any),
+    "even": ostrowski_even(alpha, any),
+    "odd": ostrowski_odd(alpha, any)
 }
 
 bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
-ostrowski_even(a, n) := exists m. bco_adder(a,m,m,n)
 

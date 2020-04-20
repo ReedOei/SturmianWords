@@ -82,22 +82,7 @@ Restrict i, j, k, l, n are ostrowski(a).
 //     ]
 // ]
 // #save_aut("automata/reverse_factor.aut", reverse_factor)
-#load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
-
-// not_reverse_factor(a, i, j, l) :=
-//     @postprocess[
-//         bco_valid3(a,i,j,l) &
-//         bco_positive(i) &
-//         bco_positive(l) &
-//         i < j
-//     ] &
-//     @no_simplify[
-//         exists t, li, lit. @postprocess[
-//             @postprocess[@postprocess[bco_valid3(a,t,li,lit) & bco_leq(i, t) & bco_lt(t, j)] & @postprocess[bco_adder(a, l, i, li) & bco_adder(a, lit, t, li)]] & $C[t] != $C[lit]
-//         ]
-//     ]
-// #save_aut("automata/not_reverse_factor.aut", not_reverse_factor)
-// #load("automata/not_reverse_factor.aut", "hoa", not_reverse_factor(a, i, j, l))
+// #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
 
 // not_same_factor_lt(a, i, j, k) := @postprocess[
 //     @postprocess[
@@ -201,9 +186,6 @@ Restrict i, j, k, l, n are ostrowski(a).
 // reverse_factor_len(a, i, n, l) :=
 //     @postprocess[@no_simplify[reverse_factor(a, i, i + n, l)]]
 // #save_aut("automata/reverse_factor_len.aut", reverse_factor_len)
-
-// mirror_invariant_len(a,i,n) := @no_simplify[ exists t, ni. bco_adder(a, i, n, ni) & reverse_factor(a, i, ni, t) ]
-// #save_aut("automata/mirror_invariant_len.aut", mirror_invariant_len)
 
 mirror_invariant(a,i,j) := exists t. @no_simplify[reverse_factor(a, i, j, t)]
 #save_aut("automata/mirror_invariant.aut", mirror_invariant)

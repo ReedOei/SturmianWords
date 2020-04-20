@@ -2,7 +2,6 @@
 
 #load("ostrowski-automata/sturmian_word.txt", "pecan", $C(n))
 
-#load("automata/eventually_periodic.aut", "hoa", eventually_periodic(a, p))
 #load("automata/pow_2.aut", "hoa", pow_2(a, i, n))
 #load("automata/pow_3.aut", "hoa", pow_3(a, i, n))
 #load("automata/pow_4.aut", "hoa", pow_4(a, i, n))
@@ -10,10 +9,6 @@
 #load("automata/pow_6.aut", "hoa", pow_6(a, i, n))
 #load("automata/pow_7.aut", "hoa", pow_7(a, i, n))
 #load("automata/pow_8.aut", "hoa", pow_8(a, i, n))
-#load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
-#load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
-
-// #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
 #load("automata/fib_alpha.txt", "walnut", fib_alpha(a))
 #load("automata/eventually_one.txt", "pecan", eventually_one(a))
@@ -30,6 +25,7 @@ Alias "OstEx" ==> Example (\t => (ostrowskiFormat, t)) .
 //             square2(a, i, n) <=> pow_2(a, i, n)
 // ]}).
 
+#load("automata/eventually_periodic.aut", "hoa", eventually_periodic(a, p))
 // Theorem ("Sturmian words are not eventually periodic", {
 //     forall a, p. !eventually_periodic(a, p)
 // }) .
@@ -48,6 +44,14 @@ Alias "OstEx" ==> Example (\t => (ostrowskiFormat, t)) .
 //     ]
 // }) .
 
+// #load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
+// Theorem ("If n is the order of a square, then n is the denominator of some semiconvergent of a.", {
+//     forall a,i,n.
+//         if i > 0 & n > 0 & pow_2(a,i,n) then
+//             n is semiconvergent
+// }).
+
+// #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
 // Theorem ("All Sturmian words contain finitely many antisquares", {
 //     forall a.
 //     exists m.
@@ -87,32 +91,16 @@ Execute genHasNthPow 4.
 // }) .
 
 #load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
-
-Theorem ("If n is even, there is exactly one palindrome of length n.", {@no_simplify[
+Theorem ("Test", {
     forall a,n.
-        if ostrowski_even(a,n) & n > 0 then
-            (
-                @simplify[
-                exists s. @postprocess[
-                    bco_valid(a,s) &
-                    @no_simplify[forall k. @postprocess[
-                        if first_palindrome(a, k, n) then bco_eq(k,s)
-                    ]]
-                ]]
-            ) &
-            exists i. first_palindrome(a,i,n)
-]}).
-
-Theorem ("If n is odd, there are exactly two palindromes of length n.", {
-    forall a, n.
-    (
-        exists s, t. bco_valid2(a,s,t) & !bco_eq(s, t) &
-        forall k. @postprocess[
-            if !ostrowski_even(a, n) & first_palindrome(a, k, n) then
-                (bco_eq(k,s) | bco_eq(k,t))
-        ]
-    ) &
-    if !ostrowski_even(a,n) then exists i,j. first_palindrome(a,i,n) & first_palindrome(a,j,n)
+        (
+            if n is even & n > 0 then
+                exists i. forall j. first_palindrome(a, j, n) iff i = j
+        ) &
+        (
+            if @no_simplify[n is odd] then
+                exists i,j. i < j & forall k. first_palindrome(a,k,n) iff (i = k | j = k)
+        )
 }).
 
 // Theorem ("All suffixes of Sturmian words start with arbitarily long palindromes", {
@@ -126,6 +114,7 @@ Theorem ("If n is odd, there are exactly two palindromes of length n.", {
 //     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
 // }).
 
+// #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
 // Theorem ("All Sturmian words contain finitely many antipalindromes.", {
 //     @no_simplify[
 //         forall a.
@@ -277,4 +266,11 @@ Theorem ("If n is odd, there are exactly two palindromes of length n.", {
 
 // OstEx  { bco_standard(a) & max_antisquare(a, n) & max_antipalindrome(a, n) } .
 // OstEx  { bco_standard(a) & max_antisquare_len(a, n) & max_antipalindrome(a, n) } .
+
+// #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
+// Theorem ("Every Sturmian word is mirror invariant.", {
+//     forall a,i,j.
+//     if 0 < i & i < j then
+//         mirror_invariant(a,i,j)
+// }).
 
