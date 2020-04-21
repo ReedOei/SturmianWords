@@ -187,8 +187,8 @@ Restrict i, j, k, l, n are ostrowski(a).
 //     @postprocess[@no_simplify[reverse_factor(a, i, i + n, l)]]
 // #save_aut("automata/reverse_factor_len.aut", reverse_factor_len)
 
-mirror_invariant(a,i,j) := exists t. @no_simplify[reverse_factor(a, i, j, t)]
-#save_aut("automata/mirror_invariant.aut", mirror_invariant)
+// mirror_invariant(a,i,j) := exists t. @no_simplify[reverse_factor(a, i, j, t)]
+// #save_aut("automata/mirror_invariant.aut", mirror_invariant)
 // #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 
 // palindrome_idx(a, i, j) := @postprocess[
@@ -243,10 +243,7 @@ mirror_invariant(a,i,j) := exists t. @no_simplify[reverse_factor(a, i, j, t)]
 
 // #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
 
-// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
 // #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
-// #load("automata/not_same_factor_len.aut", "hoa", not_same_factor_len(a, i, n, j))
-
 // first_palindrome(a, i, n) := @postprocess[
 //     palindrome(a, i, n) &
 //     @postprocess[
@@ -259,4 +256,21 @@ mirror_invariant(a,i,j) := exists t. @no_simplify[reverse_factor(a, i, j, t)]
 // ]
 // #save_aut("automata/first_palindrome.aut", first_palindrome)
 // #load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
+
+#load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// factor_len(a,i,n,j) :=
+//     factor_lt_len(a,i,n,j) | factor_lt_len(a,j,n,i)
+// #save_aut("automata/factor_len.aut", factor_len)
+// #load("automata/factor_len.aut", "hoa", factor_len(a, i, n, j))
+
+special_factor(a,i,n) := @postprocess[
+    (exists j. @no_simplify[factor_lt_len(a,i,n,j)] & $C[j+n] = 0) &
+    (exists k. @no_simplify[factor_lt_len(a,i,n,k)] & $C[k+n] = 1)
+]
+first_special_factor(a,i,n) := @postprocess[
+    special_factor(a,i,n) &
+    forall j. if special_factor(a,j,n) then i <= j
+]
+#save_aut("automata/special_factor.aut", special_factor)
+#save_aut("automata/first_special_factor.aut", first_special_factor)
 
