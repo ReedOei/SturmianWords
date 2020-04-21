@@ -235,21 +235,14 @@ Restrict i, j, k, l, n are ostrowski(a).
 // ]
 // #save_aut("automata/least_period.aut", least_period)
 
-// multipalindromes(a, i, j, n) := @no_simplify[ palindrome(a, i, n) & palindrome(a, j, n) & not_same_factor(a, i, n, j) ]
-// #save_aut("automata/multipalindromes.aut", multipalindromes)
-// #load("automata/multipalindromes.aut", "hoa", multipalindromes(a, i, j, n))
-// has_multipalindromes(a, n) := @no_simplify[exists s, t. multipalindromes(a,s,t,n) ]
-// #save_aut("automata/has_multipalindromes.aut", has_multipalindromes)
-
 // #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
-
 // #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
 // first_palindrome(a, i, n) := @postprocess[
 //     palindrome(a, i, n) &
 //     @postprocess[
 //         bco_valid2(a,i,n) &
 //         forall t. @postprocess[
-//             if palindrome(a, t, n) & @no_simplify[factor_lt_len(a, t, n, i)] then
+//             if @no_simplify[factor_lt_len(a, t, n, i)] then
 //                 bco_leq(i, t)
 //         ]
 //     ]
@@ -257,20 +250,22 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #save_aut("automata/first_palindrome.aut", first_palindrome)
 // #load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
 
-#load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
 // factor_len(a,i,n,j) :=
 //     factor_lt_len(a,i,n,j) | factor_lt_len(a,j,n,i)
 // #save_aut("automata/factor_len.aut", factor_len)
 // #load("automata/factor_len.aut", "hoa", factor_len(a, i, n, j))
 
-special_factor(a,i,n) := @postprocess[
-    (exists j. @no_simplify[factor_lt_len(a,i,n,j)] & $C[j+n] = 0) &
-    (exists k. @no_simplify[factor_lt_len(a,i,n,k)] & $C[k+n] = 1)
-]
-first_special_factor(a,i,n) := @postprocess[
-    special_factor(a,i,n) &
-    forall j. if special_factor(a,j,n) then i <= j
-]
-#save_aut("automata/special_factor.aut", special_factor)
+// special_factor(a,i,n) := @postprocess[
+//     (exists j. @no_simplify[factor_lt_len(a,i,n,j)] & $C[j+n] = 0) &
+//     (exists k. @no_simplify[factor_lt_len(a,i,n,k)] & $C[k+n] = 1)
+// ]
+// #save_aut("automata/special_factor.aut", special_factor)
+#load("automata/special_factor.aut", "hoa", special_factor(a,i,n))
+#load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+first_special_factor(a,i,n) := @postprocess[@postprocess[@postprocess[
+    @no_simplify[special_factor(a,i,n)] &
+    forall j. if @no_simplify[factor_lt_len(a,j,n,i)] then i <= j
+]]]
 #save_aut("automata/first_special_factor.aut", first_special_factor)
 
