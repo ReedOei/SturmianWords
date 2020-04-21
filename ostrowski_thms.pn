@@ -90,29 +90,26 @@ Execute genHasNthPow 4.
 //     ]
 // }) .
 
-#load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
-Theorem ("Test", {
-    forall a,n.
-        (
-            if n is even & n > 0 then
-                exists i. forall j. first_palindrome(a, j, n) iff i = j
-        ) &
-        (
-            if @no_simplify[n is odd] then
-                exists i,j. i < j & forall k. first_palindrome(a,k,n) iff (i = k | j = k)
-        )
-}).
-
-// Theorem ("All suffixes of Sturmian words start with arbitarily long palindromes", {
-//     forall a, j.
-//     if j > 0 then
-//         forall n.
-//         exists m. m > n & palindrome(a, j, m)
-// }) .
-
+#load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
 // Theorem ("Sturmian words contain palindromes of every length.", {
 //     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
 // }).
+
+#load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
+Theorem ("Test", {
+    forall a,n. (
+        if n is even & n > 0 then
+            exists i. forall j. first_palindrome(a, j, n) iff i = j
+    ) & (
+        if @no_simplify[n is odd] then
+            exists i,j. i < j & forall k. first_palindrome(a,k,n) iff (i = k | j = k)
+    )
+}).
+
+// Theorem ("Sturmian words start with arbitarily long palindromes", {
+//     forall a,n.
+//     exists m. m > n & exists j. j = 1 & palindrome(a, j, m)
+// }) .
 
 // #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
 // Theorem ("All Sturmian words contain finitely many antipalindromes.", {
