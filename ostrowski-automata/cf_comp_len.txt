@@ -1,0 +1,26 @@
+// Compares two continued fraction sequences, accepts iff the first coefficient which
+// has a different length in the two sequences is shorter in the first sequence than in the second.
+{0,1,2} {0,1,2}
+start: 0
+2 -> same_len
+same_len: 0
+0 0 -> same_len
+0 1 -> same_len
+// 0 2 -> fail
+1 0 -> same_len
+1 1 -> same_len
+// 1 2 -> fail
+2 0 -> shorter
+2 1 -> shorter
+2 2 -> same_len
+shorter: 1
+0 0 -> shorter
+0 1 -> shorter
+0 2 -> shorter
+1 0 -> shorter
+1 1 -> shorter
+1 2 -> shorter
+2 0 -> shorter
+2 1 -> shorter
+2 2 -> shorter
+

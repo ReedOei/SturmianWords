@@ -1,0 +1,34 @@
+// A number is the denominator of a semiconvergent of the continued fraction sequence if it looks like 0*1b
+// For two symbols a,b (possibly 0)
+{0,1,2}
+start: 1
+2 -> zeros
+
+zeros: 1
+1 -> first_one
+0 -> zeros_not_one
+
+zeros_not_one: 1
+0 -> zeros_not_one
+1 -> first_not_one
+2 -> zeros
+
+first_one: 1
+0 -> first_one
+1 -> first_not_one
+2 -> second
+
+first_not_one: 1
+0 -> first_not_one
+1 -> first_not_one
+2 -> done
+
+second: 1
+0 -> second
+1 -> second
+2 -> done
+
+done: 1
+0 -> done
+2 -> done
+
