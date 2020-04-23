@@ -2,22 +2,17 @@
 
 #load("ostrowski-automata/sturmian_word.txt", "pecan", $C(n))
 
-#load("automata/pow_2.aut", "hoa", pow_2(a, i, n))
-#load("automata/pow_3.aut", "hoa", pow_3(a, i, n))
-#load("automata/pow_4.aut", "hoa", pow_4(a, i, n))
-#load("automata/pow_5.aut", "hoa", pow_5(a, i, n))
-#load("automata/pow_6.aut", "hoa", pow_6(a, i, n))
-#load("automata/pow_7.aut", "hoa", pow_7(a, i, n))
-#load("automata/pow_8.aut", "hoa", pow_8(a, i, n))
-
-#load("automata/fib_alpha.txt", "walnut", fib_alpha(a))
-#load("automata/eventually_one.txt", "pecan", eventually_one(a))
-
 Restrict a is bco_standard.
 Restrict i, j, k, l, p, n, m are ostrowski(a).
 
 Alias "OstEx" ==> Example (\t => (ostrowskiFormat, t)) .
 
+// #load("automata/eventually_periodic.aut", "hoa", eventually_periodic(a, p))
+// Theorem ("Sturmian words are not eventually periodic", {
+//     forall a, p. !eventually_periodic(a, p)
+// }) .
+
+// #load("automata/pow_2.aut", "hoa", pow_2(a, i, n))
 // square2(a, i, n) := @no_simplify[factor_lt(a, i, i + n, i + n)]
 // Theorem ("Sanity check that factor_lt let's us redefine something equivalent to square.", { @no_simplify[
 //     forall a, i, n.
@@ -25,10 +20,6 @@ Alias "OstEx" ==> Example (\t => (ostrowskiFormat, t)) .
 //             square2(a, i, n) <=> pow_2(a, i, n)
 // ]}).
 
-#load("automata/eventually_periodic.aut", "hoa", eventually_periodic(a, p))
-// Theorem ("Sturmian words are not eventually periodic", {
-//     forall a, p. !eventually_periodic(a, p)
-// }) .
 
 // Theorem ("All suffixes of Sturmian words start with arbitrarily long squares", {
 //     @no_simplify[
@@ -58,12 +49,14 @@ Alias "OstEx" ==> Example (\t => (ostrowskiFormat, t)) .
 //     forall i, n. if antisquare(a, i, n) then n <= m
 // }).
 
+// #load("automata/pow_3.aut", "hoa", pow_3(a, i, n))
 // Theorem ("All Sturmian words contain cubes", {
 //     @no_simplify[
 //         forall a. exists i, n. n > 0 & pow_3(a,i,n)
 //     ]
 // }) .
 
+// #load("ostrowski-automata/eventually_one.txt", "pecan", eventually_one(a))
 // Theorem ("All suffixes of Sturmian words start with arbitrarily long cubes.", {
 //     @no_simplify[
 //         forall a. (!eventually_one(a)) <=>
@@ -78,33 +71,30 @@ Define genHasNthPow num :=
     let $NTH_POW := "pow_" ^ (toString num) in
     let $HAS_NTH := "has_" ^ $NTH_POW in
         emit { $HAS_NTH(a) := exists i, n. n > 0 & $NTH_POW(a, i, n) } .
-Execute genHasNthPow 4.
-// Execute genHasNthPow 5.
-// Execute genHasNthPow 6.
-// Execute genHasNthPow 7.
-// Execute genHasNthPow 8.
 
+// Execute genHasNthPow 4.
+// #load("automata/pow_4.aut", "hoa", pow_4(a, i, n))
 // Theorem ("All Sturmian words that are not eventually one contain fourth powers", {
 //     @no_simplify[
 //         forall a. if !eventually_one(a) then has_pow_4(a)
 //     ]
 // }) .
 
-#load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
+// #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
 // Theorem ("Sturmian words contain palindromes of every length.", {
 //     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
 // }).
 
-#load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
-Theorem ("Test", {
-    forall a,n. (
-        if n is even & n > 0 then
-            exists i. forall j. first_palindrome(a, j, n) iff i = j
-    ) & (
-        if @no_simplify[n is odd] then
-            exists i,j. i < j & forall k. first_palindrome(a,k,n) iff (i = k | j = k)
-    )
-}).
+// #load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
+// Theorem ("For all Sturmian words, if n is even then it contains exactly one palindrome of length n, and if n is odd then it contains exactly two palindromes of length n.", {
+//     forall a,n. (
+//         if n is even & n > 0 then
+//             exists i. forall k. first_palindrome(a, k, n) iff i = k
+//     ) & (
+//         if @no_simplify[n is odd] then
+//             exists i,j. i < j & forall k. first_palindrome(a,k,n) iff (i = k | j = k)
+//     )
+// }).
 
 // Theorem ("Sturmian words start with arbitarily long palindromes", {
 //     forall a,n.
@@ -270,4 +260,21 @@ Theorem ("Test", {
 //     if 0 < i & i < j then
 //         mirror_invariant(a,i,j)
 // }).
+
+#load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
+#load("automata/first_special_factor.aut", "hoa", first_special_factor(a,i,n))
+Example using ostrowskiFormat of { @no_simplify[
+    bco_valid3(a,i,n,j) &
+    first_special_factor(a,i,n) & reverse_factor(a,i,i+n,j) & j > i + n
+] }.
+// Theorem ("The unique special factor of length n is C[1..n]^R", { @no_simplify[
+//     forall a.
+//     forall i, n.
+//         if first_special_factor(a,i,n) & reverse_factor(a,i,i+n,j) then j = n
+//     // forall a.
+//     // forall i, n.
+//     //     if first_special_factor(a,i,n) then @postprocess[
+//     //         reverse_factor(a,i,i+n,n + 1)
+//     //     ]
+// ]}).
 
