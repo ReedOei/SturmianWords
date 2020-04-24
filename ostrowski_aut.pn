@@ -174,12 +174,14 @@ Restrict i, j, k, l, n are ostrowski(a).
     //     ]
     // ]
 // ]
-// #save_aut("automata/reverse_factor_no_restrict.aut", reverse_factor)
+// #save_aut("automata/reverse_factor.aut", reverse_factor)
 // #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
 
+// #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
 // reverse_factor_len(a, i, n, l) :=
-//     @postprocess[@no_simplify[reverse_factor(a, i, i + n, l)]]
+//     @postprocess[reverse_factor(a, i, i + n, l)]
 // #save_aut("automata/reverse_factor_len.aut", reverse_factor_len)
+// #load("automata/reverse_factor_len.aut", "hoa", reverse_factor_len(a, i, n, l))
 
 // mirror_invariant(a,i,j) := exists t. @no_simplify[reverse_factor(a, i, j, t)]
 // #save_aut("automata/mirror_invariant.aut", mirror_invariant)
@@ -261,4 +263,22 @@ Restrict i, j, k, l, n are ostrowski(a).
 // ]]]
 // #save_aut("automata/first_special_factor.aut", first_special_factor)
 // #load("automata/first_special_factor.aut", "hoa", first_special_factor)
+
+#load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
+first_reverse_factor(a,i,j,l) := @postprocess[
+    reverse_factor(a,i,j,l) & forall k. if reverse_factor(a,i,j,k) then l <= k
+]
+#save_aut("automata/first_reverse_factor.aut", first_reverse_factor)
+// #load("automata/first_reverse_factor.aut", "hoa", first_reverse_factor(a,i,j,l))
+
+first_reverse_factor_len(a,i,n,l) := @postprocess[
+    first_reverse_factor(a,i,i+n,l)
+]
+#save_aut("automata/first_reverse_factor_len.aut", first_reverse_factor_len)
+
+// #load("automata/reverse_factor_len.aut", "hoa", reverse_factor_len(a, i, n, l))
+factor_test(a,i,n,j) := @postprocess[
+    forall l. first_reverse_factor_len(a, i, n, l) <=> first_reverse_factor_len(a, j, n, l)
+]
+#save_aut("automata/factor_test.aut", factor_test)
 

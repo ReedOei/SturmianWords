@@ -263,6 +263,13 @@ Define genHasNthPow num :=
 
 #load("automata/reverse_factor_no_restrict.aut", "hoa", reverse_factor(a, i, j, l))
 #load("automata/first_special_factor.aut", "hoa", first_special_factor(a,i,n))
+Theorem ("Specal factors are unique", {
+    forall a.
+    forall i,j,n. if first_special_factor(a,i,n) & first_special_factor(a,j,n) then i = j
+}).
+
+// Note: This theorem also proves uniqueness.
+// Another random note: We could define C[i..j] = C[k..l] in terms of reverse factor.
 Theorem ("The unique special factor of length n is C[1..n]^R", { @no_simplify[
     forall a.
     forall i, n. @postprocess[
