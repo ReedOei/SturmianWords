@@ -261,20 +261,32 @@ Define genHasNthPow num :=
 //         mirror_invariant(a,i,j)
 // }).
 
-#load("automata/reverse_factor_no_restrict.aut", "hoa", reverse_factor(a, i, j, l))
-#load("automata/first_special_factor.aut", "hoa", first_special_factor(a,i,n))
-Theorem ("Specal factors are unique", {
-    forall a.
-    forall i,j,n. if first_special_factor(a,i,n) & first_special_factor(a,j,n) then i = j
-}).
+// #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
+// #load("automata/first_special_factor.aut", "hoa", first_special_factor(a,i,n))
+// Theorem ("Specal factors are unique", {
+//     forall a.
+//     forall i,j,n. if first_special_factor(a,i,n) & first_special_factor(a,j,n) then i = j
+// }).
 
 // Note: This theorem also proves uniqueness.
 // Another random note: We could define C[i..j] = C[k..l] in terms of reverse factor.
-Theorem ("The unique special factor of length n is C[1..n]^R", { @no_simplify[
-    forall a.
-    forall i, n. @postprocess[
-        if first_special_factor(a,i,n) then
-            reverse_factor(a,i,i+n,n)
-    ]
-]}).
+// Theorem ("The unique special factor of length n is C[1..n]^R", { @no_simplify[
+//     forall a.
+//     forall i, n. @postprocess[
+//         if i > 0 & first_special_factor(a,i,n) then
+//             reverse_factor(a,i,i+n,n)
+//     ]
+// ]}).
+
+// #load("automata/factor_test.aut", "hoa", factor_test(a,i,n,j))
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// Example using ostrowskiFormat of { @no_simplify[
+//     n > 0 & i > 0 &
+//     bco_valid3(a,i,n,j) & i < j & factor_lt_len(a,i,n,j) & !factor_test(a,i,n,j)
+// ]}.
+// Theorem ("Sanity check for factor_test.", { @no_simplify[
+//     forall a,i,n,j.
+//         if n > 0 & 0 < i & i < j then
+//             factor_lt_len(a,i,n,j) <=> factor_test(a,i,n,j)
+// ] }).
 
