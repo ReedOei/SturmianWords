@@ -261,20 +261,13 @@ Define genHasNthPow num :=
 //         mirror_invariant(a,i,j)
 // }).
 
-#load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
+#load("automata/reverse_factor_no_restrict.aut", "hoa", reverse_factor(a, i, j, l))
 #load("automata/first_special_factor.aut", "hoa", first_special_factor(a,i,n))
-Example using ostrowskiFormat of { @no_simplify[
-    bco_valid3(a,i,n,j) &
-    first_special_factor(a,i,n) & reverse_factor(a,i,i+n,j) & j > i + n
-] }.
-// Theorem ("The unique special factor of length n is C[1..n]^R", { @no_simplify[
-//     forall a.
-//     forall i, n.
-//         if first_special_factor(a,i,n) & reverse_factor(a,i,i+n,j) then j = n
-//     // forall a.
-//     // forall i, n.
-//     //     if first_special_factor(a,i,n) then @postprocess[
-//     //         reverse_factor(a,i,i+n,n + 1)
-//     //     ]
-// ]}).
+Theorem ("The unique special factor of length n is C[1..n]^R", { @no_simplify[
+    forall a.
+    forall i, n. @postprocess[
+        if first_special_factor(a,i,n) then
+            reverse_factor(a,i,i+n,n)
+    ]
+]}).
 

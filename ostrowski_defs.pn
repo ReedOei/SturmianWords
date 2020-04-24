@@ -55,6 +55,19 @@ Define ostrowskiFormat var reps :=
         (var, ostrowskiStr (fromBase3 prefix1 prefix2) (fromBase3 cycle1 cycle2))
     end.
 
+// showFactor a i n returns a list containing the factor C[i..i+n].
+Define showFactor a i n :=
+    let j be { j = i & bco_valid(a, j) } in
+        showFactorStep a i n j .
+Define showFactorStep a i n j := do
+    if holds { @no_simplify[ j < i + n ]} then
+        let next := (if holds { @no_simplify[ $C(j) ] } then 1 else 0) in do
+        print next;
+        next ::
+        (let k be { bco_succ(a,j,k) } in
+            showFactorStep a i n k)
+    else [] .
+
 bco_valid(a, x) := bco_lsd_valid(a, x) & bco_finite_rep(x)
 bco_valid2(a, x, y) := bco_valid(a, x) & bco_valid(a, y)
 bco_valid3(a, x, y, z) := bco_valid2(a, x, y) & bco_valid(a, z)
@@ -88,4 +101,8 @@ Structure ostrowski(alpha) defining {
 }
 
 bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
+
+Structure bco_standard defining {
+    "equal": bco_eq(any, any)
+}
 

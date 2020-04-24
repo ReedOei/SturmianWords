@@ -152,29 +152,29 @@ Restrict i, j, k, l, n are ostrowski(a).
 
 // True when C_a[i..j] = C_a[k + 1..l + 1]^R
 // where l - k = j - i
-reverse_factor(a, i, j, l) := @postprocess[
-    @postprocess[
-        bco_positive(i) &
-        bco_positive(l) &
-        bco_valid3(a, i, j, l) &
-        i < j
-    ] &
-    @no_simplify[exists li. @simplify[
-        @postprocess[
-            bco_adder_valid(a, l, i, li) &
-            bco_leq(j, li)
-        ] &
-        forall t. @postprocess[
-            if @postprocess[bco_leq(i, t) & bco_lt(t, j)] then
-                forall lit. @postprocess[
-                    if bco_adder_valid(a, lit, t, li) then
-                        $C[t] = $C[lit]
-                ]
-            ]
-        ]
-    ]
-]
-#save_aut("automata/reverse_factor2.aut", reverse_factor)
+// reverse_factor(a, i, j, l) := @postprocess[
+    // @postprocess[
+    //     // bco_positive(i) &
+    //     // bco_positive(l) &
+    //     bco_valid3(a, i, j, l) &
+    //     i < j
+    // ] &
+    // @no_simplify[exists li. @simplify[
+    //     @postprocess[
+    //         bco_adder_valid(a, l, i, li)
+    //         // bco_leq(j, li)
+    //     ] &
+    //     forall t. @postprocess[
+    //         if @postprocess[bco_leq(i, t) & bco_lt(t, j)] then
+    //             forall lit. @postprocess[
+    //                 if bco_adder_valid(a, lit, t, li) then
+    //                     $C[t] = $C[lit]
+    //             ]
+    //         ]
+    //     ]
+    // ]
+// ]
+// #save_aut("automata/reverse_factor_no_restrict.aut", reverse_factor)
 // #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
 
 // reverse_factor_len(a, i, n, l) :=
