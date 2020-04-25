@@ -35,7 +35,7 @@
 
 // #load("automata/pow_2.aut", "hoa", pow_2(a, i, n))
 
-Restrict i, j, k, l, n are ostrowski(a).
+Restrict i, j, k, l, p, n are ostrowski(a).
 
 // Define genNthPow num :=
 //     let $PREV_POW := "pow_" ^ (toString (num - 1)) in
@@ -50,39 +50,6 @@ Restrict i, j, k, l, n are ostrowski(a).
 // Execute genNthPow 6.
 // Execute genNthPow 7.
 // Execute genNthPow 8.
-
-// not_same_factor_lt(a, i, j, k) := @postprocess[
-//     @postprocess[
-//         bco_valid3(a,i,j,k) &
-//         bco_lt(i,j)
-//     ] &
-//     @no_simplify[exists ki. @simplify[
-//         bco_adder(a, ki, i, k) &
-//         exists t. @postprocess[
-//             @postprocess[bco_valid(a, t) & bco_leq(i, t) & bco_lt(t, j)] &
-//             exists jit. @postprocess[
-//                 bco_adder(a, ji, t, jit) & $C[t] != $C[jit]
-//             ]
-//         ]
-//     ]]
-// ]
-// #save_aut("automata/not_same_factor_lt.aut", not_same_factor_lt)
-// #load("automata/not_same_factor_lt.aut", "hoa", not_same_factor_lt(a, i, j, k))
-
-// not_same_factor_len(a, i, n, j) := @no_simplify[
-//     exists t. @postprocess[
-//         bco_lt(t, n) &
-//         exists it. @postprocess[
-//             @no_simplify[bco_adder_valid(a, i, t, it)] &
-//             exists jt. @postprocess[
-//                 @no_simplify[bco_adder_valid(a, j, t, jt)] &
-//                 $C[it] != $C[jt]
-//             ]
-//         ]
-//     ]
-// ]
-// #save_aut("automata/not_same_factor_len.aut", not_same_factor_len)
-// #load("automata/not_same_factor_len.aut", "hoa", not_same_factor_len(a, i, n, j))
 
 // factor_lt(a, i, j, k) := @no_simplify[@postprocess[
 //     @postprocess[bco_positive(i) & bco_lt(i, j) & bco_valid3(a,i,j,k)] &
@@ -106,29 +73,6 @@ Restrict i, j, k, l, n are ostrowski(a).
 // ]]
 // #save_aut("automata/factor_lt_len.aut", factor_lt_len)
 // #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
-
-// factor(a, i, n, j) := @no_simplify[@postprocess[
-//     (bco_lt(i, j) & factor_lt_len(a, i, n, j)) | (bco_lt(j, i) & factor_lt_len(a, j, n, i)) | i = j
-// ]]
-// #save_aut("automata/factor.aut", factor)
-
-// factor_lt_test(a, i, k, j) := @no_simplify[factor_lt_small(a, i, k, j) & bco_positive(i) & bco_positive(j)]
-// #save_aut("automata/factor_lt_test.aut", factor_lt_test)
-
-// factor(a, i, n, j) :=
-//     bco_valid3(a,i,n,j) &
-//     forall t. @postprocess[
-//         if @postprocess[bco_valid2(a, t, n) & bco_lt(t, n)] then
-//             forall it. @postprocess[
-//                 if @postprocess[@no_simplify[bco_adder_valid(a,i,t,it)]] then
-//                     forall jt. @postprocess[
-//                         if @postprocess[@no_simplify[bco_adder_valid(a,j,t,jt)]] then
-//                             $C[it] = $C[jt]
-//                     ]
-//                 ]
-//             ]
-// #save_aut("automata/factor.aut", factor)
-// #load("automata/factor.aut", "hoa", factor(a, i, n, j))
 
 // True when $C_a[i..j] = \overline{C_a[k..l]}$ where $l = k + j - i$.
 // anti_factor(a, i, j, k) :=
@@ -196,11 +140,12 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #save_aut("automata/first_reverse_factor_len.aut", first_reverse_factor_len)
 // #load("automata/first_reverse_factor_len.aut", "hoa", first_reverse_factor_len(a,i,n,l))
 
-// factor_test(a,i,n,j) := @postprocess[
+// For some reason, this produces the smallest factor automata of the things I've tried so far...
+// factor(a,i,n,j) := @postprocess[
 //     bco_valid3(a,i,n,j) &
 //     forall l. first_reverse_factor_len(a, i, n, l) <=> first_reverse_factor_len(a, j, n, l)
 // ]
-// #save_aut("automata/factor_test.aut", factor_test)
+// #save_aut("automata/factor.aut", factor)
 
 // mirror_invariant(a,i,j) := exists t. @no_simplify[reverse_factor(a, i, j, t)]
 // #save_aut("automata/mirror_invariant.aut", mirror_invariant)
@@ -231,28 +176,39 @@ Restrict i, j, k, l, n are ostrowski(a).
 // #save_aut("automata/antipalindrome.aut", antipalindrome)
 // #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
 
-// not_period(a, p, i ,j) := @postprocess[
-//     !(forall t, tp.
-//         if @postprocess[bco_valid2(a, t, tp) & bco_leq(i, t) & bco_leq(tp, j) & bco_adder(a,t,p,tp)] then
-//             $C[t] = $C[tp])
+// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+// recurrent(a,i,j) := @postprocess[
+//     bco_valid2(a,i,j) &
+//     forall s. @postprocess[
+//         bco_valid2(a,i,j) &
+//         exists t. @postprocess[
+//         if bco_valid(a,s) then
+//             @postprocess[bco_valid(a,t) & bco_lt(s,t) & factor_lt(a,i,j,t)]
+//         ]
+//     ]
 // ]
-// #save_aut("automata/not_period.aut", not_period)
-// #load("automata/not_period.aut", "hoa", not_period(a, p, i, j))
+// #save_aut("automata/recurrent.aut", recurrent)
 
-// period(a, p, i, j) := @no_simplify[!not_period(a, p, i, j)]
+// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+// period(a, p, i, j) := @postprocess[
+//     exists ip, jp. @postprocess[
+//         @postprocess[
+//             bco_adder_valid(a,i,p,ip) & bco_adder_valid(a,jp,p,j)
+//         ] &
+//         factor_lt(a,i,jp,ip)
+//     ]
+// ]
 // #save_aut("automata/period.aut", period)
-// #load("automata/period.aut", "hoa", period(a, p, i, j))
-// period2(a, p, i ,j) := @no_simplify[@simplify[bco_valid3(a, p, i, j)] & period(a, p, i, j)]
-// #save_aut("automata/period2.aut", period2)
+#load("automata/period.aut", "hoa", period(a, p, i, j))
 
-// least_period(a, p, i, j) := @no_simplify[
-//     period(a, p, i, j) & forall p2. if @postprocess[bco_valid(a, p2) & bco_positive(p2) & bco_lt(p2, p)] then !period(a, p2, i, j)
-// ]
-// #save_aut("automata/least_period.aut", least_period)
+least_period(a, p, i, j) := @postprocess[
+    period(a, p, i, j) &
+    forall p2. if period(a,p2,i,j) then bco_leq(p2, p)
+]
+#save_aut("automata/least_period.aut", least_period)
 
 // #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
 // #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
-// // SOMETHING IS WRONG WITH THIS, WHY DO I NEED TO SAY THAT FOR ALL T THAT ARE PALINDROMES? SURELY ANY EARLIER FACTOR WOULD BE FINE, AND OF COURSE ITS A PALINDROME?
 // first_palindrome(a, i, n) := @postprocess[
 //     palindrome(a, i, n) &
 //     forall t. @postprocess[
