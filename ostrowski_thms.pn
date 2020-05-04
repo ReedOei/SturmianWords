@@ -21,11 +21,10 @@ Alias "OstEx" ==> Example (\t => (ostrowskiFormat, t)) .
 // ]}).
 
 
-// Theorem ("All suffixes of Sturmian words start with arbitrarily long squares", {
+// Theorem ("All Sturmian words start with arbitrarily long squares", {
 //     @no_simplify[
-//         forall a, j.
-//         if j > 0 then
-//             forall n. exists m. m > n & pow_2(a, j, m)
+//         forall a.
+//         forall n. exists m, j. j = 1 & m > n & pow_2(a, j, m)
 //     ]
 // }) .
 
@@ -80,10 +79,10 @@ Define genHasNthPow num :=
 //     ]
 // }) .
 
-// #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
-// Theorem ("Sturmian words contain palindromes of every length.", {
-//     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
-// }).
+#load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
+Theorem ("Sturmian words contain palindromes of every length.", {
+    forall a, n. if n > 0 then exists i. palindrome(a, i, n)
+}).
 
 // #load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
 // Theorem ("For all Sturmian words, if n is even then it contains exactly one palindrome of length n, and if n is odd then it contains exactly two palindromes of length n.", {
@@ -154,31 +153,31 @@ Define genHasNthPow num :=
 // Execute listExamples antisquare_bound 2 .
 
 // Build an automaton recognizing sequences that start with at most `limit` non-zero entries
-// Define genDigitLimit limit :=
-//     let aut := mkAut ["num"] [3] in
-//     let mkName := (\n => "digit_" ^ (toString n)) in
-//     let autStates := withStates aut (
-//                         [("start", true), (mkName (limit + 1), true)] @
-//                         (map (\n => (mkName n, true)) [1..limit])
-//                     ) in
-//     let finalAut := withTransitions autStates (
-//                         [("start", "digit_1", "2"),
-//                          (mkName (limit + 1), mkName (limit + 1), "0"),
-//                          (mkName (limit + 1), mkName (limit + 1), "2")] @
-//                         (flatMap (\n => [(mkName n, mkName n, "0"),
-//                                          (mkName n, mkName n, "1"),
-//                                          (mkName n, mkName (n + 1), "2")]) [1..limit])
-//                     ) in
-//     let built := buildAut finalAut in
-//     let $NAME := "is_" ^ (toString limit) ^ "_digits" in do
-//         emit { $NAME(num) := built } .
+Define genDigitLimit limit :=
+    let aut := mkAut ["num"] [3] in
+    let mkName := (\n => "digit_" ^ (toString n)) in
+    let autStates := withStates aut (
+                        [("start", true), (mkName (limit + 1), true)] @
+                        (map (\n => (mkName n, true)) [1..limit])
+                    ) in
+    let finalAut := withTransitions autStates (
+                        [("start", "digit_1", "2"),
+                         (mkName (limit + 1), mkName (limit + 1), "0"),
+                         (mkName (limit + 1), mkName (limit + 1), "2")] @
+                        (flatMap (\n => [(mkName n, mkName n, "0"),
+                                         (mkName n, mkName n, "1"),
+                                         (mkName n, mkName (n + 1), "2")]) [1..limit])
+                    ) in
+    let built := buildAut finalAut in
+    let $NAME := "is_" ^ (toString limit) ^ "_digits" in do
+        emit { $NAME(num) := built } .
 
-// Execute genDigitLimit 1.
-// Execute genDigitLimit 2.
-// Execute genDigitLimit 3.
-// Execute genDigitLimit 4.
-// Execute genDigitLimit 5.
-// Execute genDigitLimit 6.
+Execute genDigitLimit 1.
+Execute genDigitLimit 2.
+Execute genDigitLimit 3.
+Execute genDigitLimit 4.
+Execute genDigitLimit 5.
+Execute genDigitLimit 6.
 
 // antisquare_len(a, i, n) := exists m. 2*m = n & antisquare(a, i, m)
 
@@ -289,4 +288,60 @@ Define genHasNthPow num :=
 //         if n > 0 & 0 < i & i < j then
 //             factor_lt_len(a,i,n,j) <=> factor_test(a,i,n,j)
 // ] }).
+
+// Build an automaton recognizing sequences that have at most `limit` non-zero entries
+Define genHasNDigits limit :=
+    let aut := mkAut ["num"] [3] in
+    let mkName := (\n => "digit_" ^ (toString n)) in
+    let mkNameNonZero := (\n => "digit_nonzero_" ^ (toString n)) in
+    let autStates := withStates aut (
+                        [("start", true), (mkName (limit + 1), true)] @
+                        (map (\n => (mkName n, true)) [1..limit]) @
+                        (map (\n => (mkNameNonZero n, true)) [1..limit])
+                    ) in
+    let finalAut := withTransitions autStates (
+                        [("start", "digit_1", "2"),
+                         (mkName (limit + 1), mkName (limit + 1), "0"),
+                         (mkName (limit + 1), mkName (limit + 1), "2")] @
+                        (flatMap (\n => [(mkName n, mkName n, "0"),
+                                         (mkName n, mkNameNonZero n, "1"),
+                                         (mkName n, mkName n, "2")]) [1..limit]) @
+                        (flatMap (\n => [(mkNameNonZero n, mkNameNonZero n, "0"),
+                                         (mkNameNonZero n, mkNameNonZero n, "1"),
+                                         (mkNameNonZero n, mkName (n+1), "2")]) [1..limit])
+                    ) in
+    let built := buildAut finalAut in
+    let $NAME := "has_" ^ (toString limit) ^ "_digits" in do
+        emit { $NAME(num) := built } .
+
+Execute genHasNDigits 1.
+Execute genHasNDigits 2.
+Execute genHasNDigits 3.
+Execute genHasNDigits 4.
+Execute genHasNDigits 5.
+Execute genHasNDigits 6.
+Execute genHasNDigits 7.
+Execute genHasNDigits 15.
+Execute genHasNDigits 40.
+
+#load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+#load("automata/least_period_occurs.aut", "hoa", least_period_occurs(a,p))
+#load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
+Example using ostrowskiFormat of {
+    i > 0 & j > 0 &
+    bco_valid3(a,i,j,p) & @no_simplify[least_period(a,p,i,j)] & !has_4_digits(p) // & !semiconvergent(p)
+}.
+// Theorem ("Test", {
+//     forall a,p.
+//         if least_period_occurs(a,p) then
+//             semiconvergent(p)
+// }).
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+// TODO: Do stuff with recurrence
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
 

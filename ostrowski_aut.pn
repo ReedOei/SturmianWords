@@ -176,21 +176,52 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // #save_aut("automata/antipalindrome.aut", antipalindrome)
 // #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
 
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+// TODO: Break this up into a bunch of files, one for each section of the paper?
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
 // #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
 // recurrent(a,i,j) := @postprocess[
 //     bco_valid2(a,i,j) &
 //     forall s. @postprocess[
-//         bco_valid2(a,i,j) &
-//         exists t. @postprocess[
-//         if bco_valid(a,s) then
-//             @postprocess[bco_valid(a,t) & bco_lt(s,t) & factor_lt(a,i,j,t)]
-//         ]
+//         if bco_valid3(a,s,i,j) then
+//             exists t. @postprocess[
+//                 bco_valid(a,t) & bco_lt(s,t) & factor_lt(a,i,j,t)
+//             ]
 //     ]
 // ]
 // #save_aut("automata/recurrent.aut", recurrent)
 
+#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+#load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+uniform_recurrent(a,i,n) := @postprocess[
+    exists p.
+    forall k. @postprocess[
+        if k > 0 then
+            exists l. @postprocess[
+                k <= l &
+                exists kp. @postprocess[
+                    bco_adder_valid(a,k,p,kp) &
+                    exists kpn. @postprocess[
+                        @postprocess[
+                            bco_adder_valid(a,kpn,n,kp) &
+                            bco_leq(l, kpn)
+                        ] &
+                        factor_lt_len(a,i,n,l)
+                    ]
+                ]
+            ]
+    ]
+]
+#save_aut("automata/uniform_recurrent.aut", uniform_recurrent)
+
 // #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
 // period(a, p, i, j) := @postprocess[
+//     p > 0 &
 //     exists ip, jp. @postprocess[
 //         @postprocess[
 //             bco_adder_valid(a,i,p,ip) & bco_adder_valid(a,jp,p,j)
@@ -199,13 +230,18 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 //     ]
 // ]
 // #save_aut("automata/period.aut", period)
-#load("automata/period.aut", "hoa", period(a, p, i, j))
+// #load("automata/period.aut", "hoa", period(a, p, i, j))
 
-least_period(a, p, i, j) := @postprocess[
-    period(a, p, i, j) &
-    forall p2. if period(a,p2,i,j) then bco_leq(p2, p)
-]
-#save_aut("automata/least_period.aut", least_period)
+// least_period(a, p, i, j) := @postprocess[
+//     period(a, p, i, j) &
+//     forall p2 is ostrowski(a). if period(a,p2,i,j) then bco_leq(p2, p)
+// ]
+// #save_aut("automata/least_period.aut", least_period)
+// #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+
+// least_period_occurs(a,p) := @postprocess[exists i,j. i > 0 & j > 0 & least_period(a,p,i,j)]
+// #save_aut("automata/least_period_occurs.aut", least_period_occurs)
+// #load("automata/least_period_occurs.aut", "hoa", least_period(a,p))
 
 // #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
 // #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
