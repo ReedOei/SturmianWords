@@ -52,7 +52,7 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // Execute genNthPow 8.
 
 // factor_lt(a, i, j, k) := @no_simplify[@postprocess[
-//     @postprocess[bco_positive(i) & bco_lt(i, j) & bco_valid3(a,i,j,k)] &
+//     @postprocess[bco_positive(i) & bco_leq(i, j) & bco_valid3(a,i,j,k)] &
 //     exists ki.
 //         @no_simplify[bco_adder(a,ki,i,k)] &
 //         @simplify[
@@ -276,10 +276,31 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // #save_aut("automata/first_special_factor.aut", first_special_factor)
 // #load("automata/first_special_factor.aut", "hoa", first_special_factor)
 
-#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
-// Expresses that the factor C[i..k] is a border of C[i..j]
-border(a,k,i,j) := @postprocess[
-    exists jk. bco_adder_valid(a,jk,k,j) & factor_lt(a,i,k,jk)
-]
-#save_aut("automata/border.aut", border)
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// // True when C[i..j] has a border of len n (i.e., C[i..i+n] = C[j-n..j])
+// border(a,i,j,n) := @postprocess[
+//     exists jn. @postprocess[
+//         @postprocess[
+//             exists ni. @postprocess[
+//                 bco_adder_valid(a,i,n,ni) & bco_leq(ni,jn)
+//             ]
+//         ] & bco_adder_valid(a,jn,n,j) & factor_lt_len(a,i,n,jn)
+//     ]
+// ]
+// #save_aut("automata/border.aut", border)
+// #load("automata/border.aut", "hoa", border(a,i,j,n))
+
+// unbordered(a,i,j) := @postprocess[
+//     forall t. @postprocess[
+//         if bco_valid(a,t) & bco_positive(t) then !border(a,i,j,t)
+//     ]
+// ]
+// #save_aut("automata/unbordered.aut", unbordered)
+// #load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
+
+// #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+// #load("automata/period.aut", "hoa", period(a, p, i, j))
+// unbordered_by_period(a,i,j) := exists p. least_period(a,p,i,j) & j - i = p
+// #save_aut("automata/unbordered_by_period.aut", unbordered_by_period)
+// #load("automata/unbordered_by_period.aut", "hoa", unbordered_by_period(a,i,j))
 

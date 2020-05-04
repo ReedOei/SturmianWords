@@ -346,9 +346,28 @@ Define genHasNDigits limit :=
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#load("automata/recurrent.aut", "hoa", recurrent(a,i,j))
-Theorem ("All factors of Sturmian words are recurrent.", {
+// #load("automata/recurrent.aut", "hoa", recurrent(a,i,j))
+// Theorem ("All factors of Sturmian words are recurrent.", {
+//     forall a,i,j.
+//         if i < j then recurrent(a,i,j)
+// }).
+
+#load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
+#load("automata/unbordered_by_period.aut", "hoa", unbordered_by_period(a,i,j))
+#load("automata/border.aut", "hoa", border(a,i,j,n))
+#load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+
+// Example using ostrowskiFormat of {
+//     @postprocess[
+//         0 < i & i < j & bco_valid3(a,i,j,n) & bco_valid(a,p) & j - i != p
+//     ] & border(a,i,j,n) & least_period(a,p,i,j)
+// }.
+
+Theorem ("Sanity check: Defining unbordered factors in two ways that should be equivalent.", {
     forall a,i,j.
-        if i < j then recurrent(a,i,j)
+        if 0 < i & i < j then
+            (if exists n. @postprocess[n > 0 & border(a,i,j,n)] then !unbordered_by_period(a,i,j))
+            &
+            (if !unbordered_by_period(a,i,j) then !unbordered(a,i,j))
 }).
 
