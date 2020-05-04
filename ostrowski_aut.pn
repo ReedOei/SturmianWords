@@ -195,29 +195,30 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 //     ]
 // ]
 // #save_aut("automata/recurrent.aut", recurrent)
+// #load("automata/recurrent.aut", "hoa", recurrent(a,i,j))
 
-#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
-#load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
-uniform_recurrent(a,i,n) := @postprocess[
-    exists p.
-    forall k. @postprocess[
-        if k > 0 then
-            exists l. @postprocess[
-                k <= l &
-                exists kp. @postprocess[
-                    bco_adder_valid(a,k,p,kp) &
-                    exists kpn. @postprocess[
-                        @postprocess[
-                            bco_adder_valid(a,kpn,n,kp) &
-                            bco_leq(l, kpn)
-                        ] &
-                        factor_lt_len(a,i,n,l)
-                    ]
-                ]
-            ]
-    ]
-]
-#save_aut("automata/uniform_recurrent.aut", uniform_recurrent)
+// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// uniform_recurrent(a,i,n) := @postprocess[
+//     exists p.
+//     forall k. @postprocess[
+//         if k > 0 then
+//             exists l. @postprocess[
+//                 k <= l &
+//                 exists kp. @postprocess[
+//                     bco_adder_valid(a,k,p,kp) &
+//                     exists kpn. @postprocess[
+//                         @postprocess[
+//                             bco_adder_valid(a,kpn,n,kp) &
+//                             bco_leq(l, kpn)
+//                         ] &
+//                         factor_lt_len(a,i,n,l)
+//                     ]
+//                 ]
+//             ]
+//     ]
+// ]
+// #save_aut("automata/uniform_recurrent.aut", uniform_recurrent)
 
 // #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
 // period(a, p, i, j) := @postprocess[
@@ -274,4 +275,11 @@ uniform_recurrent(a,i,n) := @postprocess[
 // ]]]
 // #save_aut("automata/first_special_factor.aut", first_special_factor)
 // #load("automata/first_special_factor.aut", "hoa", first_special_factor)
+
+#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+// Expresses that the factor C[i..k] is a border of C[i..j]
+border(a,k,i,j) := @postprocess[
+    exists jk. bco_adder_valid(a,jk,k,j) & factor_lt(a,i,k,jk)
+]
+#save_aut("automata/border.aut", border)
 

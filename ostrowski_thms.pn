@@ -79,10 +79,10 @@ Define genHasNthPow num :=
 //     ]
 // }) .
 
-#load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
-Theorem ("Sturmian words contain palindromes of every length.", {
-    forall a, n. if n > 0 then exists i. palindrome(a, i, n)
-}).
+// #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
+// Theorem ("Sturmian words contain palindromes of every length.", {
+//     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
+// }).
 
 // #load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
 // Theorem ("For all Sturmian words, if n is even then it contains exactly one palindrome of length n, and if n is odd then it contains exactly two palindromes of length n.", {
@@ -314,23 +314,24 @@ Define genHasNDigits limit :=
     let $NAME := "has_" ^ (toString limit) ^ "_digits" in do
         emit { $NAME(num) := built } .
 
-Execute genHasNDigits 1.
-Execute genHasNDigits 2.
-Execute genHasNDigits 3.
-Execute genHasNDigits 4.
-Execute genHasNDigits 5.
-Execute genHasNDigits 6.
-Execute genHasNDigits 7.
-Execute genHasNDigits 15.
-Execute genHasNDigits 40.
+// Execute genHasNDigits 1.
+// Execute genHasNDigits 2.
+// Execute genHasNDigits 3.
+// Execute genHasNDigits 4.
+// Execute genHasNDigits 5.
+// Execute genHasNDigits 6.
+// Execute genHasNDigits 7.
+// Execute genHasNDigits 15.
+// Execute genHasNDigits 40.
 
-#load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
-#load("automata/least_period_occurs.aut", "hoa", least_period_occurs(a,p))
-#load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
-Example using ostrowskiFormat of {
-    i > 0 & j > 0 &
-    bco_valid3(a,i,j,p) & @no_simplify[least_period(a,p,i,j)] & !has_4_digits(p) // & !semiconvergent(p)
-}.
+// #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+// #load("automata/least_period_occurs.aut", "hoa", least_period_occurs(a,p))
+// #load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
+// Example using ostrowskiFormat of {
+//     i > 0 & j > 0 &
+//     bco_valid3(a,i,j,p) & @no_simplify[least_period(a,p,i,j)] & !has_4_digits(p) // & !semiconvergent(p)
+// }.
+
 // Theorem ("Test", {
 //     forall a,p.
 //         if least_period_occurs(a,p) then
@@ -344,4 +345,10 @@ Example using ostrowskiFormat of {
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
+
+#load("automata/recurrent.aut", "hoa", recurrent(a,i,j))
+Theorem ("All factors of Sturmian words are recurrent.", {
+    forall a,i,j.
+        if i < j then recurrent(a,i,j)
+}).
 
