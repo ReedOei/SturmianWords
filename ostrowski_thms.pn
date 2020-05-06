@@ -314,7 +314,7 @@ Define genHasNDigits limit :=
     let $NAME := "has_" ^ (toString limit) ^ "_digits" in do
         emit { $NAME(num) := built } .
 
-// Execute genHasNDigits 1.
+Execute genHasNDigits 1.
 // Execute genHasNDigits 2.
 // Execute genHasNDigits 3.
 // Execute genHasNDigits 4.
@@ -325,17 +325,15 @@ Define genHasNDigits limit :=
 // Execute genHasNDigits 40.
 
 // #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+// #load("automata/least_period_old.aut", "hoa", least_period_old(a,p,i,j))
+// Theorem ("Sanity check: least period definition manually is equivalent to the one we get from Pecan's internal min function.", {
+//     forall a,p,i,j. least_period(a,p,i,j) <=> least_period_old(a,p,i,j)
+// }).
+
 // #load("automata/least_period_occurs.aut", "hoa", least_period_occurs(a,p))
 // #load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
-// Example using ostrowskiFormat of {
-//     i > 0 & j > 0 &
-//     bco_valid3(a,i,j,p) & @no_simplify[least_period(a,p,i,j)] & !has_4_digits(p) // & !semiconvergent(p)
-// }.
-
-// Theorem ("Test", {
-//     forall a,p.
-//         if least_period_occurs(a,p) then
-//             semiconvergent(p)
+// Theorem ("If p is a least period of a factor of C_alpha, then p is the denominator of a semiconvergent of alpha.", {
+//     forall a,p. if least_period_occurs(a,p) then semiconvergent(p)
 // }).
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -352,15 +350,15 @@ Define genHasNDigits limit :=
 //         if i < j then recurrent(a,i,j)
 // }).
 
-#load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
-#load("automata/unbordered_by_period.aut", "hoa", unbordered_by_period(a,i,j))
-#load("automata/border.aut", "hoa", border(a,i,j,n))
+// #load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
+// #load("automata/unbordered_by_period.aut", "hoa", unbordered_by_period(a,i,j))
+// #load("automata/border.aut", "hoa", border(a,i,j,n))
 
-Theorem ("Sanity check: Defining unbordered factors in two ways that should be equivalent.", { @no_simplify[
-    forall a,i,j.
-        if 0 < i & i < j then
-            (if exists t. bco_positive(t) & border(a,i,j,t) then !unbordered_by_period(a,i,j))
-            &
-            (if !unbordered_by_period(a,i,j) then !unbordered(a,i,j))
-] }).
+// Theorem ("Sanity check: Defining unbordered factors in two ways that should be equivalent.", { @no_simplify[
+//     forall a,i,j.
+//         if 0 < i & i < j then
+//             (if exists t. bco_positive(t) & border(a,i,j,t) then !unbordered_by_period(a,i,j))
+//             &
+//             (if !unbordered_by_period(a,i,j) then !unbordered(a,i,j))
+// ] }).
 

@@ -226,16 +226,13 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // #load("automata/period.aut", "hoa", period(a, p, i, j))
 
 // least_period(a, p, i, j) := @postprocess[
-//     period(a, p, i, j) &
-//     forall p2. @postprocess[
-//         if period(a,p2,i,j) then bco_leq(p, p2)
-//     ]
+//     p = min { n : period(a,n,i,j) }
 // ]
 // #save_aut("automata/least_period.aut", least_period)
-// #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+#load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
 
-// least_period_occurs(a,p) := @postprocess[exists i,j. i > 0 & j > 0 & least_period(a,p,i,j)]
-// #save_aut("automata/least_period_occurs.aut", least_period_occurs)
+least_period_occurs(a,p) := @postprocess[exists i,j. i > 0 & j > 0 & least_period(a,p,i,j)]
+#save_aut("automata/least_period_occurs.aut", least_period_occurs)
 // #load("automata/least_period_occurs.aut", "hoa", least_period(a,p))
 
 // #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
