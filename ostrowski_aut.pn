@@ -281,17 +281,17 @@ least_period_occurs(a,p) := @postprocess[exists i,j. i > 0 & j > 0 & least_perio
 // #save_aut("automata/border.aut", border)
 // #load("automata/border.aut", "hoa", border(a,i,j,n))
 
-// unbordered(a,i,j) := @postprocess[
+// unbordered_by_border(a,i,j) := @postprocess[
 //     forall t. @postprocess[
 //         if bco_valid(a,t) & bco_positive(t) then !border(a,i,j,t)
 //     ]
 // ]
-// #save_aut("automata/unbordered.aut", unbordered)
-// #load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
+// #save_aut("automata/unbordered_by_border.aut", unbordered_by_border)
+// #load("automata/unbordered_by_border.aut", "hoa", unbordered_by_border(a,i,j))
 
 // #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
 // #load("automata/period.aut", "hoa", period(a, p, i, j))
-// unbordered_by_period(a,i,j) := exists p. least_period(a,p,i,j) & j - i = p
-// #save_aut("automata/unbordered_by_period.aut", unbordered_by_period)
-// #load("automata/unbordered_by_period.aut", "hoa", unbordered_by_period(a,i,j))
+// unbordered(a,i,j) := exists p. least_period(a,p,i,j) & j - i = p
+// #save_aut("automata/unbordered.aut", unbordered)
+// #load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
 

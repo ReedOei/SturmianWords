@@ -350,15 +350,15 @@ Execute genHasNDigits 1.
 //         if i < j then recurrent(a,i,j)
 // }).
 
-// #load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
-// #load("automata/unbordered_by_period.aut", "hoa", unbordered_by_period(a,i,j))
-// #load("automata/border.aut", "hoa", border(a,i,j,n))
+#load("automata/unbordered_by_border.aut", "hoa", unbordered_by_border(a,i,j))
+#load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
+#load("automata/border.aut", "hoa", border(a,i,j,n))
 
-// Theorem ("Sanity check: Defining unbordered factors in two ways that should be equivalent.", { @no_simplify[
-//     forall a,i,j.
-//         if 0 < i & i < j then
-//             (if exists t. bco_positive(t) & border(a,i,j,t) then !unbordered_by_period(a,i,j))
-//             &
-//             (if !unbordered_by_period(a,i,j) then !unbordered(a,i,j))
-// ] }).
+Theorem ("Sanity check: Defining unbordered factors in two ways that should be equivalent.", { @no_simplify[
+    forall a,i,j.
+        if 0 < i & i < j then
+            (if exists t. bco_positive(t) & border(a,i,j,t) then !unbordered(a,i,j))
+            &
+            (if !unbordered(a,i,j) then !unbordered_by_border(a,i,j))
+] }).
 
