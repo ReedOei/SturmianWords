@@ -176,14 +176,6 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // #save_aut("automata/antipalindrome.aut", antipalindrome)
 // #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
 
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-// TODO: Break this up into a bunch of files, one for each section of the paper?
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-
 // #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
 // recurrent(a,i,j) := @postprocess[
 //     bco_valid2(a,i,j) &
@@ -235,7 +227,9 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 
 // least_period(a, p, i, j) := @postprocess[
 //     period(a, p, i, j) &
-//     forall p2 is ostrowski(a). if period(a,p2,i,j) then bco_leq(p2, p)
+//     forall p2. @postprocess[
+//         if period(a,p2,i,j) then bco_leq(p, p2)
+//     ]
 // ]
 // #save_aut("automata/least_period.aut", least_period)
 // #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
