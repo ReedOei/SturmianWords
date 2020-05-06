@@ -189,28 +189,28 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // #save_aut("automata/recurrent.aut", recurrent)
 // #load("automata/recurrent.aut", "hoa", recurrent(a,i,j))
 
-// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
-// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
-// uniform_recurrent(a,i,n) := @postprocess[
-//     exists p.
-//     forall k. @postprocess[
-//         if k > 0 then
-//             exists l. @postprocess[
-//                 k <= l &
-//                 exists kp. @postprocess[
-//                     bco_adder_valid(a,k,p,kp) &
-//                     exists kpn. @postprocess[
-//                         @postprocess[
-//                             bco_adder_valid(a,kpn,n,kp) &
-//                             bco_leq(l, kpn)
-//                         ] &
-//                         factor_lt_len(a,i,n,l)
-//                     ]
-//                 ]
-//             ]
-//     ]
-// ]
-// #save_aut("automata/uniform_recurrent.aut", uniform_recurrent)
+#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+#load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+uniform_recurrent(a,i,n) := @postprocess[
+    exists p.
+    forall k. @postprocess[
+        if k > 0 then
+            exists l. @postprocess[
+                k <= l &
+                exists kp. @postprocess[
+                    bco_adder_valid(a,k,p,kp) &
+                    exists kpn. @postprocess[
+                        @postprocess[
+                            bco_adder_valid(a,kpn,n,kp) &
+                            bco_leq(l, kpn)
+                        ] &
+                        factor_lt_len(a,i,n,l)
+                    ]
+                ]
+            ]
+    ]
+]
+#save_aut("automata/uniform_recurrent.aut", uniform_recurrent)
 
 // #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
 // period(a, p, i, j) := @postprocess[
@@ -229,10 +229,10 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 //     p = min { n : period(a,n,i,j) }
 // ]
 // #save_aut("automata/least_period.aut", least_period)
-#load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+// #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
 
-least_period_occurs(a,p) := @postprocess[exists i,j. i > 0 & j > 0 & least_period(a,p,i,j)]
-#save_aut("automata/least_period_occurs.aut", least_period_occurs)
+// least_period_occurs(a,p) := @postprocess[exists i,j. i > 0 & j > 0 & least_period(a,p,i,j)]
+// #save_aut("automata/least_period_occurs.aut", least_period_occurs)
 // #load("automata/least_period_occurs.aut", "hoa", least_period(a,p))
 
 // #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
@@ -294,4 +294,25 @@ least_period_occurs(a,p) := @postprocess[exists i,j. i > 0 & j > 0 & least_perio
 // unbordered(a,i,j) := exists p. least_period(a,p,i,j) & j - i = p
 // #save_aut("automata/unbordered.aut", unbordered)
 // #load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
+
+// unbordered_len(a,i,n) := @postprocess[ unbordered(a,i,i+n) ]
+// #save_aut("automata/unbordered_len.aut", unbordered_len)
+// #load("automata/unbordered_len.aut", "hoa", unbordered_len(a,i,n))
+
+// True when C[i..j] has an unbordered factor at C[k..l]
+// unbordered_subfactor(a,i,j,k,l) := @postprocess[
+//     i <= k & l <= j & unbordered(a,k,l)
+// ]
+// True when C[i..j] has an unbordered factor of length n
+// unbordered_subfactor_len(a,i,j,n) := @postprocess[
+//     exists k. unbordered_subfactor(a,i,j,k,k+n)
+// ]
+// #save_aut("automata/unbordered_subfactor_len.aut", unbordered_subfactor_len)
+// #load("automata/unbordered_subfactor_len.aut", "hoa", unbordered_subfactor_len(a,i,j,n))
+
+// max_unbordered_subfactor_len(a,i,j,n) := @postprocess[@no_simplify[
+//     n = max { m : @postprocess[unbordered_subfactor_len(a,i,j,m)] }
+// ]]
+// #save_aut("automata/max_unbordered_subfactor_len.aut", max_unbordered_subfactor_len)
+// #load("automata/max_unbordered_subfactor_len.aut", "hoa", max_unbordered_subfactor_len(a,i,j,n))
 

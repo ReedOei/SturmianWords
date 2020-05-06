@@ -336,29 +336,37 @@ Execute genHasNDigits 1.
 //     forall a,p. if least_period_occurs(a,p) then semiconvergent(p)
 // }).
 
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-// TODO: Do stuff with recurrence
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-
 // #load("automata/recurrent.aut", "hoa", recurrent(a,i,j))
 // Theorem ("All factors of Sturmian words are recurrent.", {
 //     forall a,i,j.
 //         if i < j then recurrent(a,i,j)
 // }).
 
-#load("automata/unbordered_by_border.aut", "hoa", unbordered_by_border(a,i,j))
-#load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
-#load("automata/border.aut", "hoa", border(a,i,j,n))
+// #load("automata/unbordered_by_border.aut", "hoa", unbordered_by_border(a,i,j))
+// #load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
+// #load("automata/border.aut", "hoa", border(a,i,j,n))
 
-Theorem ("Sanity check: Defining unbordered factors in two ways that should be equivalent.", { @no_simplify[
-    forall a,i,j.
-        if 0 < i & i < j then
-            (if exists t. bco_positive(t) & border(a,i,j,t) then !unbordered(a,i,j))
-            &
-            (if !unbordered(a,i,j) then !unbordered_by_border(a,i,j))
-] }).
+// Theorem ("Sanity check: Defining unbordered factors in two ways that should be equivalent.", { @no_simplify[
+//     forall a,i,j.
+//         if 0 < i & i < j then
+//             (if exists t. bco_positive(t) & border(a,i,j,t) then !unbordered(a,i,j))
+//             &
+//             (if !unbordered(a,i,j) then !unbordered_by_border(a,i,j))
+// ] }).
+
+#load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
+#load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
+// Theorem ("Every unbordered factor has a length that is the denominator of a semiconvergent.", {
+//     forall a,i,n.
+//         if i > 0 & n > 0 & unbordered_len(a,i,n) then
+//             semiconvergent(n)
+// }).
+
+#load("automata/max_unbordered_subfactor_len.aut", "hoa", max_unbordered_subfactor_len(a,i,j,n))
+#load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+Theorem ("The least period if C[i..j] is the length of the longest unbordered factor of C[i..j].", {
+    forall a,i,j,p.
+        if i > 0 & j > i & p > 0 then
+            least_period(a,p,i,j) <=> max_unbordered_subfactor_len(a,i,j,p)
+}).
 
