@@ -354,19 +354,21 @@ Execute genHasNDigits 1.
 //             (if !unbordered(a,i,j) then !unbordered_by_border(a,i,j))
 // ] }).
 
-#load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
-#load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
+// #load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
+// #load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
 // Theorem ("Every unbordered factor has a length that is the denominator of a semiconvergent.", {
 //     forall a,i,n.
 //         if i > 0 & n > 0 & unbordered_len(a,i,n) then
 //             semiconvergent(n)
 // }).
 
-#load("automata/max_unbordered_subfactor_len.aut", "hoa", max_unbordered_subfactor_len(a,i,j,n))
-#load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
-Theorem ("The least period if C[i..j] is the length of the longest unbordered factor of C[i..j].", {
-    forall a,i,j,p.
-        if i > 0 & j > i & p > 0 then
-            least_period(a,p,i,j) <=> max_unbordered_subfactor_len(a,i,j,p)
-}).
+// #load("automata/max_unbordered_subfactor_len.aut", "hoa", max_unbordered_subfactor_len(a,i,j,n))
+// #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+// Theorem ("The least period if C[i..j] is the length of the longest unbordered factor of C[i..j].", {
+//     forall a,i,j,p.
+//         if i > 0 & j > i & p > 0 then
+//             least_period(a,p,i,j) <=> max_unbordered_subfactor_len(a,i,j,p)
+// }).
+
+// Random conjecture: The longest antisquare in any $C_{\alpha}$ where all terms in the continued fraction for $\alpha$ are less than $n$ is $n$, seems to be true for some basic tests, at least using bounds of $2^m - 1$ and finding antisquares up to length $2^m$ for $m = 1,2,3$. Not sure if it's actually possible to prove this using Pecan though.
 
