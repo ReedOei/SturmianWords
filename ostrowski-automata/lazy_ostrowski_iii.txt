@@ -1,0 +1,77 @@
+// lazy_ostrowski_iii(alpha,x) checks if, whenever x_i = 0, then d_{i-1} = a_{i-1}, except for the first two digits
+{0,1,2} {0,1,2}
+
+start: 1
+2 2 -> first_dig
+
+first_dig: 1
+0 0 -> first_dig
+0 1 -> first_dig
+1 1 -> first_dig
+1 0 -> first_dig
+2 2 -> second_dig_zero
+
+second_dig_zero: 1
+0 0 -> second_dig_zero
+1 0 -> second_dig_zero
+0 1 -> second_dig_neq
+1 1 -> second_dig_eq
+2 2 -> dig_zero,prev_zero
+
+second_dig_eq: 1
+0 0 -> second_dig_eq
+0 1 -> second_dig_neq
+1 1 -> second_dig_eq
+1 0 -> second_dig_neq
+2 2 -> dig_zero,prev_eq
+
+second_dig_neq: 1
+0 0 -> second_dig_neq
+0 1 -> second_dig_neq
+1 1 -> second_dig_neq
+1 0 -> second_dig_neq
+2 2 -> dig_zero,prev_neq
+
+dig_zero,prev_zero: 1
+0 0 -> dig_zero,prev_zero
+1 0 -> dig_zero,prev_zero
+0 1 -> dig_neq
+1 1 -> dig_eq
+2 2 -> dig_zero,prev_zero
+2 2 -> done
+
+dig_zero,prev_eq: 1
+0 0 -> dig_zero,prev_eq
+1 0 -> dig_zero,prev_eq
+0 1 -> dig_neq
+1 1 -> dig_eq
+2 2 -> dig_zero,prev_neq
+2 2 -> done
+
+// Can't end with the current digit being 0 if the previous digit was not equal.
+dig_zero,prev_neq: 0
+0 0 -> dig_zero,prev_neq
+1 0 -> dig_zero,prev_neq
+0 1 -> dig_neq
+1 1 -> dig_eq
+
+dig_neq: 1
+0 0 -> dig_neq
+1 0 -> dig_neq
+0 1 -> dig_neq
+1 1 -> dig_neq
+2 2 -> dig_zero,prev_neq
+2 2 -> done
+
+dig_eq: 1
+0 0 -> dig_eq
+0 1 -> dig_neq
+1 1 -> dig_eq
+1 0 -> dig_neq
+2 2 -> dig_zero,prev_eq
+
+done: 1
+0 0 -> done
+1 0 -> done
+2 2 -> done
+

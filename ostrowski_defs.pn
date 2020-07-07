@@ -106,3 +106,38 @@ Structure bco_standard defining {
     "equal": bco_eq(any, any)
 }
 
+#load("ostrowski-automata/lazy_ostrowski_i.txt", "pecan", lazy_ostrowski_i(a, x))
+#load("ostrowski-automata/lazy_ostrowski_ii.txt", "pecan", lazy_ostrowski_ii(a, x))
+#load("ostrowski-automata/lazy_ostrowski_iii.txt", "pecan", lazy_ostrowski_iii(a, x))
+#load("ostrowski-automata/lazy_ostrowski_iv.txt", "pecan", lazy_ostrowski_iv(a, x))
+#load("ostrowski-automata/all_zeros.txt", "pecan", all_zeros(x))
+#load("ostrowski-automata/rt2.txt", "pecan", rt2(a))
+#load("temp.txt", "walnut", temp(x))
+
+lazy_ostrowski(a,x) := @postprocess[
+    bco_standard(a) &
+    lazy_ostrowski_i(a,x) &
+    lazy_ostrowski_ii(a,x) &
+    lazy_ostrowski_iii(a,x) &
+    (lazy_ostrowski_iv(a,x) | all_zeros(x)) &
+    bco_finite_rep(x)
+]
+
+// Example using base3Format of { rt2(a) & lazy_ostrowski(a, x) & temp(x) }.
+
+// Example using ostrowskiFormat of { rt2(a) & !lazy_ostrowski(a, x) & bco_valid(a,x) } .
+
+// Example using ostrowskiFormat of { bco_standard(a) & lazy_ostrowski_i(a,x) & bco_finite_rep(x) }.
+// Example using ostrowskiFormat of { bco_standard(a) & lazy_ostrowski_ii(a,x) & bco_finite_rep(x) }.
+// Example using ostrowskiFormat of { bco_standard(a) & lazy_ostrowski_iii(a,x) & bco_finite_rep(x) }.
+// Example using ostrowskiFormat of { bco_standard(a) & lazy_ostrowski_iv(a,x) & bco_finite_rep(x) }.
+// #save_aut_img("lazy_ostrowski.svg", lazy_ostrowski)
+// Example using ostrowskiFormat of { bco_standard(a) & lazy_ostrowski(a,x) }.
+// Example using ostrowskiFormat of { bco_standard(a) & !lazy_ostrowski(a,x) & bco_valid(a,x) }.
+// Example using ostrowskiFormat of { rt2(a) & lazy_ostrowski(a,x) & !bco_valid(a,x) }.
+// Example using ostrowskiFormat of { rt2(a) & lazy_ostrowski(a,x) & !bco_valid(a,x) }.
+
+std_to_lazy(a,x,y) := exists z. ostrowski_zero(a, z) & bco_valid(a,x) & lazy_ostrowski(a,y) & bco_adder(a,x,z,y)
+
+Example using ostrowskiFormat of { rt2(a) & lazy_ostrowski(a,x) & !bco_valid(a,x) & bco_adder(a,x,y,z) }.
+

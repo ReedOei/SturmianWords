@@ -256,7 +256,7 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
 // first_special_factor(a,i,n) := @postprocess[@postprocess[@postprocess[
 //     @no_simplify[special_factor(a,i,n)] &
-//     forall j. if @no_simplify[factor_lt_len(a,j,n,i)] then i <= j
+//     forall j. if j > 0 & @no_simplify[factor_lt_len(a,j,n,i)] then i <= j
 // ]]]
 // #save_aut("automata/first_special_factor.aut", first_special_factor)
 // #load("automata/first_special_factor.aut", "hoa", first_special_factor)
@@ -310,8 +310,22 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // #save_aut("automata/max_unbordered_subfactor_len.aut", max_unbordered_subfactor_len)
 // #load("automata/max_unbordered_subfactor_len.aut", "hoa", max_unbordered_subfactor_len(a,i,j,n))
 
-#load("automata/unbordered_len.aut", "hoa", unbordered_len(a,i,n))
-first_unbordered_len(a,i,n) := unbordered_len(a,i,n) & forall j. if unbordered_len(a,j,n) then i <= j
-#save_aut("automata/first_unbordered_len.aut", first_unbordered_len)
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// first_factor_len(a,i,n) := @postprocess[
+//     bco_valid2(a,i,n) &
+//     @no_simplify[
+//     forall t.
+//         if bco_positive(t) & @no_simplify[factor_lt_len(a, t, n, i)] then
+//             bco_leq(i, t)
+//     ]
+// ]
+// #save_aut("automata/first_factor_len.aut", first_factor_len)
+// #load("automata/first_factor_len.aut", "hoa", first_factor_len(a,i,n))
+
+// #load("automata/unbordered_len.aut", "hoa", unbordered_len(a,i,n))
+// first_unbordered_len(a,i,n) := @postprocess[
+//     unbordered_len(a,i,n) & first_factor_len(a,i,n)
+// ]
+// #save_aut("automata/first_unbordered_len.aut", first_unbordered_len)
 // #load("automata/first_unbordered_len.aut", "hoa", first_unbordered_len(a,i,n))
 

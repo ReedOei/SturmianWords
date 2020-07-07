@@ -1,0 +1,26 @@
+// lazy_ostrowski_ii(alpha,x) checks if every digit x_i, except for the first, is less than or equal to the alpha_i
+{0,1,2} {0,1,2}
+
+start: 1
+2 2 -> first_dig
+
+first_dig: 1
+0 0 -> first_dig
+0 1 -> first_dig
+1 1 -> first_dig
+1 0 -> first_dig
+2 2 -> dig_leq
+
+dig_leq: 1
+0 0 -> dig_leq
+0 1 -> dig_gt
+1 1 -> dig_leq
+1 0 -> dig_leq
+2 2 -> dig_leq
+
+dig_gt: 0
+0 0 -> dig_gt
+0 1 -> dig_gt
+1 1 -> dig_gt
+1 0 -> dig_leq
+

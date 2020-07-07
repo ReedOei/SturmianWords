@@ -1,0 +1,26 @@
+// lazy_ostrowski_i(alpha,x) checks if the first digit of x is less than the first digit of alpha
+{0,1,2} {0,1,2}
+
+start: 1
+2 2 -> first_dig_geq
+
+first_dig_lt: 1
+0 0 -> first_dig_lt
+0 1 -> first_dig_geq
+1 1 -> first_dig_lt
+1 0 -> first_dig_lt
+2 2 -> done
+
+first_dig_geq: 0
+0 0 -> first_dig_geq
+0 1 -> first_dig_geq
+1 1 -> first_dig_geq
+1 0 -> first_dig_lt
+
+done: 1
+0 0 -> done
+1 0 -> done
+0 1 -> done
+1 1 -> done
+2 2 -> done
+

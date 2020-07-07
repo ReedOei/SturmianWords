@@ -41,7 +41,7 @@ Alias "OstEx" ==> Example (\t => (ostrowskiFormat, t)) .
 //             n is semiconvergent
 // }).
 
-// #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
+#load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
 // Theorem ("All Sturmian words contain finitely many antisquares", {
 //     forall a.
 //     exists m.
@@ -100,7 +100,7 @@ Define genHasNthPow num :=
 //     exists m. m > n & exists j. j = 1 & palindrome(a, j, m)
 // }) .
 
-// #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
+#load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
 // Theorem ("All Sturmian words contain finitely many antipalindromes.", {
 //     @no_simplify[
 //         forall a.
@@ -179,15 +179,15 @@ Execute genDigitLimit 4.
 Execute genDigitLimit 5.
 Execute genDigitLimit 6.
 
-// antisquare_len(a, i, n) := exists m. 2*m = n & antisquare(a, i, m)
+antisquare_len(a, i, n) := exists m. 2*m = n & antisquare(a, i, m)
 
-// has_antisquare(a, n) := exists i. antisquare(a, i, n)
-// has_antisquare_len(a, n) := exists i. antisquare_len(a, i, n)
-// has_antipalindrome(a, n) := exists i. antipalindrome(a, i, n)
+has_antisquare(a, n) := exists i. antisquare(a, i, n)
+has_antisquare_len(a, n) := exists i. antisquare_len(a, i, n)
+has_antipalindrome(a, n) := exists i. antipalindrome(a, i, n)
 
-// max_antisquare(a, n) := has_antisquare(a, n) & forall m. if has_antisquare(a, m) then m <= n
-// max_antisquare_len(a, n) := has_antisquare_len(a, n) & forall m. if has_antisquare_len(a, m) then m <= n
-// max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipalindrome(a, m) then m <= n
+max_antisquare(a, n) := has_antisquare(a, n) & forall m. if has_antisquare(a, m) then m <= n
+max_antisquare_len(a, n) := has_antisquare_len(a, n) & forall m. if has_antisquare_len(a, m) then m <= n
+max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipalindrome(a, m) then m <= n
 
 // Theorem ("max_antisquare is a function.", {
 //     (forall a. exists n. max_antisquare(a, n))
@@ -250,6 +250,19 @@ Execute genDigitLimit 6.
 //     (exists a. max_antisquare_len(a) = max_antipalindrome(a))
 // }).
 
+// TODO: Why are so many of these lengths 1010^w?
+Example using ostrowskiFormat of {
+    max_antisquare(a,n) & bco_valid(a,n) &
+    n = max_antipalindrome(a) & n > 100
+    // n = max_antipalindrome(a) & !is_4_digits(n)
+}.
+
+// Theorem ("Test", {
+//     forall a.
+//         max_antisquare(a) = max_antipalindrome(a) <=> max_antisquare(a) = 2
+// }).
+
+// TODO: Check if the bounds are reached infinitely often (by number of digits or something, idk)
 // OstEx  { bco_standard(a) & max_antisquare(a, n) & max_antipalindrome(a, n) } .
 // OstEx  { bco_standard(a) & max_antisquare_len(a, n) & max_antipalindrome(a, n) } .
 
@@ -371,4 +384,23 @@ Execute genHasNDigits 1.
 // }).
 
 // Random conjecture: The longest antisquare in any $C_{\alpha}$ where all terms in the continued fraction for $\alpha$ are less than $n$ is $n$, seems to be true for some basic tests, at least using bounds of $2^m - 1$ and finding antisquares up to length $2^m$ for $m = 1,2,3$. Not sure if it's actually possible to prove this using Pecan though.
+
+// #load("automata/first_unbordered_len.aut", "hoa", first_unbordered_len(a,i,n))
+// Theorem ("All Sturmian words contain exactly two unbordered factors of each length.", {
+//     forall a,n.
+//         exists i,j. i < j &
+//         forall k. if first_unbordered_len(a,k,n) then k in {i,j}
+// }).
+
+// #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
+// Example using ostrowskiFormat of { @no_simplify[
+//     first_unbordered_len(a,i,n) & first_unbordered_len(a,j,n) & reverse_factor(a,i,i+n,j+n-1)
+// ] }.
+
+#load("automata/period.aut", "hoa", period(a, p, i, j))
+p is per(a,n) := exists i,j. period(a,p,i,j)
+
+// TODO: How to do lazy Ostrowski representation?
+p is temp(a,n) :=
+    exists e. has_1_digit(e) & shorter_than(e, p) &
 
