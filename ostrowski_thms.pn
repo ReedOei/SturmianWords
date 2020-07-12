@@ -251,11 +251,11 @@ max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipali
 // }).
 
 // TODO: Why are so many of these lengths 1010^w?
-Example using ostrowskiFormat of {
-    max_antisquare(a,n) & bco_valid(a,n) &
-    n = max_antipalindrome(a) & n > 100
-    // n = max_antipalindrome(a) & !is_4_digits(n)
-}.
+// Example using ostrowskiFormat of {
+//     max_antisquare(a,n) & bco_valid(a,n) &
+//     n = max_antipalindrome(a) & n > 100
+//     // n = max_antipalindrome(a) & !is_4_digits(n)
+// }.
 
 // Theorem ("Test", {
 //     forall a.
@@ -397,10 +397,9 @@ Execute genHasNDigits 1.
 //     first_unbordered_len(a,i,n) & first_unbordered_len(a,j,n) & reverse_factor(a,i,i+n,j+n-1)
 // ] }.
 
-#load("automata/period.aut", "hoa", period(a, p, i, j))
-p is per(a,n) := exists i,j. period(a,p,i,j)
-
-// TODO: How to do lazy Ostrowski representation?
-p is temp(a,n) :=
-    exists e. has_1_digit(e) & shorter_than(e, p) &
+Theorem ("Test", {
+    forall a.
+    forall p,n.
+        p is per(a,n) <=> p is temp(a,n)
+}).
 
