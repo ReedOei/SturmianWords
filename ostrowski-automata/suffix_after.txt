@@ -1,0 +1,28 @@
+// Accepts (x,y,suf) such that 'suf' is a suffix of y which is 0 until x becomes 0 forever
+// That is, suf = 0^|x| * y[|x| + 1 ... infinity]
+{0,1,2} {0,1,2} {0,1,2}
+
+start: 1
+2 2 2 -> x_not_done,zero
+2 2 2 -> copy_suffix
+
+x_not_done,zero: 0
+0 0 0 -> x_not_done,zero
+0 1 0 -> x_not_done,zero
+1 0 0 -> x_not_done,nonzero
+1 1 0 -> x_not_done,nonzero
+2 2 2 -> x_not_done,zero
+
+x_not_done,nonzero: 1
+0 0 0 -> x_not_done,nonzero
+0 1 0 -> x_not_done,nonzero
+1 0 0 -> x_not_done,nonzero
+1 1 0 -> x_not_done,nonzero
+2 2 2 -> x_not_done,zero
+2 2 2 -> copy_suffix
+
+copy_suffix: 1
+0 0 0 -> copy_suffix
+0 1 1 -> copy_suffix
+2 2 2 -> copy_suffix
+

@@ -1,0 +1,41 @@
+// Accepts (x,y) such that x is at least as long as y (i.e., the last non-zero digit of x is in the same place or later than the last non-zero digit of y)
+{0,1,2} {0,1,2}
+
+start: 1
+2 2 -> zero,zero,same_len
+
+zero,zero,same_len: 1
+0 0 -> zero,zero,same_len
+1 0 -> nonzero,zero,same_len
+0 1 -> zero,nonzero,shorter
+1 1 -> nonzero,nonzero,same_len
+2 2 -> zero,zero,same_len
+
+nonzero,zero,same_len: 1
+0 0 -> nonzero,zero,same_len
+1 0 -> nonzero,zero,same_len
+0 1 -> nonzero,nonzero,same_len
+1 1 -> nonzero,nonzero,same_len
+2 2 -> zero,zero,same_len
+
+zero,nonzero,shorter: 0
+0 0 -> zero,nonzero,shorter
+1 0 -> nonzero,nonzero,same_len
+0 1 -> zero,nonzero,shorter
+1 1 -> nonzero,nonzero,same_len
+2 2 -> zero,zero,shorter
+
+nonzero,nonzero,same_len: 1
+0 0 -> nonzero,nonzero,same_len
+1 0 -> nonzero,nonzero,same_len
+0 1 -> nonzero,nonzero,same_len
+1 1 -> nonzero,nonzero,same_len
+2 2 -> zero,zero,same_len
+
+zero,zero,shorter: 0
+0 0 -> zero,zero,shorter
+1 0 -> nonzero,zero,same_len
+0 1 -> zero,nonzero,shorter
+1 1 -> nonzero,nonzero,same_len
+2 2 -> zero,zero,shorter
+
