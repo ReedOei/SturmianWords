@@ -2,7 +2,7 @@
 // has a different length in the two sequences is shorter in the first sequence than in the second.
 {0,1,2} {0,1,2}
 start: 0
-2 -> same_len
+2 2 -> same_len
 same_len: 0
 0 0 -> same_len
 0 1 -> same_len

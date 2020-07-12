@@ -12,11 +12,12 @@ first_dig: 1
 2 2 -> second_dig_zero
 
 second_dig_zero: 1
-0 0 -> second_dig_zero
-1 0 -> second_dig_zero
+0 0 -> second_dig_eq
+1 0 -> second_dig_neq
 0 1 -> second_dig_neq
 1 1 -> second_dig_eq
 2 2 -> dig_zero,prev_zero
+2 2 -> done
 
 second_dig_eq: 1
 0 0 -> second_dig_eq
@@ -24,6 +25,7 @@ second_dig_eq: 1
 1 1 -> second_dig_eq
 1 0 -> second_dig_neq
 2 2 -> dig_zero,prev_eq
+2 2 -> done
 
 second_dig_neq: 1
 0 0 -> second_dig_neq
@@ -31,29 +33,52 @@ second_dig_neq: 1
 1 1 -> second_dig_neq
 1 0 -> second_dig_neq
 2 2 -> dig_zero,prev_neq
+2 2 -> done
 
-dig_zero,prev_zero: 1
+dig_zero,prev_zero: 0
 0 0 -> dig_zero,prev_zero
-1 0 -> dig_zero,prev_zero
+1 0 -> dig_zero_neq,prev_zero
 0 1 -> dig_neq
 1 1 -> dig_eq
-2 2 -> dig_zero,prev_zero
+2 2 -> done
+
+dig_zero_neq,prev_zero: 0
+0 0 -> dig_zero_neq,prev_zero
+1 0 -> dig_zero_neq,prev_zero
+0 1 -> dig_neq
+1 1 -> dig_neq
 2 2 -> done
 
 dig_zero,prev_eq: 1
 0 0 -> dig_zero,prev_eq
-1 0 -> dig_zero,prev_eq
+1 0 -> dig_zero_neq,prev_eq
 0 1 -> dig_neq
 1 1 -> dig_eq
 2 2 -> dig_zero,prev_neq
 2 2 -> done
 
-// Can't end with the current digit being 0 if the previous digit was not equal.
+dig_zero_neq,prev_eq: 1
+0 0 -> dig_zero_neq,prev_eq
+1 0 -> dig_zero_neq,prev_eq
+0 1 -> dig_neq
+1 1 -> dig_neq
+2 2 -> dig_zero,prev_neq
+2 2 -> done
+
+// Can't end with the current digit being 0 if the previous digit was not equal, unless we're done (i.e., all 0s)
 dig_zero,prev_neq: 0
 0 0 -> dig_zero,prev_neq
-1 0 -> dig_zero,prev_neq
+1 0 -> dig_zero_neq,prev_neq
 0 1 -> dig_neq
 1 1 -> dig_eq
+2 2 -> done
+
+dig_zero_neq,prev_neq: 0
+0 0 -> dig_zero_neq,prev_neq
+1 0 -> dig_zero_neq,prev_neq
+0 1 -> dig_neq
+1 1 -> dig_neq
+2 2 -> done
 
 dig_neq: 1
 0 0 -> dig_neq
@@ -69,6 +94,7 @@ dig_eq: 1
 1 1 -> dig_eq
 1 0 -> dig_neq
 2 2 -> dig_zero,prev_eq
+2 2 -> done
 
 done: 1
 0 0 -> done

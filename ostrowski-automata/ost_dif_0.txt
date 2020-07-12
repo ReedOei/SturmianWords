@@ -1,0 +1,148 @@
+// Accepts pairs of Ost. reps. (x,y) such that x = y (i.e., x - y = 0)
+{0,1,2} {0,1,2} {0,1,2}
+
+start: 1
+2 2 2 -> first,both_match,diff_0
+2 2 2 -> main
+
+first,no_match,diff_0: 1
+0 0 0 -> first,no_match,diff_0
+0 1 1 -> first,no_match,diff_0
+1 0 0 -> first,no_match,diff_0
+1 1 1 -> first,no_match,diff_0
+2 2 2 -> second,need_diff_0
+2 2 2 -> main
+
+first,both_match,diff_0: 1
+0 0 0 -> first,both_match,diff_0
+0 1 1 -> first,diff_0
+1 0 0 -> first,diff_0
+1 1 1 -> first,both_match,diff_0
+1 1 0 -> first,diff_ai
+1 0 1 -> first,diff_minus_ai
+2 2 2 -> second,need_diff_0
+2 2 2 -> main
+
+first,diff_minus_ai: 1
+0 0 0 -> first,diff_minus_ai
+1 0 1 -> first,diff_minus_ai
+2 2 2 -> second,need_diff_1
+
+first,diff_ai: 1
+0 0 0 -> first,diff_ai
+1 1 0 -> first,diff_ai
+2 2 2 -> second,need_diff_minus_1
+
+first,diff_0: 1
+0 0 0 -> first,diff_0
+0 1 1 -> first,diff_0
+1 0 0 -> first,diff_0
+1 1 1 -> first,diff_0
+2 2 2 -> second,need_diff_0
+2 2 2 -> main
+
+second,need_diff_0: 1
+0 0 0 -> second,need_diff_0
+0 1 1 -> second,need_diff_0
+1 0 0 -> second,need_diff_0
+1 1 1 -> second,need_diff_0
+2 2 2 -> main
+
+second,need_diff_1: 0
+0 0 1 -> second,need_diff_1
+1 0 1 -> second,need_diff_1
+0 1 0 -> second,need_diff_0
+1 1 0 -> second,need_diff_0
+
+second,need_diff_minus_1: 0
+0 1 0 -> second,need_diff_minus_1
+1 1 0 -> second,need_diff_minus_1
+0 0 1 -> second,need_diff_0
+1 0 1 -> second,need_diff_0
+
+// Here, we see what difference we get, and then we ensure that the proper differences appear
+main: 0
+0 0 0 -> main,need_diff_0
+1 0 0 -> main,need_diff_0
+0 1 1 -> main,need_diff_0
+1 1 1 -> main,need_diff_0
+0 0 1 -> main,need_diff_1,need_diff_ai,need_diff_minus_1
+0 0 1 -> main,need_diff_0,need_diff_minus_ai,need_diff_1
+1 0 1 -> main,need_diff_1,need_diff_ai,need_diff_minus_1
+1 0 1 -> main,need_diff_0,need_diff_minus_ai,need_diff_1
+0 1 0 -> main,need_diff_minus_1,need_diff_minus_ai,need_diff_1
+0 1 0 -> main,need_diff_0,need_diff_ai,need_diff_minus_1
+1 1 0 -> main,need_diff_minus_1,need_diff_minus_ai,need_diff_1
+1 1 0 -> main,need_diff_0,need_diff_ai,need_diff_minus_1
+
+main,need_diff_0,need_diff_0,need_diff_0: 1
+0 0 0 -> main,need_diff_0,need_diff_0,need_diff_0
+0 1 1 -> main,need_diff_0,need_diff_0,need_diff_0
+1 0 0 -> main,need_diff_0,need_diff_0,need_diff_0
+1 1 1 -> main,need_diff_0,need_diff_0,need_diff_0
+2 2 2 -> main,need_diff_0,need_diff_0
+
+main,need_diff_0,need_diff_0: 1
+0 0 0 -> main,need_diff_0,need_diff_0
+0 1 1 -> main,need_diff_0,need_diff_0
+1 0 0 -> main,need_diff_0,need_diff_0
+1 1 1 -> main,need_diff_0,need_diff_0
+2 2 2 -> main,need_diff_0
+
+main,need_diff_0: 1
+0 0 0 -> main,need_diff_0
+0 1 1 -> main,need_diff_0
+1 0 0 -> main,need_diff_0
+1 1 1 -> main,need_diff_0
+2 2 2 -> main
+
+main,need_diff_1,need_diff_ai,need_diff_minus_1: 0
+0 0 1 -> main,need_diff_1,need_diff_ai,need_diff_minus_1
+1 0 1 -> main,need_diff_1,need_diff_ai,need_diff_minus_1
+0 1 0 -> main,need_diff_0,need_diff_ai,need_diff_minus_1
+1 1 0 -> main,need_diff_0,need_diff_ai,need_diff_minus_1
+
+main,need_diff_0,need_diff_ai,need_diff_minus_1: 1
+0 0 0 -> main,need_diff_0,need_diff_ai,need_diff_minus_1
+0 1 1 -> main,need_diff_0,need_diff_ai,need_diff_minus_1
+1 0 0 -> main,need_diff_0,need_diff_ai,need_diff_minus_1
+1 1 1 -> main,need_diff_0,need_diff_ai,need_diff_minus_1
+2 2 2 -> main,need_diff_ai,need_diff_minus_1
+
+main,need_diff_ai,need_diff_minus_1: 1
+0 0 0 -> main,need_diff_ai,need_diff_minus_1
+1 1 0 -> main,need_diff_ai,need_diff_minus_1
+2 2 2 -> main,need_diff_minus_1
+2 2 2 -> main,need_diff_0,need_diff_ai,need_diff_minus_1
+
+main,need_diff_minus_1: 0
+0 1 0 -> main,need_diff_minus_1
+1 1 0 -> main,need_diff_minus_1
+0 0 1 -> main,need_diff_0
+1 0 1 -> main,need_diff_0
+
+main,need_diff_minus_1,need_diff_minus_ai,need_diff_1: 1
+0 1 0 -> main,need_diff_minus_1,need_diff_minus_ai,need_diff_1
+1 1 0 -> main,need_diff_minus_1,need_diff_minus_ai,need_diff_1
+0 0 1 -> main,need_diff_0,need_diff_minus_ai,need_diff_1
+1 0 1 -> main,need_diff_0,need_diff_minus_ai,need_diff_1
+
+main,need_diff_0,need_diff_minus_ai,need_diff_1: 1
+0 0 0 -> main,need_diff_0,need_diff_minus_ai,need_diff_1
+0 1 1 -> main,need_diff_0,need_diff_minus_ai,need_diff_1
+1 0 0 -> main,need_diff_0,need_diff_minus_ai,need_diff_1
+1 1 1 -> main,need_diff_0,need_diff_minus_ai,need_diff_1
+2 2 2 -> main,need_diff_minus_ai,need_diff_1
+
+main,need_diff_minus_ai,need_diff_1: 1
+0 0 0 -> main,need_diff_minus_ai,need_diff_1
+1 0 1 -> main,need_diff_minus_ai,need_diff_1
+2 2 2 -> main,need_diff_1
+2 2 2 -> main,need_diff_0,need_diff_minus_ai,need_diff_1
+
+main,need_diff_1: 0
+0 0 1 -> main,need_diff_1
+1 0 1 -> main,need_diff_1
+0 1 0 -> main,need_diff_0
+1 1 0 -> main,need_diff_0
+

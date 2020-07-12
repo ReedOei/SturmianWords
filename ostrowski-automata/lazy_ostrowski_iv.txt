@@ -1,4 +1,4 @@
-// lazy_ostrowski_iii(alpha,x) checks if when x_1 = 0, then x_0 = alpha_0 - 1
+// lazy_ostrowski_iv(alpha,x) checks if when x_1 = 0, then x_0 = alpha_0 - 1
 {0,1,2} {0,1,2}
 
 start: 1
@@ -7,7 +7,7 @@ start: 1
 first_dig_unknown: 0
 0 0 -> first_dig_not_max
 0 1 -> first_dig_max
-1 0 -> first_dig_not_max
+1 0 -> first_dig_was_max
 1 1 -> first_dig_not_max
 
 first_dig_not_max: 1
@@ -16,39 +16,37 @@ first_dig_not_max: 1
 0 1 -> first_dig_not_max
 1 1 -> first_dig_not_max
 2 2 -> second_zero,was_not_max
+2 2 -> done
 
 first_dig_max: 1
 0 0 -> first_dig_not_max
 0 1 -> first_dig_max
 1 0 -> first_dig_was_max
 1 1 -> first_dig_not_max
-2 2 -> second_zero,was_max
 
 first_dig_was_max: 1
 0 0 -> first_dig_was_max
-1 0 -> first_dig_was_max
-0 1 -> first_dig_was_max
+0 1 -> first_dig_not_max
+1 0 -> first_dig_not_max
 1 1 -> first_dig_was_max
-2 2 -> second_zero,was_max
+2 2 -> anything
 
 // Can't finish in this state, because if we were zero, then the previous digit must have been max (i.e., x_0 = alpha_0 - 1)
 second_zero,was_not_max: 0
 0 0 -> second_zero,was_not_max
 1 0 -> second_zero,was_not_max
-0 1 -> done
-1 1 -> done
+0 1 -> anything
+1 1 -> anything
 
-second_zero,was_max: 1
-0 0 -> second_zero,was_max
-1 0 -> second_zero,was_max
-0 1 -> done
-1 1 -> done
-2 2 -> done
+anything: 1
+0 0 -> anything
+1 0 -> anything
+0 1 -> anything
+1 1 -> anything
+2 2 -> anything
 
 done: 1
 0 0 -> done
 1 0 -> done
-0 1 -> done
-1 1 -> done
 2 2 -> done
 
