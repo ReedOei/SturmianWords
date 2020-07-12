@@ -1,0 +1,19 @@
+// bounded_by(x,y) checks if every digit of x is less than or equal to every digit of y
+{0,1,2} {0,1,2}
+
+start: 1
+2 2 -> dig_leq
+
+dig_leq: 1
+0 0 -> dig_leq
+1 0 -> dig_gt
+1 1 -> dig_leq
+0 1 -> dig_leq
+2 2 -> dig_leq
+
+dig_gt: 0
+0 0 -> dig_gt
+1 0 -> dig_gt
+1 1 -> dig_gt
+0 1 -> dig_leq
+
