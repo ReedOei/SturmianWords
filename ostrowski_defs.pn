@@ -107,18 +107,81 @@ Structure bco_standard defining {
 }
 
 #load("ostrowski-automata/lazy_ostrowski_i.txt", "pecan", lazy_ostrowski_i(a, x))
-#load("ostrowski-automata/lazy_ostrowski_ii.txt", "pecan", lazy_ostrowski_ii(a, x))
 #load("ostrowski-automata/lazy_ostrowski_iii.txt", "pecan", lazy_ostrowski_iii(a, x))
 #load("ostrowski-automata/lazy_ostrowski_iv.txt", "pecan", lazy_ostrowski_iv(a, x))
+
+#load("ostrowski-automata/bounded_by.txt", "pecan", bounded_by(x, y))
 
 lazy_ostrowski(a,x) := @postprocess[
     bco_standard(a) &
     lazy_ostrowski_i(a,x) &
-    lazy_ostrowski_ii(a,x) &
+    bounded_by(x,a) &
     lazy_ostrowski_iii(a,x) &
     lazy_ostrowski_iv(a,x) &
     bco_finite_rep(x)
 ]
 
 #load("ostrowski-automata/ost_dif_0.txt", "pecan", ost_dif_0(a,x,y))
+
+Define genDigitLimit limit :=
+    let aut := mkAut ["num"] [3] in
+    let mkName := (\n => "digit_" ^ (toString n)) in
+    let autStates := withStates aut (
+                        [("start", true), (mkName (limit + 1), true)] @
+                        (map (\n => (mkName n, true)) [1..limit])
+                    ) in
+    let finalAut := withTransitions autStates (
+                        [("start", "digit_1", "2"),
+                         (mkName (limit + 1), mkName (limit + 1), "0"),
+                         (mkName (limit + 1), mkName (limit + 1), "2")] @
+                        (flatMap (\n => [(mkName n, mkName n, "0"),
+                                         (mkName n, mkName n, "1"),
+                                         (mkName n, mkName (n + 1), "2")]) [1..limit])
+                    ) in
+    let built := buildAut finalAut in
+    let $NAME := "is_" ^ (toString limit) ^ "_digits" in do
+        emit { $NAME(num) := built } .
+
+Execute genDigitLimit 1.
+Execute genDigitLimit 2.
+Execute genDigitLimit 3.
+Execute genDigitLimit 4.
+Execute genDigitLimit 5.
+Execute genDigitLimit 6.
+
+// Build an automaton recognizing sequences that have at most `limit` non-zero entries
+Define genHasNDigits limit :=
+    let aut := mkAut ["num"] [3] in
+    let mkName := (\n => "digit_" ^ (toString n)) in
+    let mkNameNonZero := (\n => "digit_nonzero_" ^ (toString n)) in
+    let autStates := withStates aut (
+                        [("start", true), (mkName (limit + 1), true)] @
+                        (map (\n => (mkName n, true)) [1..limit]) @
+                        (map (\n => (mkNameNonZero n, true)) [1..limit])
+                    ) in
+    let finalAut := withTransitions autStates (
+                        [("start", "digit_1", "2"),
+                         (mkName (limit + 1), mkName (limit + 1), "0"),
+                         (mkName (limit + 1), mkName (limit + 1), "2")] @
+                        (flatMap (\n => [(mkName n, mkName n, "0"),
+                                         (mkName n, mkNameNonZero n, "1"),
+                                         (mkName n, mkName n, "2")]) [1..limit]) @
+                        (flatMap (\n => [(mkNameNonZero n, mkNameNonZero n, "0"),
+                                         (mkNameNonZero n, mkNameNonZero n, "1"),
+                                         (mkNameNonZero n, mkName (n+1), "2")]) [1..limit])
+                    ) in
+    let built := buildAut finalAut in
+    let $NAME := "has_" ^ (toString limit) ^ "_digits" in do
+        emit { $NAME(num) := built } .
+
+Execute genHasNDigits 1.
+// Execute genHasNDigits 2.
+// Execute genHasNDigits 3.
+// Execute genHasNDigits 4.
+// Execute genHasNDigits 5.
+// Execute genHasNDigits 6.
+// Execute genHasNDigits 7.
+// Execute genHasNDigits 15.
+// Execute genHasNDigits 40.
+
 
