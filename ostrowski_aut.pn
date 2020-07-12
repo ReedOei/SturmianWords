@@ -329,10 +329,3 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // #save_aut("automata/first_unbordered_len.aut", first_unbordered_len)
 // #load("automata/first_unbordered_len.aut", "hoa", first_unbordered_len(a,i,n))
 
-// #load("automata/period.aut", "hoa", period(a,p,i,j))
-// p is per(a,n) := @postprocess[
-//     exists s is ostrowski(a). s = 1 & exists t. bco_succ(a,n,t) & @postprocess[period(a,p,s,t)]
-// ]
-// #save_aut("automata/per.aut", per)
-// #load("automata/per.aut", "hoa", per(a,n,p))
-

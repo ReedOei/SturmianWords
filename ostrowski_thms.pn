@@ -337,9 +337,13 @@ max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipali
 //     first_unbordered_len(a,i,n) & first_unbordered_len(a,j,n) & reverse_factor(a,i,i+n,j+n-1)
 // ] }.
 
+// See: https://arxiv.org/abs/2005.11718
 #load("ostrowski-automata/as_long_as.txt", "pecan", as_long_as(x,y))
 #load("ostrowski-automata/suffix_after.txt", "pecan", suffix_after(x,y,suf))
-#load("automata/per.aut", "hoa", per(a,n,p))
+#load("automata/period.aut", "hoa", period(a,p,i,j))
+p is $Per(a,n) := @postprocess[
+    exists s is ostrowski(a). s = 1 & exists t. bco_succ(a,n,t) & @postprocess[period(a,p,s,t)]
+]
 
 $A(a,n,p) :=
     bco_standard(a) &
@@ -359,6 +363,6 @@ $A(a,n,p) :=
 Theorem ("Theorem 6 (b) from 'An inequality for the number of periods in a word'", {
     forall a.
     forall p,n.
-        p is per(a,n) <=> p is $A(a,n)
+        p is $Per(a,n) <=> p is $A(a,n)
 }).
 
