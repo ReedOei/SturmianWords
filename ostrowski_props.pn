@@ -1,36 +1,70 @@
 #import("ostrowski_defs.pn")
 
+Theorem ("ost_dif_0 is reflexive", {
+    forall a is bco_standard.
+    (forall x is lazy_ostrowski(a). ost_dif_0(a,x,x))
+    &
+    (forall y is ostrowski(a). ost_dif_0(a,y,y))
+}).
+
+Theorem ("ost_dif_0 is symmetric", {
+    forall a is bco_standard.
+    forall x is ostrowski(a).
+    forall y is lazy_ostrowski(a). ost_dif_0(a,x,y) <=> ost_dif_0(a,y,x)
+}).
+
+Theorem ("ost_dif_0 is transitive", {
+    forall a is bco_standard.
+    (forall x,y,z is ostrowski(a). if ost_dif_0(a,x,y) & ost_dif_0(a,y,z) then ost_dif_0(a,x,z))
+    &
+    (forall r,s,t is lazy_ostrowski(a). if ost_dif_0(a,r,s) & ost_dif_0(a,s,t) then ost_dif_0(a,r,t))
+}).
+
+Theorem ("Every Ostrowski representation has an equivalent Lazy Ostrowski representation and vice versa", {
+    forall a is bco_standard.
+        (forall n is ostrowski(a). exists m is lazy_ostrowski(a). ost_dif_0(a,n,m))
+        &
+        (forall n is lazy_ostrowski(a). exists m is ostrowski(a). ost_dif_0(a,n,m))
+}).
+
+Theorem ("The lazy Ostrowski representation is unique", {
+    forall a is bco_standard.
+    forall n is lazy_ostrowski(a).
+    forall m is lazy_ostrowski(a).
+        ost_dif_0(a,n,m) <=> bco_eq(n, m)
+}).
+
 Theorem ("All Ostrowski-a numeration systems have a 0.", {
-    forall a. exists z. bco_valid(a, z) & bco_zero(z)
+    forall a is bco_standard. exists z is ostrowski(a). bco_valid(a, z) & bco_zero(z)
 }).
 
 Theorem ("All Ostrowski-a numeration systems have a 1.", {
-    forall a, z. 
-    if bco_standard(a) & bco_zero(z) & bco_valid(a,z) then 
+    forall a, z.
+    if bco_standard(a) & bco_zero(z) & bco_valid(a,z) then
         (exists i. bco_valid(a,i) & bco_succ(a,z,i))
 }).
 
 Theorem ("Sucessors are unique.", {
-    forall a. forall x, y, z. 
-    if bco_succ(a,x,y) & bco_succ(a,x,z) then 
+    forall a. forall x, y, z.
+    if bco_succ(a,x,y) & bco_succ(a,x,z) then
         bco_eq(y,z)
 }).
 
 Theorem ("Addition of Ostrowski-a representations is a function (i.e., there is an output for every input).", {
-    forall a. forall x, y. 
+    forall a. forall x, y.
     if bco_valid2(a,x,y) then
         exists z. bco_valid(a,z) & bco_adder(a,x,y,z)
 }).
 
 Theorem ("Every valid Ostrowski-a representation has a successor.", {
-    forall a, x. 
-    if bco_valid(a, x) then 
+    forall a, x.
+    if bco_valid(a, x) then
         exists u. bco_succ(a,x,u)
 }).
 
 Theorem ("Ostrowski addition satisfies base case of addition definition.", {
-    forall a. forall x, y, z. 
-    if bco_zero(x) & bco_valid3(a, x, y, z) then 
+    forall a. forall x, y, z.
+    if bco_zero(x) & bco_valid3(a, x, y, z) then
         (bco_adder(a, x, y, z) <=> bco_eq(y, z))
 }).
 
@@ -41,8 +75,8 @@ Theorem ("Ostrowski addition satisfies inductive case of addition definition.", 
 }).
 
 Theorem ("All natural numbers other than 0 have a predecessor.", {
-    forall a, x. 
-    if bco_valid(a,x) then 
+    forall a, x.
+    if bco_valid(a,x) then
         (bco_zero(x) | (exists u. bco_succ(a,u,x)))
 }).
 
@@ -82,14 +116,14 @@ test_bco_leq_total() := forall a. forall x. forall y. bco_valid2(a,x,y) => (bco_
 #assert_prop(true, test_bco_leq_total)
 
 Theorem ("For all x, y, and z, we have x <= y iff x + z <= y + z", {
-    forall a. forall x,y,z,u,v. 
+    forall a. forall x,y,z,u,v.
     if (bco_valid3(a,x,y,z) & bco_valid2(a,u,v) & bco_adder(a,x,z,u) & bco_adder(a,y,z,v)) then
         (bco_leq(x, y) <=> bco_leq(u, v))
 }).
 
 Theorem ("If x <= y, then there is some z so that x + z = y.", {
-    forall a. forall x,y. 
-    if bco_valid2(a,x,y) then 
+    forall a. forall x,y.
+    if bco_valid2(a,x,y) then
         (bco_leq(x,y) <=> exists z. bco_adder(a,x,z,y))
 }).
 

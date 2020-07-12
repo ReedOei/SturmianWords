@@ -110,19 +110,6 @@ Structure bco_standard defining {
 #load("ostrowski-automata/lazy_ostrowski_ii.txt", "pecan", lazy_ostrowski_ii(a, x))
 #load("ostrowski-automata/lazy_ostrowski_iii.txt", "pecan", lazy_ostrowski_iii(a, x))
 #load("ostrowski-automata/lazy_ostrowski_iv.txt", "pecan", lazy_ostrowski_iv(a, x))
-// #load("ostrowski-automata/lazy_ostrowski_iv_first_dig_1.txt", "pecan", lazy_ostrowski_iv_first_dig_1(a, x))
-// #load("ostrowski-automata/first_dig_1.txt", "pecan", first_dig_1(a))
-#load("ostrowski-automata/all_zeros.txt", "pecan", all_zeros(x))
-#load("ostrowski-automata/rt2.txt", "pecan", rt2(a))
-#load("temp.txt", "walnut", temp(a))
-
-// lazy_ostrowski_iv(a,x) := @postprocess[
-//     (lazy_ostrowski_iv_not_1(a,x) & !first_dig_1(a)) |
-//     (lazy_ostrowski_iv_first_dig_1(a,x) & first_dig_1(a))
-// ]
-
-#save_aut("lazy_ostrowski_iv.aut", lazy_ostrowski_iv)
-#save_aut_img("lazy_ostrowski_iv.svg", lazy_ostrowski_iv)
 
 lazy_ostrowski(a,x) := @postprocess[
     bco_standard(a) &
@@ -133,50 +120,5 @@ lazy_ostrowski(a,x) := @postprocess[
     bco_finite_rep(x)
 ]
 
-#load("temp2.txt", "walnut", temp2(a))
-#load("ostrowski-automata/fib_alpha.txt", "walnut", fib_alpha(a))
-
-// #save_aut("lazy_ostrowski.txt", lazy_ostrowski)
-
-// Example using ostrowskiFormat of { rt2(a) & lazy_ostrowski(a,x) & temp(x) } .
-// Example using base3Format of { fib_alpha(a) & temp2(x) } .
-// Example using ostrowskiFormat of { fib_alpha(a) & lazy_ostrowski(a,x) & temp2(x) } .
-
 #load("ostrowski-automata/ost_dif_0.txt", "pecan", ost_dif_0(a,x,y))
-
-Theorem ("Std to lazy reflexive.", {
-    forall a is bco_standard.
-    (forall x is lazy_ostrowski(a). ost_dif_0(a,x,x))
-    &
-    (forall y is ostrowski(a). ost_dif_0(a,y,y))
-}).
-
-// Example using ostrowskiFormat of { bco_standard(a) & bco_valid(a,x) & lazy_ostrowski(a,y) & ost_dif_0(a,x,y) & !ost_dif_0(a,y,x) }.
-// Example using base3Format of { bco_standard(a) & bco_valid(a,x) & lazy_ostrowski(a,y) & ost_dif_0(a,x,y) & !ost_dif_0(a,y,x) }.
-
-Theorem ("Std to lazy symmetric.", {
-    forall a is bco_standard.
-    forall x is ostrowski(a).
-    forall y is lazy_ostrowski(a). ost_dif_0(a,x,y) <=> ost_dif_0(a,y,x)
-}).
-
-// Example using ostrowskiFormat of { bco_standard(a) & bco_valid(a,x) & !(exists y. lazy_ostrowski(a,y) & ost_dif_0(a,x,y)) }.
-// Example using base3Format of { bco_standard(a) & bco_valid(a,x) & !(exists y. lazy_ostrowski(a,y) & ost_dif_0(a,x,y)) }.
-
-Theorem ("Lazy ostrowski for every digit.", {
-    forall a is bco_standard.
-        (forall n is ostrowski(a). exists m is lazy_ostrowski(a). ost_dif_0(a,n,m))
-        &
-        (forall n is lazy_ostrowski(a). exists m is ostrowski(a). ost_dif_0(a,n,m))
-}).
-
-// Example using ostrowskiFormat of { bco_standard(a) & lazy_ostrowski(a,n) & lazy_ostrowski(a,m) & ost_dif_0(a,n,m) & !bco_eq(n,m) }.
-// Example using base3Format of { bco_standard(a) & lazy_ostrowski(a,n) & lazy_ostrowski(a,m) & ost_dif_0(a,n,m) & !bco_eq(n,m) }.
-
-Theorem ("Lazy ostrowski unique.", {
-    forall a is bco_standard.
-    forall n is lazy_ostrowski(a).
-    forall m is lazy_ostrowski(a).
-        ost_dif_0(a,n,m) <=> bco_eq(n, m)
-}).
 
