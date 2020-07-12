@@ -329,23 +329,23 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // #save_aut("automata/first_unbordered_len.aut", first_unbordered_len)
 // #load("automata/first_unbordered_len.aut", "hoa", first_unbordered_len(a,i,n))
 
-#load("automata/period.aut", "hoa", period(a,p,i,j))
-p is per(a,n) := @postprocess[
-    exists s,t. @postprocess[period(a,p,s,t) & bco_leq(t,n)]
-]
-#save_aut("automata/per.aut", per)
-// #load("automata/per.aut", "hoa", per(a,n,p))
+// #load("automata/period.aut", "hoa", period(a,p,i,j))
+// p is per(a,n) := @postprocess[
+//     exists s,t. @postprocess[period(a,p,s,t) & bco_leq(t,n)]
+// ]
+// #save_aut("automata/per.aut", per)
+#load("automata/per.aut", "hoa", per(a,n,p))
 
-// #load("ostrowski-automata/as_long_as.txt", "pecan", as_long_as(x,y))
-// #load("ostrowski-automata/suffix_after.txt", "pecan", suffix_after(x,y,suf))
+#load("ostrowski-automata/as_long_as.txt", "pecan", as_long_as(x,y))
+#load("ostrowski-automata/suffix_after.txt", "pecan", suffix_after(x,y,suf))
 
-// p is temp(a,n) :=
-//     exists lazy_n is lazy_ostrowski(a).
-//     exists e, lazy_n_suf, lazy_n_suf_std are ostrowski(a).
-//         ost_dif_0(a,n,lazy_n) &
-//         has_1_digits(e) &
-//         n is as_long_as(e) &
-//         suffix_after(e, lazy_n, lazy_n_suf) &
-//         ost_dif_0(a,lazy_n_suf,lazy_n_suf_std) &
-//         p = e + lazy_n_suf_std
+p is temp(a,n) :=
+    exists lazy_n is lazy_ostrowski(a).
+    exists e, lazy_n_suf, lazy_n_suf_std are ostrowski(a).
+        ost_dif_0(a,n,lazy_n) &
+        has_1_digits(e) &
+        n is as_long_as(e) &
+        suffix_after(e, lazy_n, lazy_n_suf) &
+        ost_dif_0(a,lazy_n_suf,lazy_n_suf_std) &
+        p = e + lazy_n_suf_std
 
