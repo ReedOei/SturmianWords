@@ -80,8 +80,6 @@ Theorem ("All natural numbers other than 0 have a predecessor.", {
         (bco_zero(x) | (exists u. bco_succ(a,u,x)))
 }).
 
-#assert_prop(true, test_bco_pred)
-
 test_bco_adder_not_zero() := forall a,x,y,z. (bco_adder(a,x,y,z) & bco_zero(z)) => bco_zero(x)
 #assert_prop(true, test_bco_adder_not_zero)
 
