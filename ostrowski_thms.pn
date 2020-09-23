@@ -357,10 +357,10 @@ Restrict s are ostrowski(a).
 p is $Per(a,n) := exists s. s = 1 & period(a,p,s,n+1)
 
 p is $A(a,n) :=
-    exists n_l,n_ls. lazy_ostrowski(a,n_l) & ost_equiv(a,n,n_l) &
-    exists m. ost_equiv(a,n_ls,m) &
+    exists n_l,m_l. lazy_ostrowski(a,n_l) & ost_equiv(a,n,n_l) &
+    exists m. ost_equiv(a,m_l,m) &
     exists i. i > 0 & has_1_digits(i) & as_long_as(n,i) &
-        bounded_by(i,n_l) & suffix_after(i,n_l,n_ls) &
+        bounded_by(i,n_l) & suffix_after(i,n_l,m_l) &
         i + m = p
 
 
