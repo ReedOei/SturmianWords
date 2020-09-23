@@ -349,31 +349,22 @@ max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipali
 // ] }.
 
 // See: https://arxiv.org/abs/2005.11718
-// #load("ostrowski-automata/as_long_as.txt", "pecan", as_long_as(x,y))
-// #load("ostrowski-automata/suffix_after.txt", "pecan", suffix_after(x,y,suf))
-// #load("automata/period.aut", "hoa", period(a,p,i,j))
-// p is $Per(a,n) := @postprocess[
-//     exists s is ostrowski(a). s = 1 & exists t. bco_succ(a,n,t) & @postprocess[period(a,p,s,t)]
-// ]
+#load("ostrowski-automata/as_long_as.txt", "pecan", as_long_as(x,y))
+#load("ostrowski-automata/suffix_after.txt", "pecan", suffix_after(x,y,suf))
+#load("automata/period.aut", "hoa", period(a,p,i,j))
+Restrict s are ostrowski(a).
 
-// $A(a,n,p) :=
-//     bco_standard(a) &
-//     bco_valid2(a,p,n) &
-//     exists lazy_n,lazy_n_suf. lazy_ostrowski(a,lazy_n) &
-//     exists lazy_n_suf_std. bco_valid(a,lazy_n_suf_std) &
-//     exists i.
-//         ost_dif_0(a,n,lazy_n) &
-//         has_1_digits(i) &
-//         as_long_as(n,i) &
-//         bco_positive(i) &
-//         bounded_by(i,lazy_n) &
-//         suffix_after(i, lazy_n, lazy_n_suf) &
-//         ost_dif_0(a,lazy_n_suf,lazy_n_suf_std) &
-//         bco_adder(a,i,lazy_n_suf_std,p)
+p is $Per(a,n) := exists s. s = 1 & period(a,p,s,n+1)
 
-// Theorem ("Theorem 6 (b) from 'An inequality for the number of periods in a word'", {
-//     forall a.
-//     forall p,n.
-//         p is $Per(a,n) <=> p is $A(a,n)
-// }).
+p is $A(a,n) :=
+    exists n_l,n_ls. lazy_ostrowski(a,n_l) & ost_equiv(a,n,n_l) &
+    exists m. ost_equiv(a,n_ls,m) &
+    exists i. i > 0 & has_1_digits(i) & as_long_as(n,i) &
+        bounded_by(i,n_l) & suffix_after(i,n_l,n_ls) &
+        i + m = p
+
+
+Theorem ("Theorem 6 (b) from 'An inequality for the number of periods in a word'", {
+    forall a. forall p,n. p is $Per(a,n) <=> p is $A(a,n)
+}).
 

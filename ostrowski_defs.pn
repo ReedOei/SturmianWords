@@ -126,7 +126,7 @@ lazy_ostrowski(a,x) := @postprocess[
     bco_finite_rep(x)
 ]
 
-#load("ostrowski-automata/ost_dif_0.txt", "pecan", ost_dif_0(a,x,y))
+#load("ostrowski-automata/ost_dif_0.txt", "pecan", ost_equiv(a,x,y))
 
 Define genDigitLimit limit :=
     let aut := mkAut ["num"] [3] in
