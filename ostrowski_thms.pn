@@ -4,7 +4,7 @@
 Restrict a is bco_standard.
 Restrict i, j, k, l, p, n, m are ostrowski(a).
 
-Alias "OstEx" ==> Example (\t => (ostrowskiFormat, t)) .
+#load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
 
 // #load("automata/eventually_periodic.aut", "hoa", eventually_periodic(a, p))
 // Theorem ("Sturmian words are not eventually periodic", {
@@ -85,6 +85,13 @@ Define genHasNthPow num :=
 // }) .
 
 #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
+#load("automata/factor_len.aut", "hoa", factor_len(a,i,n,j))
+
+// Theorem ("Sturmian words are balanced.", {
+//     forall a. !(exists i,n. palindrome(a, i, n) &
+//                 (exists j. factor_len(a,i,n,j) & $C[j - 1] = 0 & $C[j + n] = 0) &
+//                 (exists k. factor_len(a,i,n,k) & $C[k - 1] = 1 & $C[k + n] = 1))
+// }).
 
 // palindromes_in_pow2(a,n) := @postprocess[
 //     bco_standard(a) & cf_pow2(a) & exists i. palindrome(a,i,n)
@@ -217,7 +224,7 @@ max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipali
 //         max_antipalindrome(a) >= 2
 // }).
 
-// Theorem ("Maximum order of antisquares and maximum length of palindromes is 4 digits long, and maximum length of antisquares is 6 digits long.", {
+// Theorem ("Maximum order of antisquares and maximum length of antipalindromes is 4 digits long, and maximum length of antisquares is 6 digits long.", {
 //     forall a.
 //         is_4_digits(max_antisquare(a)) &
 //         is_4_digits(max_antipalindrome(a)) &
@@ -248,10 +255,6 @@ max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipali
 //         max_antisquare(a) = max_antipalindrome(a) <=> max_antisquare(a) = 2
 // }).
 
-// TODO: Check if the bounds are reached infinitely often (by number of digits or something, idk)
-// OstEx  { bco_standard(a) & max_antisquare(a, n) & max_antipalindrome(a, n) } .
-// OstEx  { bco_standard(a) & max_antisquare_len(a, n) & max_antipalindrome(a, n) } .
-
 // #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
 // Theorem ("Every Sturmian word is mirror invariant.", {
 //     forall a,i,j.
@@ -277,7 +280,6 @@ max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipali
 // ]}).
 
 // #load("automata/factor_test.aut", "hoa", factor_test(a,i,n,j))
-// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
 // Example using ostrowskiFormat of { @no_simplify[
 //     n > 0 & i > 0 &
 //     bco_valid3(a,i,n,j) & i < j & factor_lt_len(a,i,n,j) & !factor_test(a,i,n,j)
@@ -364,7 +366,7 @@ p is $A(a,n) :=
         i + m = p
 
 
-Theorem ("Theorem 6 (b) from 'An inequality for the number of periods in a word'", {
-    forall a. forall p,n. p is $Per(a,n) <=> p is $A(a,n)
-}).
+// Theorem ("Theorem 6 (b) from 'An inequality for the number of periods in a word'", {
+//     forall a. forall p,n. p is $Per(a,n) <=> p is $A(a,n)
+// }).
 
