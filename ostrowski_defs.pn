@@ -94,7 +94,8 @@ ostrowski_zero(alpha, z) := bco_valid(alpha, z) & bco_zero(z)
 x is ostrowski(alpha) := bco_valid(alpha, x)
 
 ostrowski_even(a, n) := exists m. bco_adder(a,m,m,n)
-ostrowski_odd(a, n) := !ostrowski_even(a,n)
+// We use this instead of !ostrowski_even to avoid computing complements.
+ostrowski_odd(a, n) := exists k. bco_succ(a,k,n) & exists m. bco_adder(a,m,m,k)
 
 Structure ostrowski(alpha) defining {
     "adder": bco_adder(alpha, any, any, any),

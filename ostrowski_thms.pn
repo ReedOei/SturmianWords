@@ -182,6 +182,42 @@ max_antisquare(a, n) := has_antisquare(a, n) & forall m. if has_antisquare(a, m)
 max_antisquare_len(a, n) := has_antisquare_len(a, n) & forall m. if has_antisquare_len(a, m) then m <= n
 max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipalindrome(a, m) then m <= n
 
+Define genVars num :=
+    if num = 0 then
+        []
+    else
+        let newVar := "v" ^ (toString num) in
+        let rest := genVars (num - 1) in do
+            emit { Restrict newVar is ostrowski(a). };
+            newVar :: rest .
+
+Define test prev vars :=
+    match vars with
+    case [x] => { exists x. prev < x & has_antisquare(a,x) }
+    case x :: xs =>
+        let next := test x xs
+        in { exists x. prev < x & has_antisquare(a,x) & next }
+    end.
+
+Define check prev vars :=
+    let pred := test prev vars in
+        emit { test(a) := pred }.
+
+Example using ostrowskiFormat of {
+    0 < n & j < k & l < p &
+    @postprocess[antisquare(a,i,n) & 0 < i & i < j & antisquare(a,j,n)] &
+    @postprocess[antisquare(a,k,n) & k < l & antisquare(a,l,n)] &
+    @postprocess[antisquare(a,p,n) & p < m & antisquare(a,m,n)]
+}.
+// Theorem ("Test", {
+//     exists a.
+//     exists n. 0 < n & has_antisquare(a,n) &
+//     exists m. n < m & has_antisquare(a,m) &
+//     exists p. m < p & has_antisquare(a,p) &
+//     exists k. p < k & has_antisquare(a,k) &
+//     exists l. p < l & has_antisquare(a,l)
+// }).
+
 // Theorem ("max_antisquare is a function.", {
 //     (forall a. exists n. max_antisquare(a, n))
 //     &
