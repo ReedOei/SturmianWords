@@ -7,6 +7,7 @@
 //     exists j1. bco_succ(a,j1,j) &
 //     forall k. if i <= k & bco_lt(k, j1) then exists k1. bco_succ(a,k,k1) & $C[k] != $C[k1]
 // #save_aut("automata/is_all_01.aut", is_all_01)
+// #load("automata/is_all_01.aut", "hoa", is_all_01(a,i,j))
 
 // is_01_star(a,i,n) := @postprocess[
 //     is_all_01(a,i,i+n) & $C[i] = 0
@@ -16,6 +17,8 @@
 // ]
 // #save_aut("automata/is_01_star.aut", is_01_star)
 // #save_aut("automata/is_10_star.aut", is_10_star)
+// #load("automata/is_01_star.aut", "hoa", is_01_star(a,i,n))
+// #load("automata/is_10_star.aut", "hoa", is_10_star(a,i,n))
 // #forget(i)
 // #forget(j)
 // #forget(k)
@@ -51,11 +54,11 @@
 //             @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] != $C[jn]]]])]
 //     ]]
 // #save_aut("automata/antisquare.aut", antisquare)
+// #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
 
 // #load("automata/pow_2.aut", "hoa", pow_2(a, i, n))
 
-Restrict i, j, k, l, p, n are ostrowski(a).
-
+// Restrict i, j, k, l, p, n are ostrowski(a).
 // Define genNthPow num :=
 //     let $PREV_POW := "pow_" ^ (toString (num - 1)) in
 //     let $POW_NAME := "pow_" ^ (toString num) in
