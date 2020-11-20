@@ -50,14 +50,17 @@ max_antisquare(a, n) := has_antisquare(a, n) & forall m. if has_antisquare(a, m)
 max_antisquare_len(a, n) := has_antisquare_len(a, n) & forall m. if has_antisquare_len(a, m) then m <= n
 max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipalindrome(a, m) then m <= n
 
-is_all_01_len(a,i,n) := is_all_01(a,i,i+n)
+is_all_01(a,i,n) := @postprocess[
+    bco_valid2(a,i,n) &
+    forall k. @postprocess[if @postprocess[bco_valid3(a,i,k,n) & i <= k & k < i+n-1] then $C[k] != $C[k+1]]
+]
 
 Theorem ("All antisquares are of the form (01)^* or (10)^*", {
-    forall a. forall i,n. if antisquare(a,i,n) then is_all_01_len(a,i,n)
+    forall a. forall i,n. if antisquare(a,i,n) then is_all_01(a,i,n)
 }).
 
 Theorem ("All antipalindromes are of the form (01)^* or (10)^*", {
-    forall a. forall i,n. if antipalindrome(a,i,n) then is_all_01_len(a,i,n/2)
+    forall a. forall i,n. if antipalindrome(a,i,n) then is_all_01(a,i,n/2)
 }).
 
 // Theorem ("Sturmian words are not eventually periodic", {
