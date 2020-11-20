@@ -13,83 +13,103 @@ Alias "Implication" ==> Execute saveImplication .
 
 bco_eq_temp(x, y) := bco_leq(x, y) & bco_leq(y, x)
 
-Implication ("ost_equiv_is_reflexive_over_lazy_ostrowski", {(bco_standard(a) ∧ lazy_ostrowski(a, x))}, {ost_equiv(a, x, x)}).
-Implication ("ost_equiv_is_reflexive_over_ostrowski", {(bco_standard(a) ∧ ostrowski(a, y))}, {ost_equiv(a, y, y)}).
-Implication ("ost_equiv_is_symmetric", {(bco_standard(a) ∧ (ostrowski(a, x) ∧ lazy_ostrowski(a, y)))}, {(ost_equiv(a, x, y) ⟺  ost_equiv(a, y, x))}).
-Implication ("ost_equiv_is_transitive_for_ostrowski", {(bco_standard(a) ∧ (((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)) ∧ (ost_equiv(a, x, y) ∧ ost_equiv(a, y, z))))}, {ost_equiv(a, x, z)}).
-Implication ("ost_equiv_is_transitive_for_lazy_ostrowski", {(bco_standard(a) ∧ (((lazy_ostrowski(a, r) ∧ lazy_ostrowski(a, s)) ∧ lazy_ostrowski(a, t)) ∧ (ost_equiv(a, r, s) ∧ ost_equiv(a, s, t))))}, {ost_equiv(a, r, t)}).
-Implication ("Every_Ostrowski_representation_has_an_equivalent_Lazy_Ostrowski_representation_and_vice_versa", {(bco_standard(a) ∧ ostrowski(a, n))}, {(∃m. ((⊤ ∧ lazy_ostrowski(a, m)) ∧ ost_equiv(a, n, m)))}).
-Implication ("Every_Lazy_Ostrowski_representation_has_an_equivalent_Ostrowski", {(bco_standard(a) ∧ lazy_ostrowski(a, n))}, {(∃m. ((⊤ ∧ ostrowski(a, m)) ∧ ost_equiv(a, n, m)))}).
-Implication ("The_lazy_Ostrowski_representation_is_unique", {(bco_standard(a) ∧ (lazy_ostrowski(a, n) ∧ lazy_ostrowski(a, m)))}, {(ost_equiv(a, n, m) ⟺  bco_eq(n, m))}).
-Implication ("All_Ostrowski-a_numeration_systems_have_a_0", {bco_standard(a)}, {(∃z. ((⊤ ∧ ostrowski(a, z)) ∧ (bco_valid(a, z) ∧ bco_zero(z))))}).
-Implication ("All_Ostrowski-a_numeration_systems_have_a_1", {(⊤ ∧ (bco_standard(a) ∧ (bco_zero(z) ∧ bco_valid(a, z))))}, {(∃i. (⊤ ∧ (bco_valid(a, i) ∧ bco_succ(a, z, i))))}).
-Implication ("Sucessors_are_unique", {(⊤ ∧ (⊤ ∧ (bco_succ(a, x, y) ∧ bco_succ(a, x, z))))}, {bco_eq(y, z)}).
-Implication ("Addition_of_Ostrowski-a_representations_is_a_function_(ie,_there_is_an_output_for_every_input)", {(⊤ ∧ (⊤ ∧ bco_valid2(a, x, y)))}, {(∃z. (⊤ ∧ (bco_valid(a, z) ∧ bco_adder(a, x, y, z))))}).
-Implication ("Every_valid_Ostrowski-a_representation_has_a_successor", {(⊤ ∧ bco_valid(a, x))}, {(∃u. (⊤ ∧ bco_succ(a, x, u)))}).
-Implication ("Ostrowski_addition_satisfies_base_case_of_addition_definition", {(bco_standard(a) ∧ (((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)) ∧ bco_zero(x)))}, {(bco_adder(a, x, y, z) ⟺  bco_eq(y, z))}).
-Implication ("Ostrowski_addition_satisfies_inductive_case_of_addition_definition", {(bco_standard(a) ∧ (((((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)) ∧ ostrowski(a, u)) ∧ ostrowski(a, v)) ∧ (bco_succ(a, u, x) ∧ bco_succ(a, v, z))))}, {(bco_adder(a, x, y, z) ⟺  bco_adder(a, u, y, v))}).
-Implication ("All_natural_numbers_other_than_0_have_a_predecessor", {(⊤ ∧ bco_valid(a, x))}, {(bco_zero(x) ∨ (∃u. (⊤ ∧ bco_succ(a, u, x))))}).
-Implication ("Ostrowski_addition_is_commutative", {(bco_standard(a) ∧ ((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)))}, {(bco_adder(a, x, y, z) ⟺  bco_adder(a, y, x, z))}).
-Implication ("Odd_and_even_work_as_expected", {(bco_standard(a) ∧ ostrowski(a, x))}, {(ostrowski_even(a, x) ⟺  (¬ostrowski_odd(a, x)))}).
-Implication ("Associativity_implies", {(bco_standard(a) ∧ ((((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)) ∧ ostrowski(a, w)) ∧ (∃u. ((⊤ ∧ ostrowski(a, u)) ∧ (bco_adder(a, x, y, u) ∧ bco_adder(a, u, z, w))))))}, {(∃v. ((⊤ ∧ ostrowski(a, v)) ∧ (bco_adder(a, y, z, v) ∧ bco_adder(a, x, v, w))))}).
-Implication ("Associativity_implied_by", {(bco_standard(a) ∧ ((((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)) ∧ ostrowski(a, w)) ∧ (∃v. ((⊤ ∧ ostrowski(a, v)) ∧ (bco_adder(a, y, z, v) ∧ bco_adder(a, x, v, w))))))}, {(∃u. ((⊤ ∧ ostrowski(a, u)) ∧ (bco_adder(a, x, y, u) ∧ bco_adder(a, u, z, w))))}).
-Implication ("If_x_=_y,_there_is_always_a_z_such_that_x_+_z_=_y,_and_z_=_0", {(bco_standard(a) ∧ ((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ bco_eq(x, y)))}, {(∃z. (⊤ ∧ (bco_adder(a, x, z, y) ∧ bco_zero(z))))}).
-Implication ("For_all_x,_y,_and_z,_we_have_x_<=_y_iff_x_+_z_<=_y_+_z", {(⊤ ∧ (⊤ ∧ (bco_valid3(a, x, y, z) ∧ (bco_valid2(a, u, v) ∧ (bco_adder(a, x, z, u) ∧ bco_adder(a, y, z, v))))))}, {(bco_leq(x, y) ⟺  bco_leq(u, v))}).
-Implication ("If_x_<=_y,_then_there_is_some_z_so_that_x_+_z_=_y", {(⊤ ∧ (⊤ ∧ bco_valid2(a, x, y)))}, {(bco_leq(x, y) ⟺  (∃z. (⊤ ∧ bco_adder(a, x, z, y))))}).
-Implication ("Definitions_of_bco_eq_are_equivalent", {(⊤ ∧ (bco_standard(a) ∧ (⊤ ∧ bco_valid2(a, x, y))))}, {(bco_eq(x, y) ⟺  bco_eq_temp(x, y))}).
+// Implication ("ost_equiv_is_reflexive_over_lazy_ostrowski", {(bco_standard(a) ∧ lazy_ostrowski(a, x))}, {ost_equiv(a, x, x)}).
+// Implication ("ost_equiv_is_reflexive_over_ostrowski", {(bco_standard(a) ∧ ostrowski(a, y))}, {ost_equiv(a, y, y)}).
+// Implication ("ost_equiv_is_symmetric", {(bco_standard(a) ∧ (ostrowski(a, x) ∧ lazy_ostrowski(a, y)))}, {(ost_equiv(a, x, y) ⟺  ost_equiv(a, y, x))}).
+// Implication ("ost_equiv_is_transitive_for_ostrowski", {(bco_standard(a) ∧ (((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)) ∧ (ost_equiv(a, x, y) ∧ ost_equiv(a, y, z))))}, {ost_equiv(a, x, z)}).
+// Implication ("ost_equiv_is_transitive_for_lazy_ostrowski", {(bco_standard(a) ∧ (((lazy_ostrowski(a, r) ∧ lazy_ostrowski(a, s)) ∧ lazy_ostrowski(a, t)) ∧ (ost_equiv(a, r, s) ∧ ost_equiv(a, s, t))))}, {ost_equiv(a, r, t)}).
+// Implication ("Every_Ostrowski_representation_has_an_equivalent_Lazy_Ostrowski_representation_and_vice_versa", {(bco_standard(a) ∧ ostrowski(a, n))}, {(∃m. ((⊤ ∧ lazy_ostrowski(a, m)) ∧ ost_equiv(a, n, m)))}).
+// Implication ("Every_Lazy_Ostrowski_representation_has_an_equivalent_Ostrowski", {(bco_standard(a) ∧ lazy_ostrowski(a, n))}, {(∃m. ((⊤ ∧ ostrowski(a, m)) ∧ ost_equiv(a, n, m)))}).
+// Implication ("The_lazy_Ostrowski_representation_is_unique", {(bco_standard(a) ∧ (lazy_ostrowski(a, n) ∧ lazy_ostrowski(a, m)))}, {(ost_equiv(a, n, m) ⟺  bco_eq(n, m))}).
+// Implication ("All_Ostrowski-a_numeration_systems_have_a_0", {bco_standard(a)}, {(∃z. ((⊤ ∧ ostrowski(a, z)) ∧ (bco_valid(a, z) ∧ bco_zero(z))))}).
+// Implication ("All_Ostrowski-a_numeration_systems_have_a_1", {(⊤ ∧ (bco_standard(a) ∧ (bco_zero(z) ∧ bco_valid(a, z))))}, {(∃i. (⊤ ∧ (bco_valid(a, i) ∧ bco_succ(a, z, i))))}).
+// Implication ("Sucessors_are_unique", {(⊤ ∧ (⊤ ∧ (bco_succ(a, x, y) ∧ bco_succ(a, x, z))))}, {bco_eq(y, z)}).
+// Implication ("Addition_of_Ostrowski-a_representations_is_a_function_(ie,_there_is_an_output_for_every_input)", {(⊤ ∧ (⊤ ∧ bco_valid2(a, x, y)))}, {(∃z. (⊤ ∧ (bco_valid(a, z) ∧ bco_adder(a, x, y, z))))}).
+// Implication ("Every_valid_Ostrowski-a_representation_has_a_successor", {(⊤ ∧ bco_valid(a, x))}, {(∃u. (⊤ ∧ bco_succ(a, x, u)))}).
+// Implication ("Ostrowski_addition_satisfies_base_case_of_addition_definition", {(bco_standard(a) ∧ (((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)) ∧ bco_zero(x)))}, {(bco_adder(a, x, y, z) ⟺  bco_eq(y, z))}).
+// Implication ("Ostrowski_addition_satisfies_inductive_case_of_addition_definition", {(bco_standard(a) ∧ (((((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)) ∧ ostrowski(a, u)) ∧ ostrowski(a, v)) ∧ (bco_succ(a, u, x) ∧ bco_succ(a, v, z))))}, {(bco_adder(a, x, y, z) ⟺  bco_adder(a, u, y, v))}).
+// Implication ("All_natural_numbers_other_than_0_have_a_predecessor", {(⊤ ∧ bco_valid(a, x))}, {(bco_zero(x) ∨ (∃u. (⊤ ∧ bco_succ(a, u, x))))}).
+// Implication ("Ostrowski_addition_is_commutative", {(bco_standard(a) ∧ ((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)))}, {(bco_adder(a, x, y, z) ⟺  bco_adder(a, y, x, z))}).
+// Implication ("Odd_and_even_work_as_expected", {(bco_standard(a) ∧ ostrowski(a, x))}, {(ostrowski_even(a, x) ⟺  (¬ostrowski_odd(a, x)))}).
+// Implication ("Associativity_implies", {(bco_standard(a) ∧ ((((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)) ∧ ostrowski(a, w)) ∧ (∃u. ((⊤ ∧ ostrowski(a, u)) ∧ (bco_adder(a, x, y, u) ∧ bco_adder(a, u, z, w))))))}, {(∃v. ((⊤ ∧ ostrowski(a, v)) ∧ (bco_adder(a, y, z, v) ∧ bco_adder(a, x, v, w))))}).
+// Implication ("Associativity_implied_by", {(bco_standard(a) ∧ ((((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ ostrowski(a, z)) ∧ ostrowski(a, w)) ∧ (∃v. ((⊤ ∧ ostrowski(a, v)) ∧ (bco_adder(a, y, z, v) ∧ bco_adder(a, x, v, w))))))}, {(∃u. ((⊤ ∧ ostrowski(a, u)) ∧ (bco_adder(a, x, y, u) ∧ bco_adder(a, u, z, w))))}).
+// Implication ("If_x_=_y,_there_is_always_a_z_such_that_x_+_z_=_y,_and_z_=_0", {(bco_standard(a) ∧ ((ostrowski(a, x) ∧ ostrowski(a, y)) ∧ bco_eq(x, y)))}, {(∃z. (⊤ ∧ (bco_adder(a, x, z, y) ∧ bco_zero(z))))}).
+// Implication ("For_all_x,_y,_and_z,_we_have_x_<=_y_iff_x_+_z_<=_y_+_z", {(⊤ ∧ (⊤ ∧ (bco_valid3(a, x, y, z) ∧ (bco_valid2(a, u, v) ∧ (bco_adder(a, x, z, u) ∧ bco_adder(a, y, z, v))))))}, {(bco_leq(x, y) ⟺  bco_leq(u, v))}).
+// Implication ("If_x_<=_y,_then_there_is_some_z_so_that_x_+_z_=_y", {(⊤ ∧ (⊤ ∧ bco_valid2(a, x, y)))}, {(bco_leq(x, y) ⟺  (∃z. (⊤ ∧ bco_adder(a, x, z, y))))}).
+// Implication ("Definitions_of_bco_eq_are_equivalent", {(⊤ ∧ (bco_standard(a) ∧ (⊤ ∧ bco_valid2(a, x, y))))}, {(bco_eq(x, y) ⟺  bco_eq_temp(x, y))}).
 
 #load("ostrowski-automata/sturmian_word.txt", "pecan", $C(n))
 #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
 #load("automata/eventually_periodic.aut", "hoa", eventually_periodic(a, p))
-Implication ("Sturmian_words_are_not_eventually_periodic", {(bco_standard(a) ∧ ostrowski(a, p))}, {(¬eventually_periodic(a, p))}).
+Restrict a is bco_standard.
+Restrict i, j, k, l, p, n, m are ostrowski(a).
+// Implication ("Sturmian_words_are_not_eventually_periodic", {(bco_standard(a) ∧ ostrowski(a, p))}, {(¬eventually_periodic(a, p))}).
 #load("automata/pow_2.aut", "hoa", pow_2(a, i, n))
 #load("ostrowski-automata/cf_pow2.txt", "walnut", cf_pow2(a))
-Implication ("All_Sturmian_words_start_with_arbitrarily_long_squares", {(bco_standard(a) ∧ ostrowski(a, n))}, {(∃m,j. (⊤ ∧ ((j = 1) ∧ ((m > n) ∧ pow_2(a, j, m)))))}).
-Implication ("All_Sturmian_words_contain_squares", {bco_standard(a)}, {(∃i,n. (⊤ ∧ (bco_positive(n) ∧ pow_2(a, i, n))))}).
+// Implication ("All_Sturmian_words_start_with_arbitrarily_long_squares", {(bco_standard(a) ∧ ostrowski(a, n))}, {(∃m,j. (⊤ ∧ ((j = 1) ∧ ((m > n) ∧ pow_2(a, j, m)))))}).
+// Implication ("All_Sturmian_words_contain_squares", {bco_standard(a)}, {(∃i,n. (⊤ ∧ (bco_positive(n) ∧ pow_2(a, i, n))))}).
 #load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
-Implication ("If_n_is_the_order_of_a_square,_then_n_is_the_denominator_of_some_semiconvergent_of_a", {(((bco_standard(a) ∧ ostrowski(a, i)) ∧ ostrowski(a, n)) ∧ ((i > 0) ∧ ((n > 0) ∧ pow_2(a, i, n))))}, {semiconvergent(n)}).
+// Implication ("If_n_is_the_order_of_a_square,_then_n_is_the_denominator_of_some_semiconvergent_of_a", {(((bco_standard(a) ∧ ostrowski(a, i)) ∧ ostrowski(a, n)) ∧ ((i > 0) ∧ ((n > 0) ∧ pow_2(a, i, n))))}, {semiconvergent(n)}).
 #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
-Implication ("All_Sturmian_words_contain_finitely_many_antisquares", {bco_standard(a)}, {(∃m. (⊤ ∧ (∀i,n. (⊤ ⟹  (antisquare(a, i, n) ⟹  (n ≤ m))))))}).
+// Implication ("All_Sturmian_words_contain_finitely_many_antisquares", {bco_standard(a)}, {(∃m. (⊤ ∧ (∀i,n. (⊤ ⟹  (antisquare(a, i, n) ⟹  (n ≤ m))))))}).
 #load("automata/pow_3.aut", "hoa", pow_3(a, i, n))
-Implication ("All_Sturmian_words_contain_cubes", {bco_standard(a)}, {(∃i,n. (⊤ ∧ ((n > 0) ∧ pow_3(a, i, n))))}).
+// Implication ("All_Sturmian_words_contain_cubes", {bco_standard(a)}, {(∃i,n. (⊤ ∧ ((n > 0) ∧ pow_3(a, i, n))))}).
 #load("ostrowski-automata/eventually_one.txt", "pecan", eventually_one(a))
-Implication ("All_suffixes_of_Sturmian_words_start_with_arbitrarily_long_cubes", {bco_standard(a)}, {((¬eventually_one(a)) ⟺  (∀j. (⊤ ⟹  ((j > 0) ⟹  (∀n. (⊤ ⟹  (∃m. (⊤ ∧ ((m > n) ∧ pow_3(a, j, m))))))))))}).
+// Implication ("All_suffixes_of_Sturmian_words_start_with_arbitrarily_long_cubes", {bco_standard(a)}, {((¬eventually_one(a)) ⟺  (∀j. (⊤ ⟹  ((j > 0) ⟹  (∀n. (⊤ ⟹  (∃m. (⊤ ∧ ((m > n) ∧ pow_3(a, j, m))))))))))}).
 #load("automata/pow_4.aut", "hoa", pow_4(a, i, n))
-Implication ("All_Sturmian_words_that_are_not_eventually_one_contain_fourth_powers", {(bco_standard(a) ∧ (¬eventually_one(a)))}, {has_pow_4(a)}).
+Define genHasNthPow num :=
+    let $NTH_POW := "pow_" ^ (toString num) in
+    let $HAS_NTH := "has_" ^ $NTH_POW in
+        emit { $HAS_NTH(a) := exists i, n. n > 0 & $NTH_POW(a, i, n) } .
+
+Execute genHasNthPow 4.
+// Implication ("All_Sturmian_words_that_are_not_eventually_one_contain_fourth_powers", {(bco_standard(a) ∧ (¬eventually_one(a)))}, {has_pow_4(a)}).
 #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
 #load("automata/factor_len.aut", "hoa", factor_len(a, i, n, j))
-Implication ("Sturmian_words_are_balanced", {bco_standard(a)}, {(¬(∃i,n. (⊤ ∧ (palindrome(a, i, n) ∧ ((∃j. (⊤ ∧ (factor_len(a, i, n, j) ∧ ($C[(j - 1)] = 0 ∧ $C[(j + n)] = 0)))) ∧ (∃k. (⊤ ∧ (factor_len(a, i, n, k) ∧ ($C[(k - 1)] = 1 ∧ $C[(k + n)] = 1)))))))))}).
-Implication ("Sturmian_words_contain_palindromes_of_every_length", {((bco_standard(a) ∧ ostrowski(a, n)) ∧ (n > 0))}, {(∃i. (⊤ ∧ palindrome(a, i, n)))}).
+// Implication ("Sturmian_words_are_balanced", {bco_standard(a)}, {(¬(∃i,n. (⊤ ∧ (palindrome(a, i, n) ∧ ((∃j. (⊤ ∧ (factor_len(a, i, n, j) ∧ ($C[(j - 1)] = 0 ∧ $C[(j + n)] = 0)))) ∧ (∃k. (⊤ ∧ (factor_len(a, i, n, k) ∧ ($C[(k - 1)] = 1 ∧ $C[(k + n)] = 1)))))))))}).
+// Implication ("Sturmian_words_contain_palindromes_of_every_length", {((bco_standard(a) ∧ ostrowski(a, n)) ∧ (n > 0))}, {(∃i. (⊤ ∧ palindrome(a, i, n)))}).
 #load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
-Implication ("For_all_Sturmian_words,_if_n_is_even_then_it_contains_exactly_one_palindrome_of_length_n,_and_if_n_is_odd_then_it_contains_exactly_two_palindromes_of_length_n", {(bco_standard(a) ∧ ostrowski(a, n))}, {(((even(n) ∧ (n > 0)) ⟹  (∃i. (⊤ ∧ (∀k. (⊤ ⟹  (first_palindrome(a, k, n) ⟺  (i = k))))))) ∧ (@no_simplify[odd(n)] ⟹  (∃i,j. (⊤ ∧ ((i < j) ∧ (∀k. (⊤ ⟹  (first_palindrome(a, k, n) ⟺  ((i = k) ∨ (j = k))))))))))}).
-Implication ("Sturmian_words_start_with_arbitarily_long_palindromes", {(bco_standard(a) ∧ ostrowski(a, n))}, {(∃m. (⊤ ∧ ((m > n) ∧ (∃j. (⊤ ∧ ((j = 1) ∧ palindrome(a, j, m)))))))}).
+// Implication ("For_all_Sturmian_words,_if_n_is_even_then_it_contains_exactly_one_palindrome_of_length_n,_and_if_n_is_odd_then_it_contains_exactly_two_palindromes_of_length_n", {(bco_standard(a) ∧ ostrowski(a, n))}, {(((even(n) ∧ (n > 0)) ⟹  (∃i. (⊤ ∧ (∀k. (⊤ ⟹  (first_palindrome(a, k, n) ⟺  (i = k))))))) ∧ (@no_simplify[odd(n)] ⟹  (∃i,j. (⊤ ∧ ((i < j) ∧ (∀k. (⊤ ⟹  (first_palindrome(a, k, n) ⟺  ((i = k) ∨ (j = k))))))))))}).
+// Implication ("Sturmian_words_start_with_arbitarily_long_palindromes", {(bco_standard(a) ∧ ostrowski(a, n))}, {(∃m. (⊤ ∧ ((m > n) ∧ (∃j. (⊤ ∧ ((j = 1) ∧ palindrome(a, j, m)))))))}).
 #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
-Implication ("All_Sturmian_words_contain_finitely_many_antipalindromes", {bco_standard(a)}, {(∃m. (⊤ ∧ (∀i,n. (⊤ ⟹  (antipalindrome(a, i, n) ⟹  (n ≤ m))))))}).
-Implication ("max_antisquare_is_a_function_1", {bco_standard(a)}, {(∃n. (⊤ ∧ max_antisquare(a, n)))}).
-Implication ("max_antisquare_is_a_function_2", {(((bco_standard(a) ∧ ostrowski(a, n)) ∧ ostrowski(a, m)) ∧ (max_antisquare(a, n) ∧ max_antisquare(a, m)))}, {(n = m)}).
-Implication ("max_antisquare_len_is_a_function_1", {bco_standard(a)}, {(∃n. (⊤ ∧ max_antisquare_len(a, n)))}).
-Implication ("max_antisquare_len_is_a_function_2", {(((bco_standard(a) ∧ ostrowski(a, n)) ∧ ostrowski(a, m)) ∧ (max_antisquare_len(a, n) ∧ max_antisquare_len(a, m)))}, {(n = m)}).
-Implication ("max_antipalindrome_is_a_function_1", {bco_standard(a)}, {(∃n. (⊤ ∧ max_antipalindrome(a, n)))}).
-Implication ("max_antipalindrome_is_a_function_2", {(((bco_standard(a) ∧ ostrowski(a, n)) ∧ ostrowski(a, m)) ∧ (max_antipalindrome(a, n) ∧ max_antipalindrome(a, m)))}, {(n = m)}).
-Implication ("The_max_antisquare_is_half_the_max_antisquare_len", {bco_standard(a)}, {(max_antisquare_len(a) = (2 * max_antisquare(a)))}).
-Implication ("Each_of_max_antisquare,_max_antisquare_len,_and_max_antipalindrome_is_nonzero", {bco_standard(a)}, {((max_antisquare(a) ≥ 1) ∧ ((max_antisquare_len(a) ≥ 2) ∧ (max_antipalindrome(a) ≥ 2)))}).
-Implication ("Maximum_order_of_antisquares_and_maximum_length_of_antipalindromes_is_4_digits_long,_and_maximum_length_of_antisquares_is_6_digits_long", {bco_standard(a)}, {(is_4_digits(max_antisquare(a)) ∧ (is_4_digits(max_antipalindrome(a)) ∧ is_6_digits(max_antisquare_len(a))))}).
-Implication ("The_maximum_length_of_palindromes_in_a_Sturmian_word_is_bounded_by_the_maximum_order_of_its_antisquares_and_the_maximum_length_of_its_antisquare", {bco_standard(a)}, {((max_antisquare(a) ≤ max_antipalindrome(a)) ∧ (max_antipalindrome(a) ≤ max_antisquare_len(a)))}).
+// Implication ("All_Sturmian_words_contain_finitely_many_antipalindromes", {bco_standard(a)}, {(∃m. (⊤ ∧ (∀i,n. (⊤ ⟹  (antipalindrome(a, i, n) ⟹  (n ≤ m))))))}).
+
+antisquare_len(a, i, n) := exists m. 2*m = n & antisquare(a, i, m)
+
+has_antisquare(a, n) := exists i. antisquare(a, i, n)
+has_antisquare_len(a, n) := exists i. antisquare_len(a, i, n)
+has_antipalindrome(a, n) := exists i. antipalindrome(a, i, n)
+
+max_antisquare(a, n) := has_antisquare(a, n) & forall m. if has_antisquare(a, m) then m <= n
+max_antisquare_len(a, n) := has_antisquare_len(a, n) & forall m. if has_antisquare_len(a, m) then m <= n
+max_antipalindrome(a, n) := has_antipalindrome(a, n) & forall m. if has_antipalindrome(a, m) then m <= n
+
+// Implication ("max_antisquare_is_a_function_1", {bco_standard(a)}, {(∃n. (⊤ ∧ max_antisquare(a, n)))}).
+// Implication ("max_antisquare_is_a_function_2", {(((bco_standard(a) ∧ ostrowski(a, n)) ∧ ostrowski(a, m)) ∧ (max_antisquare(a, n) ∧ max_antisquare(a, m)))}, {(n = m)}).
+// Implication ("max_antisquare_len_is_a_function_1", {bco_standard(a)}, {(∃n. (⊤ ∧ max_antisquare_len(a, n)))}).
+// Implication ("max_antisquare_len_is_a_function_2", {(((bco_standard(a) ∧ ostrowski(a, n)) ∧ ostrowski(a, m)) ∧ (max_antisquare_len(a, n) ∧ max_antisquare_len(a, m)))}, {(n = m)}).
+// Implication ("max_antipalindrome_is_a_function_1", {bco_standard(a)}, {(∃n. (⊤ ∧ max_antipalindrome(a, n)))}).
+// Implication ("max_antipalindrome_is_a_function_2", {(((bco_standard(a) ∧ ostrowski(a, n)) ∧ ostrowski(a, m)) ∧ (max_antipalindrome(a, n) ∧ max_antipalindrome(a, m)))}, {(n = m)}).
+// Implication ("The_max_antisquare_is_half_the_max_antisquare_len", {bco_standard(a)}, {(max_antisquare_len(a) = (2 * max_antisquare(a)))}).
+// Implication ("Each_of_max_antisquare,_max_antisquare_len,_and_max_antipalindrome_is_nonzero", {bco_standard(a)}, {((max_antisquare(a) ≥ 1) ∧ ((max_antisquare_len(a) ≥ 2) ∧ (max_antipalindrome(a) ≥ 2)))}).
+// Implication ("Maximum_order_of_antisquares_and_maximum_length_of_antipalindromes_is_4_digits_long,_and_maximum_length_of_antisquares_is_6_digits_long", {bco_standard(a)}, {(is_4_digits(max_antisquare(a)) ∧ (is_4_digits(max_antipalindrome(a)) ∧ is_6_digits(max_antisquare_len(a))))}).
+// Implication ("The_maximum_length_of_palindromes_in_a_Sturmian_word_is_bounded_by_the_maximum_order_of_its_antisquares_and_the_maximum_length_of_its_antisquare", {bco_standard(a)}, {((max_antisquare(a) ≤ max_antipalindrome(a)) ∧ (max_antipalindrome(a) ≤ max_antisquare_len(a)))}).
 #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
-Implication ("Every_Sturmian_word_is_mirror_invariant", {(((bco_standard(a) ∧ ostrowski(a, i)) ∧ ostrowski(a, j)) ∧ ((0 < i) ∧ (i < j)))}, {mirror_invariant(a, i, j)}).
+// Implication ("Every_Sturmian_word_is_mirror_invariant", {(((bco_standard(a) ∧ ostrowski(a, i)) ∧ ostrowski(a, j)) ∧ ((0 < i) ∧ (i < j)))}, {mirror_invariant(a, i, j)}).
 #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
 #load("automata/first_special_factor.aut", "hoa", first_special_factor(a, i, n))
-Implication ("Specal_factors_are_unique", {(bco_standard(a) ∧ (((ostrowski(a, i) ∧ ostrowski(a, j)) ∧ ostrowski(a, n)) ∧ (first_special_factor(a, i, n) ∧ first_special_factor(a, j, n))))}, {(i = j)}).
-Implication ("The_unique_special_factor_of_length_n_is_C[1n]^R", {(bco_standard(a) ∧ ((ostrowski(a, i) ∧ ostrowski(a, n)) ∧ ((i > 0) ∧ first_special_factor(a, i, n))))}, {reverse_factor(a, i, (i + n), n)}).
+// Implication ("Specal_factors_are_unique", {(bco_standard(a) ∧ (((ostrowski(a, i) ∧ ostrowski(a, j)) ∧ ostrowski(a, n)) ∧ (first_special_factor(a, i, n) ∧ first_special_factor(a, j, n))))}, {(i = j)}).
+// Implication ("The_unique_special_factor_of_length_n_is_C[1n]^R", {(bco_standard(a) ∧ ((ostrowski(a, i) ∧ ostrowski(a, n)) ∧ ((i > 0) ∧ first_special_factor(a, i, n))))}, {reverse_factor(a, i, (i + n), n)}).
 #load("automata/least_period_occurs.aut", "hoa", least_period_occurs(a, p))
 #load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
-Implication ("If_p_is_a_least_period_of_a_factor_of_C_alpha,_then_p_is_the_denominator_of_a_semiconvergent_of_alpha", {((bco_standard(a) ∧ ostrowski(a, p)) ∧ least_period_occurs(a, p))}, {semiconvergent(p)}).
+// Implication ("If_p_is_a_least_period_of_a_factor_of_C_alpha,_then_p_is_the_denominator_of_a_semiconvergent_of_alpha", {((bco_standard(a) ∧ ostrowski(a, p)) ∧ least_period_occurs(a, p))}, {semiconvergent(p)}).
 #load("automata/recurrent.aut", "hoa", recurrent(a, i, j))
-Implication ("All_factors_of_Sturmian_words_are_recurrent", {(((bco_standard(a) ∧ ostrowski(a, i)) ∧ ostrowski(a, j)) ∧ (i < j))}, {recurrent(a, i, j)}).
+// Implication ("All_factors_of_Sturmian_words_are_recurrent", {(((bco_standard(a) ∧ ostrowski(a, i)) ∧ ostrowski(a, j)) ∧ (i < j))}, {recurrent(a, i, j)}).
 #load("automata/unbordered_by_border.aut", "hoa", unbordered_by_border(a, i, j))
 #load("automata/unbordered.aut", "hoa", unbordered(a, i, j))
 #load("automata/border.aut", "hoa", border(a, i, j, n))
-Implication ("Sanity_check:_Defining_unbordered_factors_in_two_ways_that_should_be_equivalent", {(((bco_standard(a) ∧ ostrowski(a, i)) ∧ ostrowski(a, j)) ∧ ((0 < i) ∧ (i < j)))}, {(((∃t. (⊤ ∧ (bco_positive(t) ∧ border(a, i, j, t)))) ⟹  (¬unbordered(a, i, j))) ∧ ((¬unbordered(a, i, j)) ⟹  (¬unbordered_by_border(a, i, j))))}).
+// Implication ("Sanity_check:_Defining_unbordered_factors_in_two_ways_that_should_be_equivalent", {(((bco_standard(a) ∧ ostrowski(a, i)) ∧ ostrowski(a, j)) ∧ ((0 < i) ∧ (i < j)))}, {(((∃t. (⊤ ∧ (bco_positive(t) ∧ border(a, i, j, t)))) ⟹  (¬unbordered(a, i, j))) ∧ ((¬unbordered(a, i, j)) ⟹  (¬unbordered_by_border(a, i, j))))}).
+#load("automata/unbordered_len.aut", "hoa", unbordered_len(a,i,n))
 Implication ("Every_unbordered_factor_has_a_length_that_is_the_denominator_of_a_semiconvergent", {(((bco_standard(a) ∧ ostrowski(a, i)) ∧ ostrowski(a, n)) ∧ ((i > 0) ∧ ((n > 0) ∧ unbordered_len(a, i, n))))}, {semiconvergent(n)}).
 #load("automata/max_unbordered_subfactor_len.aut", "hoa", max_unbordered_subfactor_len(a, i, j, n))
 #load("automata/least_period.aut", "hoa", least_period(a, p, i, j))
@@ -99,5 +119,15 @@ Implication ("All_Sturmian_words_contain_exactly_two_unbordered_factors_of_each_
 #load("ostrowski-automata/as_long_as.txt", "pecan", as_long_as(x, y))
 #load("ostrowski-automata/suffix_after.txt", "pecan", suffix_after(x, y, suf))
 #load("automata/period.aut", "hoa", period(a, p, i, j))
+Restrict s are ostrowski(a).
+
+p is $Per(a,n) := exists s. s = 1 & period(a,p,s,n+1)
+
+p is $A(a,n) :=
+    exists n_l,m_l. lazy_ostrowski(a,n_l) & ost_equiv(a,n,n_l) &
+    exists m. ost_equiv(a,m_l,m) &
+    exists i. i > 0 & has_1_digits(i) & as_long_as(n,i) &
+        bounded_by(i,n_l) & suffix_after(i,n_l,m_l) &
+        i + m = p
 Implication ("Theorem_6_(b)_from_'An_inequality_for_the_number_of_periods_in_a_word'", {(bco_standard(a) ∧ (ostrowski(a, p) ∧ ostrowski(a, n)))}, {($Per(a, n, p) ⟺  $A(a, n, p))}).
 

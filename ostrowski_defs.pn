@@ -190,4 +190,29 @@ Execute genHasNDigits 1.
 // Execute genHasNDigits 15.
 // Execute genHasNDigits 40.
 
+Define genHasNthPow num :=
+    let $NTH_POW := "pow_" ^ (toString num) in
+    let $HAS_NTH := "has_" ^ $NTH_POW in
+        emit { $HAS_NTH(a) := exists i, n. n > 0 & $NTH_POW(a, i, n) } .
+
+Define genVars num :=
+    if num = 0 then
+        []
+    else
+        let newVar := "v" ^ (toString num) in
+        let rest := genVars (num - 1) in do
+            emit { Restrict newVar is ostrowski(a). };
+            newVar :: rest .
+
+Define test prev vars :=
+    match vars with
+    case [x] => { exists x. prev < x & has_antisquare(a,x) }
+    case x :: xs =>
+        let next := test x xs
+        in { exists x. prev < x & has_antisquare(a,x) & next }
+    end.
+
+Define check prev vars :=
+    let pred := test prev vars in
+        emit { test(a) := pred }.
 
