@@ -1,0 +1,102 @@
+// #load("automata/least_period_old.aut", "hoa", least_period_old(a,p,i,j))
+
+// TODO: Doesn't quite work
+// I want to say that a is the smallest slope (i.e., with the lowest cf coefficients) such that it has a palindrome of length n (if it exists at all)
+// Actually, that's probably not even well-defined.
+// #load("ostrowski-automata/cf_shorter_len.txt", "pecan", cf_shorter_len(a, b))
+// has_antipalindrome(c, len) := exists idx is ostrowski(c). bco_positive(idx) & antipalindrome(c, idx, len)
+// bco_comparable(a, b) := bco_leq(a, b) | bco_leq(b, a)
+// Define listSmallestCfWithAntipalindrome curNum :=
+//     let $PRED := "smallest_antipalindrome_cf_" ^ (toString curNum) in do
+//         print ("Trying: " ^ (toString curNum));
+//         emit {
+//             $PRED(a) :=
+//                 (exists j. j = curNum & has_antipalindrome(a, j)) &
+//                 (forall b is bco_standard.
+//                     if exists len is ostrowski(b). len = curNum & has_antipalindrome(b, len) then
+//                         (bco_leq(a, b) | cf_shorter_len(a, b))
+//                 )
+//         };
+//         print (example ostrowskiFormat { bco_standard(a) & $PRED(a) });
+//         listSmallestCfWithAntipalindrome (curNum + 2). // Note that it is impossible to have an antipalindrome of odd length.
+// Execute listSmallestCfWithAntipalindrome 2 .
+
+// Define listExamplesIdx $PRED curNum := do
+//     print ("Trying (pred is " ^ $PRED ^ "): " ^ (toString curNum));
+//     print (example ostrowskiFormat { bco_standard(a) & n = curNum & $PRED(a, i, n) });
+//     listExamplesIdx $PRED (curNum + 2) .
+// Execute listExamplesIdx antipalindrome 2 .
+
+// Define listAntisquares curNum $PREV_NUM :=
+//     let $NEXT_NUM := "bco_" ^ (toString curNum)
+//     in do
+//         print ("Trying: " ^ (toString curNum));
+//         emit { $NEXT_NUM(a, x) := exists y. $PREV_NUM(a, y) & bco_succ(a, y, x) };
+//         print (example ostrowskiFormat { bco_standard(a) & bounded_alpha(a) & $NEXT_NUM(a, n) & @no_simplify[antisquare(a, i, n)] });
+//         listAntisquares (curNum + 1) $NEXT_NUM .
+// #load("test_alpha.txt", "walnut", bounded_alpha(a))
+// Execute listAntisquares 2 bco_one .
+
+// Define listExamples $PRED curNum := do
+//     print ("Trying (pred is " ^ $PRED ^ "): " ^ (toString curNum));
+//     print (example ostrowskiFormat { bco_standard(a) & n = curNum & $PRED(a, n) });
+//     listExamples $PRED (curNum + 1) .
+// Execute listExamples antisquare_bound 2 .
+
+// Example using ostrowskiFormat of {
+//     0 < n & j < k & l < p &
+//     @postprocess[antisquare(a,i,n) & 0 < i & i < j & antisquare(a,j,n)] &
+//     @postprocess[antisquare(a,k,n) & k < l & antisquare(a,l,n)] &
+//     @postprocess[antisquare(a,p,n) & p < m & antisquare(a,m,n)]
+// }.
+
+// TODO: Why are so many of these lengths 1010^w?
+// Example using ostrowskiFormat of {
+//     max_antisquare(a,n) & bco_valid(a,n) &
+//     n = max_antipalindrome(a) & n > 100
+//     // n = max_antipalindrome(a) & !is_4_digits(n)
+// }.
+
+// Theorem ("Test", {
+//     forall a.
+//         max_antisquare(a) = max_antipalindrome(a) <=> max_antisquare(a) = 2
+// }).
+
+// #load("automata/factor_test.aut", "hoa", factor_test(a,i,n,j))
+// Example using ostrowskiFormat of { @no_simplify[
+//     n > 0 & i > 0 &
+//     bco_valid3(a,i,n,j) & i < j & factor_lt_len(a,i,n,j) & !factor_test(a,i,n,j)
+// ]}.
+// Theorem ("Sanity check for factor_test.", { @no_simplify[
+//     forall a,i,n,j.
+//         if n > 0 & 0 < i & i < j then
+//             factor_lt_len(a,i,n,j) <=> factor_test(a,i,n,j)
+// ] }).
+// Theorem ("Sanity check: least period definition manually is equivalent to the one we get from Pecan's internal min function.", {
+//     forall a,p,i,j. least_period(a,p,i,j) <=> least_period_old(a,p,i,j)
+// }).
+
+// #load("automata/factor_test.aut", "hoa", factor_test(a,i,n,j))
+// Example using ostrowskiFormat of { @no_simplify[
+//     n > 0 & i > 0 &
+//     bco_valid3(a,i,n,j) & i < j & factor_lt_len(a,i,n,j) & !factor_test(a,i,n,j)
+// ]}.
+// Theorem ("Sanity check for factor_test.", { @no_simplify[
+//     forall a,i,n,j.
+//         if n > 0 & 0 < i & i < j then
+//             factor_lt_len(a,i,n,j) <=> factor_test(a,i,n,j)
+// ] }).
+// Theorem ("Sanity check: least period definition manually is equivalent to the one we get from Pecan's internal min function.", {
+//     forall a,p,i,j. least_period(a,p,i,j) <=> least_period_old(a,p,i,j)
+// }).
+
+// palindromes_in_pow2(a,n) := @postprocess[
+//     bco_standard(a) & cf_pow2(a) & exists i. palindrome(a,i,n)
+// ]
+// #save_aut_img("palindromes_in_pow2.svg", palindromes_in_pow2)
+
+// squares_in_pow2(a, n) := @postprocess[
+//     bco_standard(a) & cf_pow2(a) & exists i. pow_2(a,i,n)
+// ]
+// #save_aut_img("squares_in_pow2.svg", squares_in_pow2)
+

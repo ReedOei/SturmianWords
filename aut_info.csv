@@ -1,0 +1,51 @@
+bco_lsd_valid_pre,bco_lsd_valid_pre,false,
+bco_succ,bco_succ,false,
+bco_finite_rep,bco_finite_rep,false,
+bco_valid,bco_valid,false,
+bco_valid2,bco_valid2,false,
+bco_valid3,bco_valid3,false,
+bco_leq,bco_leq,false,
+bco_zero,bco_zero,false,
+bco_adder_valid,bco_adder_valid,false,
+zero,ostrowski_zero,false,
+equal_3,equal_3,false,
+bco_eq,bco_eq,false,
+bco_lt,bco_lt,false,
+ostrowski,ostrowski,false,
+sturmian word,$C,false,
+adder,bco_adder,false,
+bco_valid2,bco_valid2,false,
+bco_positive,bco_positive,false,
+Eventually periodic,eventually_periodic,true,\exists\forall
+Antisquare,antisquare,true,\forall^3
+Square,pow_2,true,\forall^3
+Cube,pow_3,true,\mathbf{QF}
+Fourth power,pow_4,false,
+Fifth power,pow_5,false,
+Sixth power,pow_6,false,
+Seventh power,pow_7,false,
+Eighth power,pow_8,false,
+Factor Lt (idx),factor_lt,true,\exists \forall^2
+Factor Lt,factor_lt_len,false,
+Factor,factor_len,false,
+Reverse factor,reverse_factor,true,\exists \forall^2
+Mirror invariant,mirror_invariant,true,\exists
+Palindrome (idx),palindrome_idx,false,
+Palindrome,palindrome,true,\exists^2
+First palindrome,first_palindrome,false,
+Antipalindrome,antipalindrome,true,\exists^2\forall^3
+Recurrent,recurrent,true,\forall\exists
+Period,period,true,\exists^2
+Least period,least_period,true,\forall
+Least period occurs,least_period_occurs,false,
+Special factor,special_factor,true,\exists^4
+First special factor,first_special_factor,false,
+Unbordered (idx),unbordered,false,
+Unbordered,unbordered_len,true,\exists^2
+Unbordered subfactor (idx),unbordered_subfactor,false,
+First unbordered,first_unbordered_len,false,
+Border,border,false,
+Unbordered (border),unbordered_by_border,false,
+Unbordered subfactor,unbordered_subfactor_len,false,
+first factor,first_factor_len,false,
+Max unbordered subfactor,max_unbordered_subfactor_len,true,\forall

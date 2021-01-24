@@ -11,6 +11,7 @@
 #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
 #load("automata/factor_len.aut", "hoa", factor_len(a,i,n,j))
 #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
 #load("automata/eventually_periodic.aut", "hoa", eventually_periodic(a, p))
 #load("automata/pow_2.aut", "hoa", pow_2(a, i, n))
 #load("automata/pow_3.aut", "hoa", pow_3(a, i, n))
@@ -29,13 +30,11 @@
 #load("automata/first_unbordered_len.aut", "hoa", first_unbordered_len(a,i,n))
 
 #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
-#load("automata/least_period_old.aut", "hoa", least_period_old(a,p,i,j))
 #load("automata/least_period_occurs.aut", "hoa", least_period_occurs(a,p))
 #load("ostrowski-automata/semiconvergent.txt", "pecan", semiconvergent(n))
-
-#load("automata/is_01_star.aut", "hoa", is_01_star(a,i,n))
-#load("automata/is_10_star.aut", "hoa", is_10_star(a,i,n))
-#load("automata/is_all_01.aut", "hoa", is_all_01(a,i,j))
+#load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
+#load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
+#load("automata/first_special_factor.aut", "hoa", first_special_factor(a,i,n))
 
 Restrict a is bco_standard.
 Restrict i, j, k, l, p, n, m are ostrowski(a).
@@ -60,327 +59,232 @@ Theorem ("All antisquares are of the form (01)^* or (10)^*", {
 }).
 
 Theorem ("All antipalindromes are of the form (01)^* or (10)^*", {
-    forall a. forall i,n. if antipalindrome(a,i,n) then is_all_01(a,i,n/2)
+    forall a. forall i,n. if antipalindrome(a,i,n) then is_all_01(a,i,n)
 }).
 
-// Theorem ("Sturmian words are not eventually periodic", {
-//     forall a, p. !eventually_periodic(a, p)
-// }) .
+Theorem ("Sturmian words are not eventually periodic", {
+    forall a, p. !eventually_periodic(a, p)
+}) .
 
-// square2(a, i, n) := @no_simplify[factor_lt(a, i, i + n, i + n)]
-// Theorem ("Sanity check that factor_lt let's us redefine something equivalent to square.", { @no_simplify[
-//     forall a, i, n.
-//         if i > 0 & n > 0 then
-//             square2(a, i, n) <=> pow_2(a, i, n)
-// ]}).
+square2(a, i, n) := @no_simplify[factor_lt(a, i, i + n, i + n)]
+Theorem ("Sanity check that factor_lt let's us redefine something equivalent to square.", { @no_simplify[
+    forall a, i, n.
+        if i > 0 & n > 0 then
+            square2(a, i, n) <=> pow_2(a, i, n)
+]}).
 
-// squares_in_pow2(a, n) := @postprocess[
-//     bco_standard(a) & cf_pow2(a) & exists i. pow_2(a,i,n)
-// ]
-// #save_aut_img("squares_in_pow2.svg", squares_in_pow2)
+Theorem ("All Sturmian words start with arbitrarily long squares", {
+    @no_simplify[
+        forall a.
+        forall n. exists m, j. j = 1 & m > n & pow_2(a, j, m)
+    ]
+}) .
 
-// Theorem ("All Sturmian words start with arbitrarily long squares", {
-//     @no_simplify[
-//         forall a.
-//         forall n. exists m, j. j = 1 & m > n & pow_2(a, j, m)
-//     ]
-// }) .
+Theorem ("All Sturmian words contain squares", {
+    @no_simplify[
+        forall a. exists i, n. bco_positive(n) & pow_2(a,i,n)
+    ]
+}) .
 
-// Theorem ("All Sturmian words contain squares", {
-//     @no_simplify[
-//         forall a. exists i, n. bco_positive(n) & pow_2(a,i,n)
-//     ]
-// }) .
+Theorem ("If n is the order of a square, then n is the denominator of some semiconvergent of a.", {
+    forall a,i,n.
+        if i > 0 & n > 0 & pow_2(a,i,n) then
+            n is semiconvergent
+}).
 
-// Theorem ("If n is the order of a square, then n is the denominator of some semiconvergent of a.", {
-//     forall a,i,n.
-//         if i > 0 & n > 0 & pow_2(a,i,n) then
-//             n is semiconvergent
-// }).
+Theorem ("All Sturmian words contain finitely many antisquares", {
+    forall a.
+    exists m.
+    forall i, n. if antisquare(a, i, n) then n <= m
+}).
 
-// Theorem ("All Sturmian words contain finitely many antisquares", {
-//     forall a.
-//     exists m.
-//     forall i, n. if antisquare(a, i, n) then n <= m
-// }).
+Theorem ("All Sturmian words contain cubes", {
+    @no_simplify[
+        forall a. exists i, n. n > 0 & pow_3(a,i,n)
+    ]
+}) .
 
-// Theorem ("All Sturmian words contain cubes", {
-//     @no_simplify[
-//         forall a. exists i, n. n > 0 & pow_3(a,i,n)
-//     ]
-// }) .
+Theorem ("Sturmian words are not eventually one if and only if they start with arbitrarily long cubes.", {
+    @no_simplify[
+        forall a. (!eventually_one(a)) <=> (
+        exists j. j = 1 &
+        forall n.
+        exists m. m > n & pow_3(a, j, m))
+    ]
+}) .
 
-// Theorem ("All suffixes of Sturmian words start with arbitrarily long cubes.", {
-//     @no_simplify[
-//         forall a. (!eventually_one(a)) <=>
-//         forall j.
-//         if j > 0 then
-//             forall n.
-//             exists m. m > n & pow_3(a, j, m)
-//     ]
-// }) .
+Execute genHasNthPow 4.
+Theorem ("All Sturmian words that are not eventually one contain fourth powers", {
+    @no_simplify[
+        forall a. if !eventually_one(a) then has_pow_4(a)
+    ]
+}) .
 
-// Execute genHasNthPow 4.
-// Theorem ("All Sturmian words that are not eventually one contain fourth powers", {
-//     @no_simplify[
-//         forall a. if !eventually_one(a) then has_pow_4(a)
-//     ]
-// }) .
+Theorem ("Sturmian words are balanced.", {
+    forall a. forall i,n,j,k. !(palindrome(a, i, n) & @no_simplify[factor_lt_len(a,i,n,j)] & $C[j - 1] = 0 & $C[j + n] = 0
+                                                    & @no_simplify[factor_lt_len(a,i,n,k)] & $C[k - 1] = 1 & $C[k + n] = 1)
+}).
 
-// Theorem ("Sturmian words are balanced.", {
-//     forall a. !(exists i,n. palindrome(a, i, n) &
-//                 (exists j. factor_len(a,i,n,j) & $C[j - 1] = 0 & $C[j + n] = 0) &
-//                 (exists k. factor_len(a,i,n,k) & $C[k - 1] = 1 & $C[k + n] = 1))
-// }).
+Theorem ("Sturmian words contain palindromes of every length.", {
+    forall a, n. if n > 0 then exists i. palindrome(a, i, n)
+}).
 
-// palindromes_in_pow2(a,n) := @postprocess[
-//     bco_standard(a) & cf_pow2(a) & exists i. palindrome(a,i,n)
-// ]
-// #save_aut_img("palindromes_in_pow2.svg", palindromes_in_pow2)
+Theorem ("For all Sturmian words, if n is even then it contains exactly one palindrome of length n, and if n is odd then it contains exactly two palindromes of length n.", {
+    forall a,n. (
+        if n is even & n > 0 then
+            exists i. forall k. first_palindrome(a, k, n) iff i = k
+    ) & (
+        if @no_simplify[n is odd] then
+            exists i,j. i < j & forall k. first_palindrome(a,k,n) iff (i = k | j = k)
+    )
+}).
 
-// Theorem ("Sturmian words contain palindromes of every length.", {
-//     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
-// }).
+Theorem ("Sturmian words start with arbitarily long palindromes", {
+    forall a,n.
+    exists m. m > n & exists j. j = 1 & palindrome(a, j, m)
+}) .
 
-// Theorem ("For all Sturmian words, if n is even then it contains exactly one palindrome of length n, and if n is odd then it contains exactly two palindromes of length n.", {
-//     forall a,n. (
-//         if n is even & n > 0 then
-//             exists i. forall k. first_palindrome(a, k, n) iff i = k
-//     ) & (
-//         if @no_simplify[n is odd] then
-//             exists i,j. i < j & forall k. first_palindrome(a,k,n) iff (i = k | j = k)
-//     )
-// }).
+Theorem ("All Sturmian words contain finitely many antipalindromes.", {
+    @no_simplify[
+        forall a.
+        exists m.
+        forall i, n. if antipalindrome(a, i, n) then n <= m
+    ]
+}).
 
-// Theorem ("Sturmian words start with arbitarily long palindromes", {
-//     forall a,n.
-//     exists m. m > n & exists j. j = 1 & palindrome(a, j, m)
-// }) .
+Theorem ("max_antisquare is a function_1", {
+    forall a. exists n. max_antisquare(a, n)
+}).
 
-// Theorem ("All Sturmian words contain finitely many antipalindromes.", {
-//     @no_simplify[
-//         forall a.
-//         exists m.
-//         forall i, n. if antipalindrome(a, i, n) then n <= m
-//     ]
-// }).
+Theorem ("max_antisquare is a function_2", {
+    forall a, n, m.
+        if max_antisquare(a, n) & max_antisquare(a, m) then
+            n = m
+}).
 
-// TODO: Doesn't quite work
-// I want to say that a is the smallest slope (i.e., with the lowest cf coefficients) such that it has a palindrome of length n (if it exists at all)
-// Actually, that's probably not even well-defined.
-// #load("ostrowski-automata/cf_shorter_len.txt", "pecan", cf_shorter_len(a, b))
-// has_antipalindrome(c, len) := exists idx is ostrowski(c). bco_positive(idx) & antipalindrome(c, idx, len)
-// bco_comparable(a, b) := bco_leq(a, b) | bco_leq(b, a)
-// Define listSmallestCfWithAntipalindrome curNum :=
-//     let $PRED := "smallest_antipalindrome_cf_" ^ (toString curNum) in do
-//         print ("Trying: " ^ (toString curNum));
-//         emit {
-//             $PRED(a) :=
-//                 (exists j. j = curNum & has_antipalindrome(a, j)) &
-//                 (forall b is bco_standard.
-//                     if exists len is ostrowski(b). len = curNum & has_antipalindrome(b, len) then
-//                         (bco_leq(a, b) | cf_shorter_len(a, b))
-//                 )
-//         };
-//         print (example ostrowskiFormat { bco_standard(a) & $PRED(a) });
-//         listSmallestCfWithAntipalindrome (curNum + 2). // Note that it is impossible to have an antipalindrome of odd length.
-// Execute listSmallestCfWithAntipalindrome 2 .
+Theorem ("max_antisquare_len is a function_1", {
+    (forall a. exists n. max_antisquare_len(a, n))
+}).
 
-// Define listExamplesIdx $PRED curNum := do
-//     print ("Trying (pred is " ^ $PRED ^ "): " ^ (toString curNum));
-//     print (example ostrowskiFormat { bco_standard(a) & n = curNum & $PRED(a, i, n) });
-//     listExamplesIdx $PRED (curNum + 2) .
-// Execute listExamplesIdx antipalindrome 2 .
+Theorem ("max_antisquare_len is a function_2", {
+    forall a, n, m.
+        if max_antisquare_len(a, n) & max_antisquare_len(a, m) then
+            n = m
+}).
 
-// Define listAntisquares curNum $PREV_NUM :=
-//     let $NEXT_NUM := "bco_" ^ (toString curNum)
-//     in do
-//         print ("Trying: " ^ (toString curNum));
-//         emit { $NEXT_NUM(a, x) := exists y. $PREV_NUM(a, y) & bco_succ(a, y, x) };
-//         print (example ostrowskiFormat { bco_standard(a) & bounded_alpha(a) & $NEXT_NUM(a, n) & @no_simplify[antisquare(a, i, n)] });
-//         listAntisquares (curNum + 1) $NEXT_NUM .
-// #load("test_alpha.txt", "walnut", bounded_alpha(a))
-// Execute listAntisquares 2 bco_one .
+Theorem ("max_antipalindrome is a function_1", {
+    forall a. exists n. max_antipalindrome(a, n)
+}).
 
-// Define listExamples $PRED curNum := do
-//     print ("Trying (pred is " ^ $PRED ^ "): " ^ (toString curNum));
-//     print (example ostrowskiFormat { bco_standard(a) & n = curNum & $PRED(a, n) });
-//     listExamples $PRED (curNum + 1) .
-// Execute listExamples antisquare_bound 2 .
+Theorem ("max_antipalindrome is a function_2", {
+    forall a, n, m.
+        if max_antipalindrome(a, n) & max_antipalindrome(a, m) then
+            n = m
+}).
 
-// Example using ostrowskiFormat of {
-//     0 < n & j < k & l < p &
-//     @postprocess[antisquare(a,i,n) & 0 < i & i < j & antisquare(a,j,n)] &
-//     @postprocess[antisquare(a,k,n) & k < l & antisquare(a,l,n)] &
-//     @postprocess[antisquare(a,p,n) & p < m & antisquare(a,m,n)]
-// }.
-// Theorem ("max_antisquare is a function_1", {
-//     forall a. exists n. max_antisquare(a, n)
-// }).
+Theorem ("The max_antisquare is half the max_antisquare_len.", {
+    forall a.
+        max_antisquare_len(a) = 2*max_antisquare(a)
+}).
 
-// Theorem ("max_antisquare is a function_2", {
-//     forall a, n, m.
-//         if max_antisquare(a, n) & max_antisquare(a, m) then
-//             n = m
-// }).
+Theorem ("Each of max_antisquare, max_antisquare_len, and max_antipalindrome is nonzero.", {
+    forall a.
+        max_antisquare(a) >= 1 &
+        max_antisquare_len(a) >= 2 &
+        max_antipalindrome(a) >= 2
+}).
 
-// Theorem ("max_antisquare_len is a function_1", {
-//     (forall a. exists n. max_antisquare_len(a, n))
-// }).
+Theorem ("Maximum order of antisquares and maximum length of antipalindromes is 4 digits long, and maximum length of antisquares is 6 digits long.", {
+    forall a.
+        is_4_digits(max_antisquare(a)) &
+        is_4_digits(max_antipalindrome(a)) &
+        is_6_digits(max_antisquare_len(a))
+}).
 
-// Theorem ("max_antisquare_len is a function_2", {
-//     forall a, n, m.
-//         if max_antisquare_len(a, n) & max_antisquare_len(a, m) then
-//             n = m
-// }).
+Theorem ("The maximum length of palindromes in a Sturmian word is bounded by the maximum order of its antisquares and the maximum length of its antisquare.", {
+    forall a.
+        max_antisquare(a) <= max_antipalindrome(a) &
+        max_antipalindrome(a) <= max_antisquare_len(a)
+}).
 
-// Theorem ("max_antipalindrome is a function_1", {
-//     forall a. exists n. max_antipalindrome(a, n)
-// }).
+Theorem ("Both extremes have witnesses_1", {
+    exists a. max_antisquare(a) = max_antipalindrome(a)
+}).
+Theorem ("Both extremes have witnesses_2", {
+    exists a. max_antisquare_len(a) = max_antipalindrome(a)
+}).
 
-// Theorem ("max_antipalindrome is a function_2", {
-//     forall a, n, m.
-//         if max_antipalindrome(a, n) & max_antipalindrome(a, m) then
-//             n = m
-// }).
+Theorem ("Every Sturmian word is mirror invariant.", {
+    forall a,i,j.
+    if 0 < i & i < j then
+        mirror_invariant(a,i,j)
+}).
 
-// Theorem ("The max_antisquare is half the max_antisquare_len.", {
-//     forall a.
-//         max_antisquare_len(a) = 2*max_antisquare(a)
-// }).
+Theorem ("Specal factors are unique", {
+    forall a.
+    forall i,j,n. if first_special_factor(a,i,n) & first_special_factor(a,j,n) then i = j
+}).
 
-// Theorem ("Each of max_antisquare, max_antisquare_len, and max_antipalindrome is nonzero.", {
-//     forall a.
-//         max_antisquare(a) >= 1 &
-//         max_antisquare_len(a) >= 2 &
-//         max_antipalindrome(a) >= 2
-// }).
+// Note: This theorem also proves uniqueness.
+Theorem ("The unique special factor of length n is C[1..n]^R", { @no_simplify[
+    forall a.
+    forall i, n. @postprocess[
+        if n > 0 & i > 0 & first_special_factor(a,i,n) then
+            reverse_factor(a,i,i+n,n)
+    ]
+]}).
 
-// Theorem ("Maximum order of antisquares and maximum length of antipalindromes is 4 digits long, and maximum length of antisquares is 6 digits long.", {
-//     forall a.
-//         is_4_digits(max_antisquare(a)) &
-//         is_4_digits(max_antipalindrome(a)) &
-//         is_6_digits(max_antisquare_len(a))
-// }).
+Theorem ("If p is a least period of a factor of C_alpha, then p is the denominator of a semiconvergent of alpha.", {
+    forall a,p. if least_period_occurs(a,p) then semiconvergent(p)
+}).
 
-// Theorem ("The maximum length of palindromes in a Sturmian word is bounded by the maximum order of its antisquares and the maximum length of its antisquare.", {
-//     forall a.
-//         max_antisquare(a) <= max_antipalindrome(a) &
-//         max_antipalindrome(a) <= max_antisquare_len(a)
-// }).
+Theorem ("All factors of Sturmian words are recurrent.", {
+    forall a,i,j.
+        if 0 < i & i < j then recurrent(a,i,j)
+}).
 
-// Theorem ("Both extremes have witnesses_1", {
-//     exists a. max_antisquare(a) = max_antipalindrome(a)
-// }).
-// Theorem ("Both extremes have witnesses_2", {
-//     exists a. max_antisquare_len(a) = max_antipalindrome(a)
-// }).
+Theorem ("Sanity check: Defining unbordered factors in two ways that should be equivalent.", { @no_simplify[
+    forall a,i,j.
+        if 0 < i & i < j then
+            (if exists t. bco_positive(t) & border(a,i,j,t) then !unbordered(a,i,j))
+            &
+            (if !unbordered(a,i,j) then !unbordered_by_border(a,i,j))
+] }).
 
-// // TODO: Why are so many of these lengths 1010^w?
-// // Example using ostrowskiFormat of {
-// //     max_antisquare(a,n) & bco_valid(a,n) &
-// //     n = max_antipalindrome(a) & n > 100
-// //     // n = max_antipalindrome(a) & !is_4_digits(n)
-// // }.
+Theorem ("Every unbordered factor has a length that is the denominator of a semiconvergent.", {
+    forall a,i,n.
+        if i > 0 & n > 0 & unbordered_len(a,i,n) then
+            semiconvergent(n)
+}).
 
-// // Theorem ("Test", {
-// //     forall a.
-// //         max_antisquare(a) = max_antipalindrome(a) <=> max_antisquare(a) = 2
-// // }).
+Theorem ("The least period if C[i..j] is the length of the longest unbordered factor of C[i..j].", {
+    forall a,i,j,p.
+        if i > 0 & j > i & p > 0 then
+            least_period(a,p,i,j) <=> max_unbordered_subfactor_len(a,i,j,p)
+}).
 
-// #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
-// Theorem ("Every Sturmian word is mirror invariant.", {
-//     forall a,i,j.
-//     if 0 < i & i < j then
-//         mirror_invariant(a,i,j)
-// }).
+// Random conjecture: The longest antisquare in any $C_{\alpha}$ where all terms in the continued fraction for $\alpha$ are less than $n$ is $n$, seems to be true for some basic tests, at least using bounds of $2^m - 1$ and finding antisquares up to length $2^m$ for $m = 1,2,3$. Not sure if it's actually possible to prove this using Pecan though.
 
-// #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
-// #load("automata/first_special_factor.aut", "hoa", first_special_factor(a,i,n))
-// Theorem ("Specal factors are unique", {
-//     forall a.
-//     forall i,j,n. if first_special_factor(a,i,n) & first_special_factor(a,j,n) then i = j
-// }).
+Theorem ("All Sturmian words contain exactly two unbordered factors of each length.", {
+    forall a,n.
+        exists i,j. i < j &
+        forall k. if first_unbordered_len(a,k,n) then k in {i,j}
+}).
 
-// // Note: This theorem also proves uniqueness.
-// // Another random note: We could define C[i..j] = C[k..l] in terms of reverse factor.
-// Theorem ("The unique special factor of length n is C[1..n]^R", { @no_simplify[
-//     forall a.
-//     forall i, n. @postprocess[
-//         if i > 0 & first_special_factor(a,i,n) then
-//             reverse_factor(a,i,i+n,n)
-//     ]
-// ]}).
+// See: https://arxiv.org/abs/2005.11718
+Restrict s are ostrowski(a).
 
-// // #load("automata/factor_test.aut", "hoa", factor_test(a,i,n,j))
-// // Example using ostrowskiFormat of { @no_simplify[
-// //     n > 0 & i > 0 &
-// //     bco_valid3(a,i,n,j) & i < j & factor_lt_len(a,i,n,j) & !factor_test(a,i,n,j)
-// // ]}.
-// // Theorem ("Sanity check for factor_test.", { @no_simplify[
-// //     forall a,i,n,j.
-// //         if n > 0 & 0 < i & i < j then
-// //             factor_lt_len(a,i,n,j) <=> factor_test(a,i,n,j)
-// // ] }).
-// // Theorem ("Sanity check: least period definition manually is equivalent to the one we get from Pecan's internal min function.", {
-// //     forall a,p,i,j. least_period(a,p,i,j) <=> least_period_old(a,p,i,j)
-// // }).
+p is $Per(a,n) := exists s. s = 1 & period(a,p,s,n+1)
 
-// Theorem ("If p is a least period of a factor of C_alpha, then p is the denominator of a semiconvergent of alpha.", {
-//     forall a,p. if least_period_occurs(a,p) then semiconvergent(p)
-// }).
-
-// Theorem ("All factors of Sturmian words are recurrent.", {
-//     forall a,i,j.
-//         if i < j then recurrent(a,i,j)
-// }).
-
-// Theorem ("Sanity check: Defining unbordered factors in two ways that should be equivalent.", { @no_simplify[
-//     forall a,i,j.
-//         if 0 < i & i < j then
-//             (if exists t. bco_positive(t) & border(a,i,j,t) then !unbordered(a,i,j))
-//             &
-//             (if !unbordered(a,i,j) then !unbordered_by_border(a,i,j))
-// ] }).
-
-// Theorem ("Every unbordered factor has a length that is the denominator of a semiconvergent.", {
-//     forall a,i,n.
-//         if i > 0 & n > 0 & unbordered_len(a,i,n) then
-//             semiconvergent(n)
-// }).
-
-// Theorem ("The least period if C[i..j] is the length of the longest unbordered factor of C[i..j].", {
-//     forall a,i,j,p.
-//         if i > 0 & j > i & p > 0 then
-//             least_period(a,p,i,j) <=> max_unbordered_subfactor_len(a,i,j,p)
-// }).
-
-// // Random conjecture: The longest antisquare in any $C_{\alpha}$ where all terms in the continued fraction for $\alpha$ are less than $n$ is $n$, seems to be true for some basic tests, at least using bounds of $2^m - 1$ and finding antisquares up to length $2^m$ for $m = 1,2,3$. Not sure if it's actually possible to prove this using Pecan though.
-
-// Theorem ("All Sturmian words contain exactly two unbordered factors of each length.", {
-//     forall a,n.
-//         exists i,j. i < j &
-//         forall k. if first_unbordered_len(a,k,n) then k in {i,j}
-// }).
-
-// // Example using ostrowskiFormat of { @no_simplify[
-// //     first_unbordered_len(a,i,n) & first_unbordered_len(a,j,n) & reverse_factor(a,i,i+n,j+n-1)
-// // ] }.
-
-// // See: https://arxiv.org/abs/2005.11718
-// Restrict s are ostrowski(a).
-
-// p is $Per(a,n) := exists s. s = 1 & period(a,p,s,n+1)
-
-// p is $A(a,n) :=
-//     exists n_l,m_l. lazy_ostrowski(a,n_l) & ost_equiv(a,n,n_l) &
-//     exists m. ost_equiv(a,m_l,m) &
-//     exists i. i > 0 & has_1_digits(i) & as_long_as(n,i) &
-//         bounded_by(i,n_l) & suffix_after(i,n_l,m_l) &
-//         i + m = p
+p is $A(a,n) :=
+    exists n_l,m_l. lazy_ostrowski(a,n_l) & ost_equiv(a,n,n_l) &
+    exists m. ost_equiv(a,m_l,m) &
+    exists i. i > 0 & has_1_digits(i) & as_long_as(n,i) &
+        bounded_by(i,n_l) & suffix_after(i,n_l,m_l) &
+        i + m = p
 
 
-// Theorem ("Theorem 6 (b) from 'An inequality for the number of periods in a word'", {
-//     forall a. forall p,n. p is $Per(a,n) <=> p is $A(a,n)
-// }).
+Theorem ("Theorem 6 (b) from 'An inequality for the number of periods in a word'", {
+    forall a. forall p,n. p is $Per(a,n) <=> p is $A(a,n)
+}).
 
