@@ -1,0 +1,118 @@
+bco_lsd_valid_pre,bco_lsd_valid_pre,false,
+bco_succ,bco_succ,false,
+bco_finite_rep,bco_finite_rep,false,
+bco_valid,bco_valid,false,
+bco_valid2,bco_valid2,false,
+bco_valid3,bco_valid3,false,
+bco_leq,bco_leq,false,
+bco_zero,bco_zero,false,
+bco_adder_valid,bco_adder_valid,false,
+zero,ostrowski_zero,false,
+equal_3,equal_3,false,
+bco_eq,bco_eq,false,
+bco_lt,bco_lt,false,
+ostrowski,ostrowski,false,
+sturmian word,$C,false,
+adder,bco_adder,false,
+bco_valid2,bco_valid2,false,
+bco_positive,bco_positive,false,
+Eventually periodic,eventually_periodic,false,\exists\forall
+Antisquare,antisquare,false,\forall^3
+Square,pow_2,false,\forall^3
+Cube,pow_3,false,\mathbf{QF}
+Fourth power,pow_4,false,
+Fifth power,pow_5,false,
+Sixth power,pow_6,false,
+Seventh power,pow_7,false,
+Eighth power,pow_8,false,
+Factor Lt (idx),factor_lt,false,\exists \forall^2
+Factor Lt,factor_lt_len,false,
+Factor,factor_len,false,
+Reverse factor,reverse_factor,false,\exists \forall^2
+Mirror invariant,mirror_invariant,false,\exists
+Palindrome (idx),palindrome_idx,false,
+Palindrome,palindrome,false,\exists^2
+First palindrome,first_palindrome,false,
+Antipalindrome,antipalindrome,false,\exists^2\forall^3
+Recurrent,recurrent,false,\forall\exists
+Period,period,false,\exists^2
+Least period,least_period,false,\forall
+Least period occurs,least_period_occurs,false,
+Special factor,special_factor,false,\exists^4
+First special factor,first_special_factor,false,
+Unbordered (idx),unbordered,false,
+Unbordered,unbordered_len,false,\exists^2
+Unbordered subfactor (idx),unbordered_subfactor,false,
+First unbordered,first_unbordered_len,false,
+Border,border,false,
+Unbordered (border),unbordered_by_border,false,
+Unbordered subfactor,unbordered_subfactor_len,false,
+first factor,first_factor_len,false,
+Max unbordered subfactor,max_unbordered_subfactor_len,false,\forall
+bco_standard,bco_standard,false,
+square2,square2,false,
+semiconvergent,semiconvergent,false,
+eventually_one,eventually_one,false,
+has_pow_4,has_pow_4,false,
+ostrowski_even,ostrowski_even,false,
+ostrowski_odd,ostrowski_odd,false,
+has_antisquare,has_antisquare,false,
+max_antisquare,max_antisquare,false,
+max_antisquare is a function_1,max_antisquare is a function_1,false,
+max_antisquare is a function_2,max_antisquare is a function_2,false,
+antisquare_len,antisquare_len,false,
+has_antisquare_len,has_antisquare_len,false,
+max_antisquare_len,max_antisquare_len,false,
+max_antisquare_len is a function_1,max_antisquare_len is a function_1,false,
+max_antisquare_len is a function_2,max_antisquare_len is a function_2,false,
+has_antipalindrome,has_antipalindrome,false,
+max_antipalindrome,max_antipalindrome,false,
+max_antipalindrome is a function_1,max_antipalindrome is a function_1,false,
+max_antipalindrome is a function_2,max_antipalindrome is a function_2,false,
+The max_antisquare is half the max_antisquare_len.,The max_antisquare is half the max_antisquare_len.,false,
+Each of max_antisquare max_antisquare_len and max_antipalindrome is nonzero.,Each of max_antisquare max_antisquare_len and max_antipalindrome is nonzero.,false,
+is_4_digits,is_4_digits,false,
+is_6_digits,is_6_digits,false,
+Sanity check: Defining unbordered factors in two ways that should be equivalent.,Sanity check: Defining unbordered factors in two ways that should be equivalent.,false,
+lazy_ostrowski_i,lazy_ostrowski_i,false,
+bounded_by,bounded_by,false
+lazy_ostrowski_iii,lazy_ostrowski_iii,false,
+lazy_ostrowski_iv,lazy_ostrowski_iv,false,
+lazy_ostrowski,lazy_ostrowski,false,
+ost_equiv,ost_equiv,false,
+has_1_digits,has_1_digits,false,
+as_long_as,as_long_as,false,
+suffix_after,suffix_after,false,
+All periods,$Per,false,
+$A,$A,false,
+sanity_square_def,Sanity check that factor_lt let's us redefine something equivalent to square.,false,
+$(01)^*|(10)^*$,is_all_01,true,\forall,16
+T.1,All antisquares are of the form (01)^* or (10)^*,true,\forall_\R \forall^2,5
+T.2,All antipalindromes are of the form (01)^* or (10)^*,true,\forall_\R \forall^2,5
+T.3,Sturmian words are not eventually periodic,true,\forall_\R \exists,3
+T.4,All Sturmian words start with arbitrarily long squares,true,\forall_\R \forall \exists^2,7
+T.5,All Sturmian words contain squares,true,\forall_\R \exists^2,5
+T.6,If n is the order of a square then n is the denominator of some semiconvergent of a.,true,\forall_\R\forall^2,9
+T.7,All Sturmian words contain finitely many antisquares,true,\forall_\R \exists \forall^2,6
+T.8,All Sturmian words contain cubes,true,\forall_\R \exists^2,6
+T.9,Sturmian words are not eventually one if and only if they start with arbitrarily long cubes.,true,\forall_\R \forall \exists \forall \exists \forall \exists,17
+T.10,All Sturmian words that are not eventually one contain fourth powers,true,\forall_\R \exists^2,3
+T.11,Sturmian words are balanced.,true,\forall_\R \forall^4 \exists^4,18
+T.12,Sturmian words contain palindromes of every length.,true, \forall_\R \forall \exists,6
+T.13,For all Sturmian words if n is even then it contains exactly one palindrome of length n and if n is odd then it contains exactly two palindromes of length n.,true,\forall_\R \forall \exists^3 \forall^2,22
+T.14,Sturmian words start with arbitarily long palindromes,true,\forall_\R \forall \exists^2,8
+T.15,All Sturmian words contain finitely many antipalindromes.,true,\forall_\R\exists\forall^2,6
+T.16,Maximum order of antisquares and maximum length of antipalindromes is 4 digits long and maximum length of antisquares is 6 digits long.,true,\forall_\R\exists^3,7
+T.17,The maximum length of palindromes in a Sturmian word is bounded by the maximum order of its antisquares and the maximum length of its antisquare.,true,\forall_\R \exists^3,7
+T.18,Both extremes have witnesses_1,true,\exists_\R \exists^2,4
+T.19,Both extremes have witnesses_2,true,\exists_\R \exists^2,4
+T.20,Every Sturmian word is mirror invariant.,true,\forall_\R \forall^2,7
+T.21,Special factors are unique,true,\forall_\R \forall^3,7
+T.22,The unique special factor of length n is C[1..n]^R,true,\forall_\R \forall^2 \exists,10
+T.23,If p is a least period of a factor of C_alpha then p is the denominator of a semiconvergent of alpha.,true,\forall_\R \forall,4
+T.24,All factors of Sturmian words are recurrent.,true,\forall_\R \forall^2,7
+T.25,Every unbordered factor has a length that is the denominator of a semiconvergent.,true,\forall_\R \forall^2,9
+T.26,The least period if C[i..j] is the length of the longest unbordered factor of C[i..j].,\forall_\R \forall^3,13
+T.27,All Sturmian words contain exactly two unbordered factors of each length.,\forall_\R \exists^2 \forall,9
+T.28,Theorem 6 (b) from 'An inequality for the number of periods in a word',true,\forall_\R \forall^2,7
+

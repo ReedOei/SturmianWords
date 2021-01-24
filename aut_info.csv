@@ -16,36 +16,36 @@ sturmian word,$C,false,
 adder,bco_adder,false,
 bco_valid2,bco_valid2,false,
 bco_positive,bco_positive,false,
-Eventually periodic,eventually_periodic,true,\exists\forall
-Antisquare,antisquare,true,\forall^3
-Square,pow_2,true,\forall^3
-Cube,pow_3,true,\mathbf{QF}
 Fourth power,pow_4,false,
 Fifth power,pow_5,false,
 Sixth power,pow_6,false,
 Seventh power,pow_7,false,
 Eighth power,pow_8,false,
-Factor Lt (idx),factor_lt,true,\exists \forall^2
 Factor Lt,factor_lt_len,false,
 Factor,factor_len,false,
-Reverse factor,reverse_factor,true,\exists \forall^2
-Mirror invariant,mirror_invariant,true,\exists
 Palindrome (idx),palindrome_idx,false,
-Palindrome,palindrome,true,\exists^2
 First palindrome,first_palindrome,false,
-Antipalindrome,antipalindrome,true,\exists^2\forall^3
-Recurrent,recurrent,true,\forall\exists
-Period,period,true,\exists^2
-Least period,least_period,true,\forall
-Least period occurs,least_period_occurs,false,
-Special factor,special_factor,true,\exists^4
 First special factor,first_special_factor,false,
+Least period occurs,least_period_occurs,false,
 Unbordered (idx),unbordered,false,
-Unbordered,unbordered_len,true,\exists^2
 Unbordered subfactor (idx),unbordered_subfactor,false,
 First unbordered,first_unbordered_len,false,
 Border,border,false,
 Unbordered (border),unbordered_by_border,false,
 Unbordered subfactor,unbordered_subfactor_len,false,
 first factor,first_factor_len,false,
-Max unbordered subfactor,max_unbordered_subfactor_len,true,\forall
+Eventually periodic,eventually_periodic,true,\exists^2\forall\exists^2,12
+Antisquare,antisquare,true,\forall^3,13
+Square,pow_2,true,\forall^3,13
+Cube,pow_3,true,\exists,4
+Factor Lt (idx),factor_lt,true,\exists \forall^2,11
+Reverse factor,reverse_factor,true,\exists \forall^2,12
+Mirror invariant,mirror_invariant,true,\exists,1
+Palindrome,palindrome,true,\exists^2,4
+Antipalindrome,antipalindrome,true,\exists^2\forall^3,13
+Recurrent,recurrent,true,\forall\exists,5
+Period,period,true,\exists^2,5
+Least period,least_period,true,\forall,4
+Special factor,special_factor,true,\exists^4,8
+Unbordered,unbordered_len,true,\exists^3,2
+Max unbordered subfactor,max_unbordered_subfactor_len,true,\forall,4

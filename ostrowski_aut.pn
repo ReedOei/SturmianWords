@@ -5,9 +5,8 @@
 Restrict i, p, n are ostrowski(a).
 eventually_periodic(a, p) := @postprocess[p > 0 & exists n. forall i. i > n => $C[i] = $C[i + p]]
 #save_aut("automata/eventually_periodic.aut", eventually_periodic)
-#forget(p)
-#forget(n)
-#forget(i)
+
+Forget [p,n,i].
 
 pow_2(a, i, n) :=
     @postprocess[@no_simplify[

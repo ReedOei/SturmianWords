@@ -53,6 +53,7 @@ is_all_01(a,i,n) := @postprocess[
     bco_valid2(a,i,n) &
     forall k. @postprocess[if @postprocess[bco_valid3(a,i,k,n) & i <= k & k < i+n-1] then $C[k] != $C[k+1]]
 ]
+#save_aut("automata/is_all_01.aut", is_all_01)
 
 Theorem ("All antisquares are of the form (01)^* or (10)^*", {
     forall a. forall i,n. if antisquare(a,i,n) then is_all_01(a,i,n)
@@ -86,7 +87,7 @@ Theorem ("All Sturmian words contain squares", {
     ]
 }) .
 
-Theorem ("If n is the order of a square, then n is the denominator of some semiconvergent of a.", {
+Theorem ("If n is the order of a square then n is the denominator of some semiconvergent of a.", {
     forall a,i,n.
         if i > 0 & n > 0 & pow_2(a,i,n) then
             n is semiconvergent
@@ -129,7 +130,7 @@ Theorem ("Sturmian words contain palindromes of every length.", {
     forall a, n. if n > 0 then exists i. palindrome(a, i, n)
 }).
 
-Theorem ("For all Sturmian words, if n is even then it contains exactly one palindrome of length n, and if n is odd then it contains exactly two palindromes of length n.", {
+Theorem ("For all Sturmian words if n is even then it contains exactly one palindrome of length n and if n is odd then it contains exactly two palindromes of length n.", {
     forall a,n. (
         if n is even & n > 0 then
             exists i. forall k. first_palindrome(a, k, n) iff i = k
@@ -187,14 +188,14 @@ Theorem ("The max_antisquare is half the max_antisquare_len.", {
         max_antisquare_len(a) = 2*max_antisquare(a)
 }).
 
-Theorem ("Each of max_antisquare, max_antisquare_len, and max_antipalindrome is nonzero.", {
+Theorem ("Each of max_antisquare max_antisquare_len and max_antipalindrome is nonzero.", {
     forall a.
         max_antisquare(a) >= 1 &
         max_antisquare_len(a) >= 2 &
         max_antipalindrome(a) >= 2
 }).
 
-Theorem ("Maximum order of antisquares and maximum length of antipalindromes is 4 digits long, and maximum length of antisquares is 6 digits long.", {
+Theorem ("Maximum order of antisquares and maximum length of antipalindromes is 4 digits long and maximum length of antisquares is 6 digits long.", {
     forall a.
         is_4_digits(max_antisquare(a)) &
         is_4_digits(max_antipalindrome(a)) &
@@ -220,7 +221,7 @@ Theorem ("Every Sturmian word is mirror invariant.", {
         mirror_invariant(a,i,j)
 }).
 
-Theorem ("Specal factors are unique", {
+Theorem ("Special factors are unique", {
     forall a.
     forall i,j,n. if first_special_factor(a,i,n) & first_special_factor(a,j,n) then i = j
 }).
@@ -234,7 +235,7 @@ Theorem ("The unique special factor of length n is C[1..n]^R", { @no_simplify[
     ]
 ]}).
 
-Theorem ("If p is a least period of a factor of C_alpha, then p is the denominator of a semiconvergent of alpha.", {
+Theorem ("If p is a least period of a factor of C_alpha then p is the denominator of a semiconvergent of alpha.", {
     forall a,p. if least_period_occurs(a,p) then semiconvergent(p)
 }).
 
@@ -282,7 +283,6 @@ p is $A(a,n) :=
     exists i. i > 0 & has_1_digits(i) & as_long_as(n,i) &
         bounded_by(i,n_l) & suffix_after(i,n_l,m_l) &
         i + m = p
-
 
 Theorem ("Theorem 6 (b) from 'An inequality for the number of periods in a word'", {
     forall a. forall p,n. p is $Per(a,n) <=> p is $A(a,n)
