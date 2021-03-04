@@ -204,15 +204,15 @@ Define genVars num :=
             emit { Restrict newVar is ostrowski(a). };
             newVar :: rest .
 
-Define test prev vars :=
-    match vars with
-    case [x] => { exists x. prev < x & has_antisquare(a,x) }
-    case x :: xs =>
-        let next := test x xs
-        in { exists x. prev < x & has_antisquare(a,x) & next }
-    end.
+// Define test prev vars :=
+//     match vars with
+//     case [x] => { exists x. prev < x & has_antisquare(a,x) }
+//     case x :: xs =>
+//         let next := test x xs
+//         in { exists x. prev < x & has_antisquare(a,x) & next }
+//     end.
 
-Define check prev vars :=
-    let pred := test prev vars in
-        emit { test(a) := pred }.
+// Define check prev vars :=
+//     let pred := test prev vars in
+//         emit { test(a) := pred }.
 

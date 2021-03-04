@@ -1,0 +1,50 @@
+#import("ostrowski_defs.pn")
+
+#load("ostrowski-automata/otm.txt", "pecan", v(n))
+#load("ostrowski-automata/fib_alpha.txt", "walnut", fib_alpha(a))
+
+Restrict i,j,k,l,s,t,n,m,p are ostrowski(a).
+
+otm_factor_lt(a, i, j, k) := @postprocess[
+    @postprocess[bco_leq(i, j) & bco_valid3(a,i,j,k)] &
+    exists ki.
+        @no_simplify[bco_adder(a,ki,i,k)] &
+        @simplify[
+            forall t. @postprocess[
+                if bco_leq(i, t) & bco_lt(t, j) then
+                    forall kit. @postprocess[
+                        if @no_simplify[bco_adder_valid(a, ki, t, kit)] then
+                            v[t] = v[kit]
+                    ]
+            ]
+        ]
+]
+#save_aut("automata/otm_factor_lt.aut", otm_factor_lt)
+#load("automata/otm_factor_lt.aut", "hoa", otm_factor_lt(a,i,j,k))
+
+otm_square(a,i,n) := @postprocess[otm_factor_lt(a,i,i+n,i+n)]
+#save_aut("automata/otm_square.aut", otm_square)
+#load("automata/otm_square.aut", "hoa", otm_square(a,i,n))
+
+otm_cube(a,i,n) := @postprocess[otm_square(a,i,n) & otm_square(a,i+n,n)]
+#save_aut("automata/otm_cube.aut", otm_cube)
+#load("automata/otm_cube.aut", "hoa", otm_cube(a,i,n))
+
+ftm_square(i,n) := exists a is fib_alpha. otm_square(a,i,n)
+ftm_cube(i,n) := exists a is fib_alpha. otm_cube(a,i,n)
+
+fib_valid(n) := exists a is fib_alpha. bco_valid(a, n)
+
+// Define showWord2 := concatenate ∘ map (\i => checkToInt { exists a is fib_alpha. exists n. fib_valid(n) & n = i & v(n) }).
+// Execute showWord2 fib_valid v [0..10] .
+
+Example using ostrowskiFormat of {
+    @no_simplify[
+        0 < n & ftm_cube(i,n) & n < m & ftm_cube(j,m)
+    ]
+}.
+
+// Theorem ("Two cubes", {
+
+// }).
+
