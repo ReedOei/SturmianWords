@@ -3,46 +3,254 @@
 #load("ostrowski-automata/otm.txt", "pecan", v(n))
 #load("ostrowski-automata/fib_alpha.txt", "walnut", fib_alpha(a))
 
-Restrict i,j,k,l,s,t,n,m,p are ostrowski(a).
+zeck_add(x,y,z) := exists a is fib_alpha. bco_adder(a,x,y,z)
+zeck_add_valid(x,y,z) := exists a is fib_alpha. bco_adder_valid(a,x,y,z)
+zeck_zero(z) := exists a is fib_alpha. ostrowski_zero(a,z)
+zeck(x) := exists a is fib_alpha. bco_valid(a,x)
+zeck2(x,y) := exists a is fib_alpha. bco_valid2(a,x,y)
+zeck3(x,y,z) := exists a is fib_alpha. bco_valid3(a,x,y,z)
 
-otm_factor_lt(a, i, j, k) := @postprocess[
-    @postprocess[bco_leq(i, j) & bco_valid3(a,i,j,k)] &
-    exists ki.
-        @no_simplify[bco_adder(a,ki,i,k)] &
-        @simplify[
-            forall t. @postprocess[
-                if bco_leq(i, t) & bco_lt(t, j) then
-                    forall kit. @postprocess[
-                        if @no_simplify[bco_adder_valid(a, ki, t, kit)] then
-                            v[t] = v[kit]
-                    ]
-            ]
-        ]
-]
-#save_aut("automata/otm_factor_lt.aut", otm_factor_lt)
-#load("automata/otm_factor_lt.aut", "hoa", otm_factor_lt(a,i,j,k))
+Structure zeck defining {
+    "adder": zeck_add(any, any, any),
+    "less": bco_lt(any, any),
+    "equal": bco_eq(any, any),
+    "zero": zeck_zero(any)
+}
 
-otm_square(a,i,n) := @postprocess[otm_factor_lt(a,i,i+n,i+n)]
-#save_aut("automata/otm_square.aut", otm_square)
-#load("automata/otm_square.aut", "hoa", otm_square(a,i,n))
+// Let i,n be zeck.
+// ftm_cube2(i, n) :=
+//     @postprocess[
+//         zeck2(i, n) &
+//         n > 1 &
+//         forall m. @postprocess[if @postprocess[zeck(m) & zeck_add(n,n,m)] then
+//         forall t. @postprocess[if bco_lt(t, m) then
+//         forall j. @postprocess[if zeck_add(i,t,j) then
+//         forall k. if zeck(k) & zeck_add(j,n,k) then v[j] = v[k]
+//     ]]]]
+// #save_aut("automata/ftm_cube.aut", ftm_cube2)
+// #load("automata/ftm_cube.aut", "hoa", ftm_cube2(i,n))
 
-otm_cube(a,i,n) := @postprocess[otm_square(a,i,n) & otm_square(a,i+n,n)]
-#save_aut("automata/otm_cube.aut", otm_cube)
-#load("automata/otm_cube.aut", "hoa", otm_cube(a,i,n))
+// ftm_factor_lt(i, j, k) := @postprocess[
+//     @postprocess[bco_leq(i, j) & zeck3(i,j,k)] &
+//     @no_simplify[exists ki.
+//         @no_simplify[zeck_add(ki,i,k)] &
+//         @simplify[
+//             forall t. @postprocess[
+//                 if bco_leq(i, t) & bco_lt(t, j) then
+//                     forall kit. @postprocess[
+//                         if zeck_add_valid(ki, t, kit) then
+//                             v[t] = v[kit]
+//                     ]
+//             ]
+//         ]
+//     ]
+// ]
+// #save_aut("automata/ftm_factor_lt.aut", ftm_factor_lt)
+// #load("automata/ftm_factor_lt.aut", "hoa", ftm_factor_lt(a,i,j,k))
 
-ftm_square(i,n) := exists a is fib_alpha. otm_square(a,i,n)
-ftm_cube(i,n) := exists a is fib_alpha. otm_cube(a,i,n)
+// Restrict i,j,n,m are zeck.
 
-fib_valid(n) := exists a is fib_alpha. bco_valid(a, n)
+// ftm_square(i,n) := @postprocess[ftm_factor_lt(i,i+n,i+n)]
+// #save_aut("automata/ftm_square.aut", ftm_square)
+// #load("automata/ftm_square.aut", "hoa", ftm_square(a,i,n))
 
-// Define showWord2 := concatenate ∘ map (\i => checkToInt { exists a is fib_alpha. exists n. fib_valid(n) & n = i & v(n) }).
+// ftm_cube(i,n) := @postprocess[ftm_square(i,n) & ftm_square(i+n,n)]
+// #save_aut("automata/ftm_cube.aut", ftm_cube)
+// #load("automata/ftm_cube.aut", "hoa", ftm_cube(a,i,n))
+
+// // True when v_a[i..j] = v_a[k + 1..l + 1]^R
+// // where l - k = j - i
+// otm_reverse_factor(a, i, j, l) := @postprocess[
+//     @postprocess[
+//         bco_positive(i) &
+//         // bco_positive(l) &
+//         bco_valid3(a, i, j, l) &
+//         bco_lt(i,j)
+//     ] &
+//     @no_simplify[exists li. @simplify[
+//         @postprocess[
+//             bco_adder_valid(a, l, i, li) &
+//             bco_leq(j, li)
+//         ] &
+//         forall t. @postprocess[
+//             if @postprocess[bco_leq(i, t) & bco_lt(t, j)] then
+//                 forall lit. @postprocess[
+//                     if bco_adder_valid(a, lit, t, li) then
+//                         v[t] = v[lit]
+//                 ]
+//             ]
+//         ]
+//     ]
+// ]
+// #save_aut("automata/otm_reverse_factor.aut", otm_reverse_factor)
+
+// otm_inner_factor_lt(a,i,j,k,ki) := !(
+//     forall t. @postprocess[
+//         forall kit. @postprocess[
+//             if @postprocess_high[bco_leq(i,t) & bco_lt(t,j) & @postprocess_high[bco_adder(a, ki, t, kit) & bco_valid2(a,t,kit)]] then
+//                 v[t] = v[kit]
+//         ]
+//     ]
+// )
+// #save_aut("otm_inner_factor_lt.aut", otm_inner_factor_lt)
+// otm_factor_lt(a, i, j, k) := @postprocess[@no_simplify[@postprocess[
+//     @postprocess_high[bco_valid3(a,i,j,k) & bco_positive(i) & bco_leq(i, j)] &
+//     exists ki.
+//         @no_simplify[bco_adder(a,ki,i,k)] &
+//         @simplify[
+//             forall t. @postprocess[
+//                 forall kit. @postprocess[
+//                     if @postprocess_high[bco_leq(i,t) & bco_lt(t,j) & @postprocess_high[bco_adder(a, ki, t, kit) & bco_valid2(a,t,kit)]] then
+//                         v[t] = v[kit]
+//                 ]
+//             ]
+//         ]
+// ]]]
+// #save_aut("automata/otm_factor_lt.aut", otm_factor_lt)
+// #load("automata/otm_factor_lt.aut", "hoa", otm_factor_lt(a,i,j,k))
+
+// Let i,j,t,k,l,n,m be ostrowski(a).
+
+// not_otm_square(a, i, n) :=
+//     @postprocess[
+//         bco_valid2(a, i, n) &
+//         bco_positive(n) &
+//         exists t. bco_leq(i,t) & t < i + n &
+//         exists k. k = t + n & v[t] != v[k]
+//     ]
+// #save_aut("automata/not_otm_square.aut", not_otm_square)
+// #load("automata/not_otm_square.aut", "hoa", not_otm_square(a,i,n))
+
+// test(a,n) := bco_valid(a,n) & bco_positive(n) & forall i. if bco_positive(i) then @no_simplify[not_otm_square(a,i,n)]
+// #save_aut("automata/test.aut", test)
+
+
+// Let n be ostrowski(a).
+// not_otm_cube(a, i, n) :=
+//     @postprocess[
+//         bco_valid2(a, i, n) &
+//         exists m. @postprocess[@postprocess[bco_valid(a,m) & n > 1 & bco_adder(a,n,n,m)] &
+//         exists t. @postprocess[bco_lt(t, m) &
+//         exists j. @postprocess[bco_adder(a,i,t,j) &
+//         exists k. bco_valid(a,k) & bco_adder(a,j,n,k) & v[j] != v[k]
+//     ]]]]
+// #save_aut("automata/not_otm_cube.aut", not_otm_cube)
+
+// otm_cube3(a, i, n) := @postprocess[
+//         bco_valid2(a, i, n) &
+//         n > 1 &
+//         forall m,t,j,k. if @postprocess[n > 1 & bco_adder(a,n,n,m)] then
+//         @postprocess[if bco_lt(t, m) then
+//         @postprocess[if bco_adder(a,i,t,j) then
+//         @postprocess[if bco_valid(a,k) & bco_adder(a,j,n,k) then v[j] = v[k]
+//     ]]]]
+// #save_aut("automata/otm_cube3.aut", otm_cube3)
+
+// otm_cube2(a, i, n) :=
+//     @postprocess[
+//         bco_valid2(a, i, n) &
+//         n > 1 &
+//         forall m. if @postprocess[n > 1 & bco_adder(a,n,n,m)] then
+//         forall t. @postprocess[if bco_lt(t, m) then
+//         forall j. @postprocess[if bco_adder(a,i,t,j) then
+//         forall k. if bco_valid(a,k) & bco_adder(a,j,n,k) then v[j] = v[k]
+//     ]]]
+// #save_aut("automata/otm_cube2.aut", otm_cube2)
+
+// Let i,j,l be ostrowski(a).
+
+// True when C_a[i..j] = C_a[k + 1..l + 1]^R
+// where l - k = j - i
+// reverse_factor(a, i, j, l) := @postprocess[
+//     @postprocess[
+//         bco_positive(i) &
+//         // bco_positive(l) &
+//         bco_valid3(a, i, j, l) &
+//         i < j
+//     ] &
+//     @no_simplify[forall li. @simplify[
+//         @postprocess[
+//             bco_adder_valid(a, l, i, li) &
+//             bco_leq(j, li)
+//         ] =>
+//         forall t. @postprocess[
+//             if @postprocess[bco_leq(i, t) & bco_lt(t, j)] then
+//                 forall lit. @postprocess[
+//                     if bco_adder_valid(a, lit, t, li) then
+//                         v[t] = v[lit]
+//                 ]
+//             ]
+//         ]
+//     ]
+// ]
+// #save_aut("automata/reverse_factor.aut", reverse_factor)
+
+// otm_cube(a, i, n) :=
+//     @postprocess[
+//         bco_valid2(a, i, n) &
+//         bco_positive(n) &
+//         forall m. @postprocess[if @postprocess[bco_adder(a,n,n,m)] then
+//         forall t. @postprocess[if bco_lt(t, m) then
+//         forall j. @postprocess[if bco_adder(a,i,t,j) then
+//         forall k. if bco_valid(a,k) & bco_adder(a,j,n,k) then v[j] = v[k]
+//     ]]]]
+// #save_aut("automata/otm_cube.aut", otm_cube)
+
+// otm_square(a, i, n) :=
+//     @postprocess[
+//         bco_valid2(a, i, n) &
+//         bco_positive(n) &
+//         forall t. if t < n then
+//         forall j. if j = i + t then
+//         forall k. if k = j + n then v[j] = v[k]
+//     ]
+// #save_aut("automata/otm_square.aut", otm_square)
+
+// otm_cube(a, i, n) :=
+//     @postprocess[
+//         bco_valid2(a, i, n) &
+//         bco_positive(n) &
+//         exists bound.
+//         @postprocess[@postprocess[bco_valid(a, bound) & bco_adder(a, i, n, bound)] &
+//         forall j. if bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j) then
+//         forall jn. if bco_valid(a,jn) & bco_adder(a, j, n, jn) then
+//         forall jnn. if bco_valid(a,jnn) & bco_adder(a, jn, n, jnn) then (v[j] = v[jn] & v[j] = v[jnn])]
+//     ]
+// #save_aut("automata/otm_square.aut", otm_cube)
+
+// otm_square(a, i, n) :=
+//     @postprocess[
+//         bco_valid2(a, i, n) &
+//         bco_positive(n) &
+//         exists bound.
+//         @postprocess[@postprocess[bco_valid(a, bound) & bco_adder(a, i, n, bound)] &
+//         forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
+//             forall jn. if bco_valid(a,jn) & bco_adder(a, j, n, jn) then v[j] = v[jn]]]
+//     ]
+// #save_aut("automata/otm_square.aut", otm_square)
+// #load("automata/otm_square.aut", "hoa", otm_square(a,i,n))
+
+// Restrict i,j,k,l,s,t,n,m,p are ostrowski(a).
+
+// otm_square(a,i,n) := @postprocess[otm_factor_lt(a,i,i+n,i+n)]
+// #save_aut("automata/otm_square.aut", otm_square)
+// #load("automata/otm_square.aut", "hoa", otm_square(a,i,n))
+
+// otm_cube(a,i,n) := @postprocess[otm_square(a,i,n) & otm_square(a,i+n,n)]
+// #save_aut("automata/otm_cube.aut", otm_cube)
+// #load("automata/otm_cube.aut", "hoa", otm_cube(a,i,n))
+
+// ftm_square(i,n) := exists a is fib_alpha. otm_square(a,i,n)
+// ftm_cube(i,n) := exists a is fib_alpha. otm_cube(a,i,n)
+
+Define showWord2 := concatenate ∘ map (\i => checkToInt { exists a is fib_alpha. exists n. fib_valid(n) & n = i & v(n) }).
 // Execute showWord2 fib_valid v [0..10] .
 
-Example using ostrowskiFormat of {
-    @no_simplify[
-        0 < n & ftm_cube(i,n) & n < m & ftm_cube(j,m)
-    ]
-}.
+// Example using ostrowskiFormat of {
+//     @no_simplify[
+//         0 < n & ftm_cube(i,n) & n < m & ftm_cube(j,m)
+//     ]
+// }.
 
 // Theorem ("Two cubes", {
 

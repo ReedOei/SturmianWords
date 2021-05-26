@@ -12,8 +12,6 @@
 #load("ostrowski-automata/bco_standard.txt", "walnut", bco_standard(n))
 
 #load("ostrowski-automata/bco_adder.aut", "hoa", bco_adder(a, x, y, z))
-#load("ostrowski-automata/bco_adder_valid.aut", "hoa", bco_adder_valid(a, x, y, z))
-// bco_adder_valid(a,x,y,z) := bco_adder(a,x,y,z)
 
 #load("ostrowski-automata/cf_comp_len.txt", "pecan", cf_comp_len(a, b))
 
@@ -81,6 +79,10 @@ bco_valid4(a, x, y, z, w) := bco_valid3(a, x, y, z) & bco_valid(a, w)
 // Postprocessing twice seems to help
 // bco_adder_valid(a,x,y,z) := @postprocess[@postprocess[bco_adder(a,x,y,z) & bco_valid3(a,x,y,z)]]
 // #save_aut("ostrowski-automata/bco_adder_valid.aut", bco_adder_valid)
+// #load("ostrowski-automata/bco_adder_valid.aut", "hoa", bco_adder_valid(a, x, y, z))
+// bco_adder_valid(a,x,y,z) := @postprocess[@postprocess[bco_adder(a,x,y,z) & bco_valid(a,z)]]
+// #save_aut("ostrowski-automata/bco_adder_valid.aut", bco_adder_valid)
+#load("ostrowski-automata/bco_adder_valid.aut", "hoa", bco_adder_valid(a, x, y, z))
 
 // Generates the equal_3 automaton we use for equality purposes
 Execute genEqual 3.

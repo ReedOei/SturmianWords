@@ -7,6 +7,8 @@ git rev-parse HEAD
 
 name_map="$1"
 fname="$2"
+format="$3"
+printed_format_line="false"
 
 # Clear the file
 > .pred_names
@@ -35,9 +37,26 @@ cat "$name_map" | sort -n -k5 -t, | while read -r line; do
             stats="$(tail -n+2 "automata/$name.aut" | autfilt --stats="%s,%e")"
             final_states="$(echo "$stats" | cut -f1 -d",")"
             final_edges="$(echo "$stats" | cut -f2 -d",")"
-            echo "$display_name & \$$atoms\$ & \$$complexity\$ & \$$runtime\$ & \$$states\$ & \$$edges\$ & \$$final_states\$ & \$$final_edges\$ \\\\"
+
+            if [[ "$format" == "csv" ]]; then
+                if [[ "$printed_format_line" == "false" ]]; then
+                    echo "display_name,complexity,atoms,runtime,states,edges,final_states,final_edges"
+                    printed_format_line="true"
+                fi
+                echo "$display_name,$complexity,$atoms,$runtime,$states,$edges,$final_states,$final_edges"
+            else
+                echo "$display_name & \$$complexity\$ & \$$atoms\$ & \$$runtime\$ & \$$states\$ & \$$edges\$ & \$$final_states\$ & \$$final_edges\$ \\\\"
+            fi
         else
-            echo "$display_name & \$$atoms\$ & \$$complexity\$ & \$$runtime\$ & \$$states\$ & \$$edges\$ \\\\"
+            if [[ "$format" == "csv" ]]; then
+                if [[ "$printed_format_line" == "false" ]]; then
+                    echo "display_name,complexity,atoms,runtime,states,edges"
+                    printed_format_line="true"
+                fi
+                echo "$display_name,$complexity,$atoms,$runtime,$states,$edges"
+            else
+                echo "$display_name & \$$complexity\$ & \$$atoms\$ & \$$runtime\$ & \$$states\$ & \$$edges\$ \\\\"
+            fi
         fi
     fi
 

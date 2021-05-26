@@ -1,0 +1,204 @@
+#import("ostrowski_defs.pn")
+
+Restrict a is bco_standard.
+Restrict i, j, k, l, p, n, m are ostrowski(a).
+
+mul2(a,i,j) := @postprocess[2*i = j]
+#save_aut("mul2.aut", mul2)
+mul3(a,i,j) := @postprocess[3*i = j]
+#save_aut("mul3.aut", mul3)
+mul4(a,i,j) := @postprocess[4*i = j]
+#save_aut("mul4.aut", mul4)
+mul5(a,i,j) := @postprocess[5*i = j]
+#save_aut("mul5.aut", mul5)
+mul6(a,i,j) := @postprocess[6*i = j]
+#save_aut("mul6.aut", mul6)
+mul7(a,i,j) := @postprocess[7*i = j]
+#save_aut("mul7.aut", mul7)
+mul8(a,i,j) := @postprocess[8*i = j]
+#save_aut("mul8.aut", mul8)
+mul9(a,i,j) := @postprocess[9*i = j]
+#save_aut("mul9.aut", mul9)
+mul10(a,i,j) := @postprocess[10*i = j]
+#save_aut("mul10.aut", mul10)
+mul11(a,i,j) := @postprocess[11*i = j]
+#save_aut("mul11.aut", mul11)
+mul12(a,i,j) := @postprocess[12*i = j]
+#save_aut("mul12.aut", mul12)
+mul13(a,i,j) := @postprocess[13*i = j]
+#save_aut("mul13.aut", mul13)
+mul14(a,i,j) := @postprocess[14*i = j]
+#save_aut("mul14.aut", mul14)
+mul15(a,i,j) := @postprocess[15*i = j]
+#save_aut("mul15.aut", mul15)
+mul16(a,i,j) := @postprocess[16*i = j]
+#save_aut("mul16.aut", mul16)
+mul17(a,i,j) := @postprocess[17*i = j]
+#save_aut("mul17.aut", mul17)
+mul18(a,i,j) := @postprocess[18*i = j]
+#save_aut("mul18.aut", mul18)
+mul19(a,i,j) := @postprocess[19*i = j]
+#save_aut("mul19.aut", mul19)
+mul20(a,i,j) := @postprocess[20*i = j]
+#save_aut("mul20.aut", mul20)
+mul21(a,i,j) := @postprocess[21*i = j]
+#save_aut("mul21.aut", mul21)
+mul22(a,i,j) := @postprocess[22*i = j]
+#save_aut("mul22.aut", mul22)
+mul23(a,i,j) := @postprocess[23*i = j]
+#save_aut("mul23.aut", mul23)
+mul24(a,i,j) := @postprocess[24*i = j]
+#save_aut("mul24.aut", mul24)
+mul25(a,i,j) := @postprocess[25*i = j]
+#save_aut("mul25.aut", mul25)
+mul26(a,i,j) := @postprocess[26*i = j]
+#save_aut("mul26.aut", mul26)
+mul27(a,i,j) := @postprocess[27*i = j]
+#save_aut("mul27.aut", mul27)
+mul28(a,i,j) := @postprocess[28*i = j]
+#save_aut("mul28.aut", mul28)
+mul29(a,i,j) := @postprocess[29*i = j]
+#save_aut("mul29.aut", mul29)
+mul30(a,i,j) := @postprocess[30*i = j]
+#save_aut("mul30.aut", mul30)
+mul31(a,i,j) := @postprocess[31*i = j]
+#save_aut("mul31.aut", mul31)
+mul32(a,i,j) := @postprocess[32*i = j]
+#save_aut("mul32.aut", mul32)
+mul33(a,i,j) := @postprocess[33*i = j]
+#save_aut("mul33.aut", mul33)
+mul34(a,i,j) := @postprocess[34*i = j]
+#save_aut("mul34.aut", mul34)
+mul35(a,i,j) := @postprocess[35*i = j]
+#save_aut("mul35.aut", mul35)
+mul36(a,i,j) := @postprocess[36*i = j]
+#save_aut("mul36.aut", mul36)
+mul37(a,i,j) := @postprocess[37*i = j]
+#save_aut("mul37.aut", mul37)
+mul38(a,i,j) := @postprocess[38*i = j]
+#save_aut("mul38.aut", mul38)
+mul39(a,i,j) := @postprocess[39*i = j]
+#save_aut("mul39.aut", mul39)
+mul40(a,i,j) := @postprocess[40*i = j]
+#save_aut("mul40.aut", mul40)
+mul41(a,i,j) := @postprocess[41*i = j]
+#save_aut("mul41.aut", mul41)
+mul42(a,i,j) := @postprocess[42*i = j]
+#save_aut("mul42.aut", mul42)
+mul43(a,i,j) := @postprocess[43*i = j]
+#save_aut("mul43.aut", mul43)
+mul44(a,i,j) := @postprocess[44*i = j]
+#save_aut("mul44.aut", mul44)
+mul45(a,i,j) := @postprocess[45*i = j]
+#save_aut("mul45.aut", mul45)
+mul46(a,i,j) := @postprocess[46*i = j]
+#save_aut("mul46.aut", mul46)
+mul47(a,i,j) := @postprocess[47*i = j]
+#save_aut("mul47.aut", mul47)
+mul48(a,i,j) := @postprocess[48*i = j]
+#save_aut("mul48.aut", mul48)
+mul49(a,i,j) := @postprocess[49*i = j]
+#save_aut("mul49.aut", mul49)
+mul50(a,i,j) := @postprocess[50*i = j]
+#save_aut("mul50.aut", mul50)
+mul51(a,i,j) := @postprocess[51*i = j]
+#save_aut("mul51.aut", mul51)
+mul52(a,i,j) := @postprocess[52*i = j]
+#save_aut("mul52.aut", mul52)
+mul53(a,i,j) := @postprocess[53*i = j]
+#save_aut("mul53.aut", mul53)
+mul54(a,i,j) := @postprocess[54*i = j]
+#save_aut("mul54.aut", mul54)
+mul55(a,i,j) := @postprocess[55*i = j]
+#save_aut("mul55.aut", mul55)
+mul56(a,i,j) := @postprocess[56*i = j]
+#save_aut("mul56.aut", mul56)
+mul57(a,i,j) := @postprocess[57*i = j]
+#save_aut("mul57.aut", mul57)
+mul58(a,i,j) := @postprocess[58*i = j]
+#save_aut("mul58.aut", mul58)
+mul59(a,i,j) := @postprocess[59*i = j]
+#save_aut("mul59.aut", mul59)
+mul60(a,i,j) := @postprocess[60*i = j]
+#save_aut("mul60.aut", mul60)
+mul61(a,i,j) := @postprocess[61*i = j]
+#save_aut("mul61.aut", mul61)
+mul62(a,i,j) := @postprocess[62*i = j]
+#save_aut("mul62.aut", mul62)
+mul63(a,i,j) := @postprocess[63*i = j]
+#save_aut("mul63.aut", mul63)
+mul64(a,i,j) := @postprocess[64*i = j]
+#save_aut("mul64.aut", mul64)
+mul65(a,i,j) := @postprocess[65*i = j]
+#save_aut("mul65.aut", mul65)
+mul66(a,i,j) := @postprocess[66*i = j]
+#save_aut("mul66.aut", mul66)
+mul67(a,i,j) := @postprocess[67*i = j]
+#save_aut("mul67.aut", mul67)
+mul68(a,i,j) := @postprocess[68*i = j]
+#save_aut("mul68.aut", mul68)
+mul69(a,i,j) := @postprocess[69*i = j]
+#save_aut("mul69.aut", mul69)
+mul70(a,i,j) := @postprocess[70*i = j]
+#save_aut("mul70.aut", mul70)
+mul71(a,i,j) := @postprocess[71*i = j]
+#save_aut("mul71.aut", mul71)
+mul72(a,i,j) := @postprocess[72*i = j]
+#save_aut("mul72.aut", mul72)
+mul73(a,i,j) := @postprocess[73*i = j]
+#save_aut("mul73.aut", mul73)
+mul74(a,i,j) := @postprocess[74*i = j]
+#save_aut("mul74.aut", mul74)
+mul75(a,i,j) := @postprocess[75*i = j]
+#save_aut("mul75.aut", mul75)
+mul76(a,i,j) := @postprocess[76*i = j]
+#save_aut("mul76.aut", mul76)
+mul77(a,i,j) := @postprocess[77*i = j]
+#save_aut("mul77.aut", mul77)
+mul78(a,i,j) := @postprocess[78*i = j]
+#save_aut("mul78.aut", mul78)
+mul79(a,i,j) := @postprocess[79*i = j]
+#save_aut("mul79.aut", mul79)
+mul80(a,i,j) := @postprocess[80*i = j]
+#save_aut("mul80.aut", mul80)
+mul81(a,i,j) := @postprocess[81*i = j]
+#save_aut("mul81.aut", mul81)
+mul82(a,i,j) := @postprocess[82*i = j]
+#save_aut("mul82.aut", mul82)
+mul83(a,i,j) := @postprocess[83*i = j]
+#save_aut("mul83.aut", mul83)
+mul84(a,i,j) := @postprocess[84*i = j]
+#save_aut("mul84.aut", mul84)
+mul85(a,i,j) := @postprocess[85*i = j]
+#save_aut("mul85.aut", mul85)
+mul86(a,i,j) := @postprocess[86*i = j]
+#save_aut("mul86.aut", mul86)
+mul87(a,i,j) := @postprocess[87*i = j]
+#save_aut("mul87.aut", mul87)
+mul88(a,i,j) := @postprocess[88*i = j]
+#save_aut("mul88.aut", mul88)
+mul89(a,i,j) := @postprocess[89*i = j]
+#save_aut("mul89.aut", mul89)
+mul90(a,i,j) := @postprocess[90*i = j]
+#save_aut("mul90.aut", mul90)
+mul91(a,i,j) := @postprocess[91*i = j]
+#save_aut("mul91.aut", mul91)
+mul92(a,i,j) := @postprocess[92*i = j]
+#save_aut("mul92.aut", mul92)
+mul93(a,i,j) := @postprocess[93*i = j]
+#save_aut("mul93.aut", mul93)
+mul94(a,i,j) := @postprocess[94*i = j]
+#save_aut("mul94.aut", mul94)
+mul95(a,i,j) := @postprocess[95*i = j]
+#save_aut("mul95.aut", mul95)
+mul96(a,i,j) := @postprocess[96*i = j]
+#save_aut("mul96.aut", mul96)
+mul97(a,i,j) := @postprocess[97*i = j]
+#save_aut("mul97.aut", mul97)
+mul98(a,i,j) := @postprocess[98*i = j]
+#save_aut("mul98.aut", mul98)
+mul99(a,i,j) := @postprocess[99*i = j]
+#save_aut("mul99.aut", mul99)
+mul100(a,i,j) := @postprocess[100*i = j]
+#save_aut("mul100.aut", mul100)
+

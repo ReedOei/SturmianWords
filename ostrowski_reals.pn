@@ -1,0 +1,6 @@
+#import("ostrowski_defs.pn")
+
+#load("ostrowski-automata/frac_lt.txt", "walnut", frac_lt(x,y))
+
+frac_add(a,x,y,z) := bco_adder(a,x,y,z)
+

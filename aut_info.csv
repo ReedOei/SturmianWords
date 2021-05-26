@@ -46,6 +46,6 @@ Antipalindrome,antipalindrome,true,\exists^2\forall^3,13
 Recurrent,recurrent,true,\forall\exists,5
 Period,period,true,\exists^2,5
 Least period,least_period,true,\forall,4
-Special factor,special_factor,true,\exists^4,8
+Special factor,special_factor,true,\exists^3\forall,8
 Unbordered,unbordered_len,true,\exists^3,2
 Max unbordered subfactor,max_unbordered_subfactor_len,true,\forall,4

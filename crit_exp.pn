@@ -1,0 +1,66 @@
+#import("ostrowski_defs.pn")
+#load("ostrowski-automata/sturmian_word.txt", "pecan", $C(n))
+#load("ostrowski-automata/fib_alpha.txt", "walnut", fib(a))
+#load("automata/period.aut", "hoa", period(a,p,i,j))
+
+#load("../pecan-pavle/alpha_pa/f_alpha_lt.txt", "walnut", f_alpha_lt(x,y))
+#load("../pecan-pavle/alpha_pa/g_alpha/g_alpha_golden_ratio.aut", "hoa", g_alpha_golden_ratio(a,x,y))
+
+n is zeck := @postprocess[
+    exists a is fib. n is ostrowski(a)
+]
+
+g_phi(x,y) := @postprocess[
+    exists a is fib. bco_valid2(a,x,y) & g_alpha_golden_ratio(a,x,y)
+]
+
+zeck_add(x,y,z) := @postprocess[
+    exists a is fib. bco_adder_valid(a,x,y,z)
+]
+
+zeck_zero(z) := @postprocess[
+    exists a is fib. ostrowski_zero(a, z)
+]
+
+Structure zeck defining {
+    "adder": zeck_add(any, any, any),
+    "less": bco_lt(any, any),
+    "equal": bco_eq(any, any),
+    "zero": zeck_zero(any)
+}
+
+Let n,l,i,p be zeck.
+
+p is zeck_periods(i,n) := exists a is fib. period(a,p,i,i+n)
+
+#load("ostrowski-automata/frac_lt.txt", "walnut", frac_lt(x,y))
+#load("ostrowski-automata/ost_frac_valid_pre.txt", "pecan", ost_frac_valid_pre(a, x))
+
+ost_frac_valid(a,x) := @postprocess[
+    bco_lsd_valid_pre(a, x) & ost_frac_valid_pre(a, x)
+]
+
+// Just defined so that it's obvious that it's not a typo
+frac_zero(a,x) := ostrowski_zero(a,x)
+frac_positive(a,x) := exists z. frac_zero(a,z) & frac_lt(z, x)
+
+x is zeck_frac := @postprocess[ exists a is fib. ost_frac_valid(a,x) ]
+zeck_frac_positive(x) := @postprocess[ exists a is fib. frac_positive(a,x) ]
+
+frac_leq(x,y) := frac_lt(x,y) | bco_eq(x,y)
+max_frac(x) := forall y. frac_leq(y,x)
+
+Theorem ("The critical exponent of the Fibonacci word is 2 + phi", {
+    exists zero is zeck. zero = 0 &
+    forall l,h are zeck_frac.
+        if frac_lt(l,h) then
+            exists l. forall i,n,p.
+                if n > l & p is zeck_periods(i,n) then
+                    // 0 <= (3 + alpha) - n / p
+                    ((n < 3*p + g_phi(p)) | (n = 3*p + g_phi(p) & zeck_frac_positive(p))) &
+                    // alpha*(3 + alpha - n / p) <= 1
+                    (
+                    // f_alpha(3 + alpha - n / p) <= m (where m \in I_{\alpha} and m > 0)
+                    (
+}).
+

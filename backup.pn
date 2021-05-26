@@ -1,0 +1,483 @@
+#import("ostrowski_defs.pn")
+
+#load("ostrowski-automata/sturmian_word.aut", "hoa", $C(n))
+
+Restrict i, j, k, l, p, n are ostrowski(a).
+// eventually_periodic(a, p) := @postprocess[p > 0 & exists n. forall i. i > n => $C[i] = $C[i + p]]
+// #save_aut("automata/eventually_periodic.aut", eventually_periodic)
+
+// pow_2(a, i, n) :=
+//     @postprocess[@no_simplify[
+//         bco_valid2(a, i, n) &
+//         bco_positive(i) &
+//         bco_positive(n) &
+//         forall bound.
+//         @postprocess[(@postprocess[bco_valid(a, bound) & bco_adder(a, i, n, bound)] =>
+//         @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
+//             @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] = $C[jn]]]])]
+//     ]]
+// #save_aut("automata/pow_2.aut", pow_2)
+
+// antisquare(a, i, n) :=
+//     @postprocess[@no_simplify[
+//         bco_valid2(a, i, n) &
+//         bco_positive(i) &
+//         bco_positive(n) &
+//         forall bound.
+//         @postprocess[(@postprocess[bco_valid(a, bound) & bco_adder(a, i, n, bound)] =>
+//         @postprocess[forall j. @postprocess[@postprocess[bco_lt(j, bound) & bco_leq(i, j) & bco_valid(a, j)] =>
+//             @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] != $C[jn]]]])]
+//     ]]
+// #save_aut("automata/antisquare.aut", antisquare)
+// #load("automata/antisquare.aut", "hoa", antisquare(a, i, n))
+
+// #load("automata/pow_2.aut", "hoa", pow_2(a, i, n))
+
+// Define genNthPow num :=
+//     let $PREV_POW := "pow_" ^ (toString (num - 1)) in
+//     let $POW_NAME := "pow_" ^ (toString num) in
+//     let fname := "automata/" ^ $POW_NAME ^ ".aut" in do
+//         emit { $POW_NAME(a, i, n) := @postprocess[pow_2(a, i, n) & $PREV_POW(a, i + n, n)] };
+//         emit { #save_aut(fname, $POW_NAME) }.
+
+// Execute genNthPow 3.
+// Execute genNthPow 4.
+// Execute genNthPow 5.
+// Execute genNthPow 6.
+// Execute genNthPow 7.
+// Execute genNthPow 8.
+
+// True when C_a[i..j] = C_a[k..k+(j-i)] and i <= k
+// factor_lt(a, i, j, k) := @postprocess[@no_simplify[@postprocess[
+//     @postprocess_high[bco_positive(i) & bco_leq(i, j) & bco_valid3(a,i,j,k)] &
+//     exists ki.
+//         @no_simplify[bco_adder(a,ki,i,k)] &
+//         @simplify[
+//             forall t. @postprocess[
+//                 forall kit. @postprocess_medium[
+//                     if @postprocess_high[bco_leq(i,t) & bco_lt(t,j) & @postprocess_high[bco_adder(a, ki, t, kit) & bco_valid2(a,t,kit)]] then
+//                         $C[t] = $C[kit]
+//                 ]
+//             ]
+//         ]
+// ]]]
+// #save_aut("automata/factor_lt.aut", factor_lt)
+#load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+
+// factor_lt_len(a, i, n, j) := @postprocess[
+//     factor_lt(a, i, i + n, j)
+// ]
+// #save_aut("automata/factor_lt_len.aut", factor_lt_len)
+#load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+
+// // True when C_a[i..j] = C_a[k + 1..l + 1]^R
+// // where l - k = j - i
+// reverse_factor(a, i, j, l) := @postprocess[
+//     @postprocess[
+//         bco_positive(i) &
+//         // bco_positive(l) &
+//         bco_valid3(a, i, j, l) &
+//         i < j
+//     ] &
+//     @no_simplify[exists li. @simplify[
+//         @postprocess[
+//             bco_adder_valid(a, l, i, li) &
+//             bco_leq(j, li)
+//         ] &
+//         forall t. @postprocess[
+//             if @postprocess[bco_leq(i, t) & bco_lt(t, j)] then
+//                 forall lit. @postprocess[
+//                     if bco_adder_valid(a, lit, t, li) then
+//                         $C[t] = $C[lit]
+//                 ]
+//             ]
+//         ]
+//     ]
+// ]
+// #save_aut("automata/reverse_factor.aut", reverse_factor)
+// #load("automata/reverse_factor.aut", "hoa", reverse_factor(a, i, j, l))
+
+// mirror_invariant(a,i,j) := exists t. @no_simplify[reverse_factor(a, i, j, t)]
+// #save_aut("automata/mirror_invariant.aut", mirror_invariant)
+// #load("automata/mirror_invariant.aut", "hoa", mirror_invariant(a, i, j))
+
+// palindrome_idx(a, i, j) := @postprocess[
+//     exists j1. @postprocess[
+//         bco_succ(a, j1, j) & @no_simplify[reverse_factor(a, i, j, j1)]
+//     ]
+// ]
+// #save_aut("automata/palindrome_idx.aut", palindrome_idx)
+// #load("automata/palindrome_idx.aut", "hoa", palindrome_idx(a, i, j))
+
+// palindrome(a, i, n) := @postprocess[
+//     exists t. @postprocess[bco_adder(a, i, n, t) & palindrome_idx(a, i, t)]
+// ]
+// #save_aut("automata/palindrome.aut", palindrome)
+// #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
+
+// antipalindrome(a, i, n) := @postprocess[
+//     bco_valid2(a, i, n) &
+//     exists j, k. bco_succ(a, j, k) & k = i + n &
+//     @no_simplify[forall t, ji, jit. @simplify[@postprocess[
+//         if @postprocess[bco_leq(i, t) & bco_leq(t, j) & @postprocess[@no_simplify[bco_adder_valid(a, j, i, ji) & bco_adder(a, jit, t, ji)]]] then
+//             $C[t] != $C[jit]
+//     ]]
+// ]]
+// #save_aut("automata/antipalindrome.aut", antipalindrome)
+// #load("automata/antipalindrome.aut", "hoa", antipalindrome(a, i, n))
+
+// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+// recurrent(a,i,j) := @postprocess[
+//     bco_valid2(a,i,j) &
+//     forall s. @postprocess[
+//         if bco_valid3(a,s,i,j) then
+//             exists t. @postprocess[
+//                 bco_valid(a,t) & bco_lt(s,t) & factor_lt(a,i,j,t)
+//             ]
+//     ]
+// ]
+// #save_aut("automata/recurrent.aut", recurrent)
+// #load("automata/recurrent.aut", "hoa", recurrent(a,i,j))
+
+// // #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+// // #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// // uniform_recurrent(a,i,n) := @postprocess[
+// //     exists l.
+// //     forall j.
+// //     exists jl.
+// //         bco_adder_valid(a,j,l,jl) &
+// //         exists s.
+// //             bco_leq(j, s) &
+// //             exists sn. @postprocess[
+// //                 bco_adder_valid(a,s,n,sn) & bco_leq(sn,jl)
+// //             ] &
+// //             if j > 0 then
+// //                 factor_lt_len(a,i,n,s)
+// // ]
+// // #save_aut("automata/uniform_recurrent.aut", uniform_recurrent)
+
+// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+// period(a, p, i, j) := @postprocess[
+//     p > 0 &
+//     exists ip, jp. @postprocess[
+//         @postprocess[
+//             bco_adder_valid(a,i,p,ip) & bco_adder_valid(a,jp,p,j)
+//         ] &
+//         factor_lt(a,i,jp,ip)
+//     ]
+// ]
+// #save_aut("automata/period.aut", period)
+// #load("automata/period.aut", "hoa", period(a, p, i, j))
+
+// least_period(a, p, i, j) := @postprocess[
+//     p = min { n : period(a,n,i,j) }
+// ]
+// #save_aut("automata/least_period.aut", least_period)
+// #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+
+// least_period_occurs(a,p) := @postprocess[exists i,j. i > 0 & j > 0 & least_period(a,p,i,j)]
+// #save_aut("automata/least_period_occurs.aut", least_period_occurs)
+// #load("automata/least_period_occurs.aut", "hoa", least_period(a,p))
+
+// #load("automata/palindrome.aut", "hoa", palindrome(a, i, n))
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// first_palindrome(a, i, n) := @postprocess[
+//     palindrome(a, i, n) &
+//     forall t. @postprocess[
+//         if bco_positive(t) & @no_simplify[factor_lt_len(a, t, n, i)] then
+//             bco_leq(i, t)
+//     ]
+// ]
+// #save_aut("automata/first_palindrome.aut", first_palindrome)
+// #load("automata/first_palindrome.aut", "hoa", first_palindrome(a, i, n))
+
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// factor_len(a,i,n,j) := @postprocess[
+//     factor_lt_len(a,i,n,j) | factor_lt_len(a,j,n,i)
+// ]
+// #save_aut("automata/factor_len.aut", factor_len)
+// #load("automata/factor_len.aut", "hoa", factor_len(a, i, n, j))
+
+// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+// Restrict i,j,k,l,n,t are ostrowski(a).
+// True when C_a[k..k+(j-i)] is the first occurrence of C_a[i..j]
+// first_factor_lt(a,i,j,k) :=
+//     factor_lt(a,i,j,k) &
+//     forall l. if factor_lt(a,i,j,l) then k <= i
+// #save_aut("automata/first_factor_lt.aut", first_factor_lt)
+
+#load("automata/factor_len_alt.aut", "hoa", factor_len_alt(a,i,n,j))
+// True when C_a[i..j] = C_a[k..k+(j-i)]
+// factor(a,i,j,k) :=
+//     exists n. @postprocess[bco_adder(a,n,i,j) & factor_len_alt(a,i,n,k)]
+// #save_aut("automata/factor.aut", factor)
+#load("automata/factor.aut", "hoa", factor(a,i,j,k))
+
+// Restrict i,j,k,l,n,t are ostrowski(a).
+// shift_idx(a,i,j,k,t) :=
+//     // i <= t &  // This is redundant because of the structure of factor.
+//     t < j &
+//     exists kj.
+//     exists kjt.
+//     @postprocess[@postprocess[@postprocess[bco_adder(a,kjt,t,kj) & bco_adder(a,k,j,kj)] &
+//     factor(a,k,kjt,t)] &
+//     factor(a,i,t,kjt)]
+// #save_aut("automata/shift_idx.aut", shift_idx)
+
+// #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+// factor_lt_back(a, t, j, k) := @postprocess[
+//     exists jt1. @postprocess_medium[@postprocess_high[bco_succ(a, jt1, j - t)] & factor_lt(a, jt1, j, k)]
+// ]
+// #save_aut("automata/factor_lt_back.aut", factor_lt_back)
+// #load("automata/factor_lt_back.aut", "hoa", factor_lt_back(a,t,j,k))
+
+// factor_lt_back_both(a, t, j, l) := @postprocess[@postprocess[
+//     exists lt1. @postprocess_medium[@postprocess_high[bco_succ(a, lt1, l - t)] & factor_lt_back(a, t, j, lt1)]
+// ]]
+// #save_aut("automata/factor_lt_back_both.aut", factor_lt_back_both)
+// #load("automata/factor_lt_back_both.aut", "hoa", factor_lt_back_both(a,t,j,l))
+
+// first_factor_lt_back(a, t, j, l) := @postprocess[
+//     factor_lt_back_both(a, t, j, l) &
+//     forall s. @postprocess[if factor_lt_back_both(a,t,s,l) then bco_leq(j,s)]
+// ]
+// #save_aut("automata/first_factor_lt_back.aut", first_factor_lt_back)
+
+// factor_back_alt(a,t,j,l) := @postprocess[
+//     exists s. first_factor_lt_back(a,t,s,j) & first_factor_lt_back(a,t,s,l)
+// ]
+// #save_aut("automata/factor_back_alt.aut", factor_back_alt)
+
+// factor_back(a, t, j, l) := @postprocess[
+//     factor_lt_back_both(a,t,j,l) | factor_lt_back_both(a,t,l,j)
+// ]
+// #save_aut("automata/factor_back.aut", factor_back)
+
+// temp_alt(a,i,t,j,k,l) := @postprocess[
+//     factor_len_alt(a,i,t,k) & factor_back_alt(a,t,j,l)
+// ]
+// #save_aut("automata/temp_alt.aut", temp_alt)
+
+// factor_len_back(a,i,n,t,j) := @postprocess[
+//     factor_len_alt(a, i + t, n - t, j)
+// ]
+// #save_aut("automata/factor_len_back.aut", factor_len_back)
+
+// temp(a,i,t,j,k,l) :=
+//     factor_len_alt(a,i,t,k) &
+//     exists it. @postprocess[bco_adder(a,i,t,it) & factor(a,it,j,l)]
+// #save_aut("automata/temp.aut", temp)
+
+// shift_idx2(a,i,j,k) :=
+//     exists t. factor(a,t,j,k) & factor(a,i,t,(k+j)-t)
+// #save_aut("automata/shift_idx2.aut", shift_idx2)
+// shift_idx2_lt(a,i,j,k) :=
+//     exists t. factor_lt(a,t,j,k) & factor_lt(a,i,t,(k+j)-t)
+// #save_aut("automata/shift_idx2_lt.aut", shift_idx2_lt)
+
+// shift_lt(a,i,j,n,t) :=
+//     exists it. bco_adder(a,i,t,it) & exists nt. factor_lt_len(a,j,nt,it) & @postprocess[bco_adder(a,nt,t,n) &
+//     exists jnt. @postprocess[bco_adder(a,j,nt,jnt) & factor_lt_len(a,i,t,jnt)]]
+// #save_aut("automata/shift_lt.aut", shift_lt)
+
+// shift(a,i,j,n,t) := @postprocess[@no_simplify[
+//     exists it,nt. @postprocess[factor_len_alt(a,j,nt,it) & @postprocess[bco_adder(a,i,t,it) & @postprocess[bco_adder(a,nt,t,n) &
+//     @postprocess[exists jnt. @postprocess[bco_valid(a,i) & @postprocess[bco_valid(a,t) & @postprocess[bco_adder_valid(a,j,nt,jnt) & factor_len_alt(a,i,t,jnt)]]]]]]]]]
+// shift(a,i,j,n,t) := @no_simplify[
+//     exists it,nt. factor_len_alt(a,j,nt,it) & @postprocess[bco_adder(a,i,t,it) & @postprocess[bco_adder(a,nt,t,n) &
+//     @postprocess[exists jnt. @postprocess[bco_valid(a,i) & @postprocess[bco_valid(a,t) & @postprocess[bco_adder_valid(a,j,nt,jnt) & factor_len_alt(a,i,t,jnt)]]]]]]]
+// Forget ["i","j","n","t"].
+// #save_aut("automata/shift.aut", shift)
+// #load("automata/shift.aut", "hoa", shift(a,i,j,n,t))
+
+// shift2(a,i,j,n,t) := @no_simplify[
+//     exists it,nt. factor_len_alt(a,j,nt,it) & @postprocess[bco_adder(a,i,t,it) & @postprocess[bco_adder(a,nt,t,n) &
+//     @postprocess[exists jnt. @postprocess[bco_adder(a,j,nt,jnt) & factor_len_alt(a,i,t,jnt)]]]]]
+// #save_aut("automata/shift2.aut", shift2)
+
+// shift3(a,i,j,n,t) :=
+//     exists it. exists nt. factor_len_alt(a,j,nt,it) & @postprocess[bco_adder(a,i,t,it) & @postprocess[bco_adder(a,nt,t,n) &
+//     exists jnt. @postprocess[bco_valid(a,i) & @postprocess[bco_valid(a,t) & @postprocess[@no_simplify[bco_adder_valid(a,j,nt,jnt)] & factor_len_alt(a,i,t,jnt)]]]]]
+// #save_aut("automata/shift3.aut", shift3)
+
+// shift3(a,i,j,n,t) := @no_simplify[
+//     exists it. exists nt. factor_len_alt(a,j,nt,it) & @simplify[@postprocess[bco_adder(a,i,t,it) & @postprocess[bco_adder(a,nt,t,n) &
+//     exists jnt. @postprocess[bco_valid(a,i) & @postprocess[bco_valid(a,t) & @postprocess[@no_simplify[bco_adder_valid(a,j,nt,jnt)] & factor_len_alt(a,i,t,jnt)]]]]]]
+// ]
+// #save_aut("automata/shift3.aut", shift3)
+
+// shift4(a,i,j,n,t) :=
+//     @no_simplify[exists it. bco_adder(a,i,t,it) & exists nt. @simplify[@postprocess[factor_len_alt(a,j,nt,it) & @postprocess[bco_adder(a,nt,t,n) &
+//     exists jnt. @postprocess[bco_valid(a,i) & @postprocess[bco_valid(a,t) & @postprocess[@no_simplify[bco_adder_valid(a,j,nt,jnt)] & factor_len_alt(a,i,t,jnt)]]]]]]]
+// #save_aut("automata/shift4.aut", shift4)
+
+// shift5(a,i,j,n,t) :=
+//     exists it. exists nt. @postprocess[factor_len_alt(a,j,nt,it) & @postprocess[bco_adder(a,i,t,it) & @postprocess[bco_adder(a,nt,t,n) &
+//     exists jnt. @postprocess[bco_valid(a,i) & @postprocess[bco_valid(a,t) & @postprocess[@no_simplify[bco_adder_valid(a,j,nt,jnt)] & factor_len_alt(a,i,t,jnt)]]]]]]
+// #save_aut("automata/shift5.aut", shift5)
+
+// shift6(a,i,j,n,t) :=
+//     @no_simplify[exists it. exists nt. @simplify[factor_len_alt(a,j,nt,it) & @postprocess[bco_adder(a,i,t,it) & @postprocess[bco_adder(a,nt,t,n) &
+//     exists jnt. @postprocess[bco_valid(a,i) & @postprocess[bco_valid(a,t) & @postprocess[@no_simplify[bco_adder_valid(a,j,nt,jnt)] & factor_len_alt(a,i,t,jnt)]]]]]]]
+// #save_aut("automata/shift6.aut", shift6)
+#load("automata/shift6.aut", "hoa", shift(a,i,j,n,t))
+
+Let i,j,n,s,t be ostrowski(a).
+
+// not_shift(a,i,j,n,t) :=
+//     exists s. (s < n - t & exists js is ostrowski(a). js = j + s & exists its is ostrowski(a). its = i + t + s & $C[js] != $C[its])
+//             | (s < t & exists si is ostrowski(a). si = s + i & exists jnst is ostrowski(a). jnst = (j + n + s) - t & $C[si] != $C[jnst])
+// #save_aut("automata/not_shift.aut", not_shift)
+
+not_shift2(a,i,j,n,t) :=
+    @no_simplify[exists s. bco_lt(s,t) &
+    exists nt. bco_adder(a,nt,t,n) &
+    exists sj. bco_adder(a,s,j,sj) &
+    @simplify[exists sjnt. @postprocess[bco_adder_valid(a,sj,nt,sjnt) &
+    exists si. @postprocess_high[bco_adder_valid(a,s,i,si) & @postprocess_high[$C[si] != $C[sjnt]]]]]]
+#save_aut("automata/not_shift2.aut", not_shift2)
+
+// not_shift3(a,i,j,n,t) :=
+//     exists s.
+//     exists nt. bco_adder(a,nt,t,n) &
+//     ( ( @postprocess[bco_lt(s,t) & exists sj. bco_adder(a,s,j,sj) & exists sjnt. @postprocess[bco_adder_valid(a,sj,nt,sjnt) & exists si. @postprocess[bco_adder_valid(a,s,i,si) & $C[si] != $C[sjnt]]]] )
+//     | ( @postprocess[bco_lt(s,nt) & exists si. bco_adder(a,s,i,si) & exists sit. @postprocess[bco_adder_valid(a,si,t,sit) & exists sj. @postprocess[bco_adder_valid(a,s,j,sj) & $C[sj] != $C[sit]]]] ))
+// #save_aut("automata/not_shift3.aut", not_shift3)
+
+// not_shift4(a,i,j,n,t) :=
+//     exists s. bco_valid(a,s) &
+//     exists nt. bco_adder(a,nt,t,n) &
+//     ( ( @postprocess[@postprocess_high[bco_valid(a,s) & bco_lt(s,t)] & exists sj. bco_adder(a,s,j,sj) & exists sjnt. @postprocess[bco_adder_valid(a,sj,nt,sjnt) & exists si. @postprocess[bco_adder(a,s,i,si) & $C[si] != $C[sjnt]]]] )
+//     | ( @postprocess[@postprocess_high[bco_valid(a,s) & bco_lt(s,nt)] & exists si. bco_adder(a,s,i,si) & exists sit. @postprocess[bco_adder_valid(a,si,t,sit) & exists sj. @postprocess[bco_adder(a,s,j,sj) & $C[sj] != $C[sit]]]] ))
+// #save_aut("automata/not_shift4.aut", not_shift4)
+
+// not_shift5(a,i,j,n,t) :=
+//     exists s. bco_valid(a,s) &
+//     exists si. bco_adder(a,s,i,si) &
+//     exists sj. bco_adder(a,s,j,sj) &
+//     exists nt. bco_adder(a,nt,t,n) &
+//     ( ( @postprocess[@postprocess_high[bco_valid(a,s) & bco_lt(s,t)] & exists sjnt. @postprocess[bco_adder_valid(a,sj,nt,sjnt) & $C[si] != $C[sjnt]]] )
+//     | ( @postprocess[@postprocess_high[bco_valid(a,s) & bco_lt(s,nt)] & exists sit. @postprocess[bco_adder_valid(a,si,t,sit) & $C[sj] != $C[sit]]] ))
+// #save_aut("automata/not_shift5.aut", not_shift5)
+
+// not_shift6(a,i,j,n,t) :=
+//     exists s.
+//     exists si. bco_adder(a,s,i,si) &
+//     exists sj. bco_adder(a,s,j,sj) &
+//     ( @postprocess[@postprocess_high[bco_valid(a,s) & bco_lt(s,t)] & exists sjn. @postprocess[bco_adder(a,sj,n,sjn) & exists sjnt. @postprocess[bco_adder_valid(a,sjnt,t,sjn) & $C[si] != $C[sjnt]]]]
+//     | @postprocess[(exists nt. @postprocess[bco_valid(a,s) & bco_adder_valid(a,nt,t,n) & bco_lt(s,nt)])
+//       & (exists sit. @postprocess[bco_adder(a,si,t,sit) & $C[sj] != $C[sit]] )])
+// #save_aut("automata/not_shift6.aut", not_shift6)
+
+// conjugate(a,i,j,n) := @no_simplify[exists t. @no_simplify[shift(a,i,j,n,t)]]
+// #save_aut("automata/conjugate.aut", conjugate)
+#load("automata/conjugate.aut", "hoa", conjugate(a,i,j,n))
+
+Restrict i,j,n,t are ostrowski(a).
+lt_sturmian(i,j) := @postprocess[$C[i] = 0 & $C[j] = 1]
+// lt_factor(a,i,j,n) := @postprocess[exists t. t < n & factor_len_alt(a,i,t,j) & lt_sturmian(i+t, j+t)]
+// #save_aut("automata/lt_factor.aut", lt_factor)
+#load("automata/lt_factor.aut", "hoa", lt_factor(a,i,j,n))
+
+// leq_factor(a,i,j,n) := lt_factor(a,i,j,n) | factor_len_alt(a,i,n,j)
+// #save_aut("automata/leq_factor.aut", leq_factor)
+// leq_factor2(a,i,j,n) := @postprocess[exists t. factor_len_alt(a,i,t,j) &
+//     ((t < n & lt_sturmian(i+t, j+t)) | t = n)]
+// #save_aut("automata/leq_factor2.aut", leq_factor2)
+#load("automata/leq_factor2.aut", "hoa", leq_factor(a,i,j,n))
+
+// all_conjugates(a,i,n) := forall t. if t < n then @no_simplify[exists s. @no_simplify[shift(a,i,s,n,t)]]
+// #save_aut("automata/all_conjugates.aut", all_conjugates)
+
+// lex_least(a,i,n) := forall j. if conjugate(a,i,j,n) then leq_factor(a,i,j,n)
+// #save_aut("automata/lex_least.aut", lex_least)
+
+// lie(a,i,n) := all_conjugates(a,i,n) & lex_least(a,i,n) & forall j. if factor_len_alt(a,i,n,j) then i <= j
+// #save_aut("automata/lie.aut", lie)
+
+// Restrict a is bco_standard.
+// Restrict i,j,k,n are ostrowski(a).
+// special_factor(a,i,n) := @postprocess[
+//     (exists j. @no_simplify[factor_lt_len(a,i,n,j)] & $C[j+n] = 0) &
+//     (exists k. @no_simplify[factor_lt_len(a,i,n,k)] & $C[k+n] = 1)
+// ]
+// #save_aut("automata/special_factor.aut", special_factor)
+// #load("automata/special_factor.aut", "hoa", special_factor(a,i,n))
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// first_special_factor(a,i,n) := @postprocess[@postprocess[@postprocess[
+//     i > 0 &
+//     @no_simplify[special_factor(a,i,n)] &
+//     forall j. if j > 0 & @no_simplify[factor_lt_len(a,j,n,i)] then i <= j
+// ]]]
+// #save_aut("automata/first_special_factor.aut", first_special_factor)
+// #load("automata/first_special_factor.aut", "hoa", first_special_factor(a,i,n))
+
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// // True when C[i..j] has a border of len n (i.e., C[i..i+n] = C[j-n..j])
+// border(a,i,j,n) := @postprocess[
+//     exists jn. @postprocess[
+//         @postprocess[
+//             exists ni. @postprocess[
+//                 bco_adder_valid(a,i,n,ni) & bco_leq(ni,jn)
+//             ]
+//         ] & bco_adder_valid(a,jn,n,j) & factor_lt_len(a,i,n,jn)
+//     ]
+// ]
+// #save_aut("automata/border.aut", border)
+// #load("automata/border.aut", "hoa", border(a,i,j,n))
+
+// unbordered_by_border(a,i,j) := @postprocess[
+//     forall t. @postprocess[
+//         if bco_valid(a,t) & bco_positive(t) then !border(a,i,j,t)
+//     ]
+// ]
+// #save_aut("automata/unbordered_by_border.aut", unbordered_by_border)
+// #load("automata/unbordered_by_border.aut", "hoa", unbordered_by_border(a,i,j))
+
+// #load("automata/least_period.aut", "hoa", least_period(a,p,i,j))
+// #load("automata/period.aut", "hoa", period(a, p, i, j))
+// unbordered(a,i,j) := exists p. least_period(a,p,i,j) & j - i = p
+// #save_aut("automata/unbordered.aut", unbordered)
+// #load("automata/unbordered.aut", "hoa", unbordered(a,i,j))
+
+// unbordered_len(a,i,n) := @postprocess[ unbordered(a,i,i+n) ]
+// #save_aut("automata/unbordered_len.aut", unbordered_len)
+// #load("automata/unbordered_len.aut", "hoa", unbordered_len(a,i,n))
+
+// // True when C[i..j] has an unbordered factor at C[k..l]
+// unbordered_subfactor(a,i,j,k,l) := @postprocess[
+//     i <= k & l <= j & unbordered(a,k,l)
+// ]
+// // True when C[i..j] has an unbordered factor of length n
+// unbordered_subfactor_len(a,i,j,n) := @postprocess[
+//     exists k. unbordered_subfactor(a,i,j,k,k+n)
+// ]
+// #save_aut("automata/unbordered_subfactor_len.aut", unbordered_subfactor_len)
+// #load("automata/unbordered_subfactor_len.aut", "hoa", unbordered_subfactor_len(a,i,j,n))
+
+// Restrict m is ostrowski(a).
+// max_unbordered_subfactor_len(a,i,j,n) := @postprocess[@no_simplify[
+//     n = max { m : @postprocess[unbordered_subfactor_len(a,i,j,m)] }
+// ]]
+// #save_aut("automata/max_unbordered_subfactor_len.aut", max_unbordered_subfactor_len)
+// #load("automata/max_unbordered_subfactor_len.aut", "hoa", max_unbordered_subfactor_len(a,i,j,n))
+
+// #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+// first_factor_len(a,i,n) := @postprocess[
+//     bco_valid2(a,i,n) &
+//     @no_simplify[
+//     forall t.
+//         if bco_positive(t) & @no_simplify[factor_lt_len(a, t, n, i)] then
+//             bco_leq(i, t)
+//     ]
+// ]
+// #save_aut("automata/first_factor_len.aut", first_factor_len)
+// #load("automata/first_factor_len.aut", "hoa", first_factor_len(a,i,n))
+
+// #load("automata/unbordered_len.aut", "hoa", unbordered_len(a,i,n))
+// first_unbordered_len(a,i,n) := @postprocess[
+//     unbordered_len(a,i,n) & first_factor_len(a,i,n)
+// ]
+// #save_aut("automata/first_unbordered_len.aut", first_unbordered_len)
+// #load("automata/first_unbordered_len.aut", "hoa", first_unbordered_len(a,i,n))
+

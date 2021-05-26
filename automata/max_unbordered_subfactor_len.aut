@@ -1,8 +1,8 @@
-VAR_MAP: {'a': ['__ap830', '__ap831'], 'i': ['__ap832', '__ap833'], 'j': ['__ap834', '__ap835'], 'n': ['__ap828', '__ap829']}
+VAR_MAP: {'a': ['__ap1432', '__ap1433'], 'i': ['__ap1434', '__ap1435'], 'j': ['__ap1436', '__ap1437'], 'n': ['__ap1430', '__ap1431']}
 HOA: v1
 States: 585
 Start: 0
-AP: 8 "__ap828" "__ap829" "__ap830" "__ap831" "__ap832" "__ap833" "__ap834" "__ap835"
+AP: 8 "__ap1430" "__ap1431" "__ap1432" "__ap1433" "__ap1434" "__ap1435" "__ap1436" "__ap1437"
 acc-name: Buchi
 Acceptance: 1 Inf(0)
 properties: trans-labels explicit-labels state-acc

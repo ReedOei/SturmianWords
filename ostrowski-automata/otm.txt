@@ -1,8 +1,5 @@
 {0,1,2}
 
-start: 0
-2 -> even,even
-
 even,even: 0
 0 -> even,even
 1 -> even,odd
@@ -13,18 +10,13 @@ even,odd: 0
 1 -> even,odd
 2 -> odd,even
 
-odd,even: 0
+odd,even: 1
 0 -> odd,even
 1 -> odd,odd
 2 -> odd,even
-2 -> done
 
 odd,odd: 0
 0 -> odd,even
 1 -> odd,odd
 2 -> even,even
-
-done: 1
-0 -> done
-2 -> done
 

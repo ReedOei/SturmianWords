@@ -25,10 +25,10 @@ Fifth power,pow_5,false,
 Sixth power,pow_6,false,
 Seventh power,pow_7,false,
 Eighth power,pow_8,false,
-Factor Lt (idx),factor_lt,false,\exists \forall^2
+Factor Lt (idx),factor_lt,false,\exists\forall^2
 Factor Lt,factor_lt_len,false,
 Factor,factor_len,false,
-Reverse factor,reverse_factor,false,\exists \forall^2
+Reverse factor,reverse_factor,false,\exists\forall^2
 Mirror invariant,mirror_invariant,false,\exists
 Palindrome (idx),palindrome_idx,false,
 Palindrome,palindrome,false,\exists^2
@@ -87,32 +87,32 @@ All periods,$Per,false,
 $A,$A,false,
 sanity_square_def,Sanity check that factor_lt let's us redefine something equivalent to square.,false,
 $(01)^*|(10)^*$,is_all_01,true,\forall,16
-T.1,All antisquares are of the form (01)^* or (10)^*,true,\forall_\R \forall^2,5
-T.2,All antipalindromes are of the form (01)^* or (10)^*,true,\forall_\R \forall^2,5
-T.3,Sturmian words are not eventually periodic,true,\forall_\R \exists,3
-T.4,All Sturmian words start with arbitrarily long squares,true,\forall_\R \forall \exists^2,7
-T.5,All Sturmian words contain squares,true,\forall_\R \exists^2,5
+T.1,All antisquares are of the form (01)^* or (10)^*,true,\forall_\R\forall^2,5
+T.2,All antipalindromes are of the form (01)^* or (10)^*,true,\forall_\R\forall^2,5
+T.3,Sturmian words are not eventually periodic,true,\forall_\R\exists,3
+T.4,All Sturmian words start with arbitrarily long squares,true,\forall_\R\forall\exists^2,7
+T.5,All Sturmian words contain squares,true,\forall_\R\exists^2,5
 T.6,If n is the order of a square then n is the denominator of some semiconvergent of a.,true,\forall_\R\forall^2,9
-T.7,All Sturmian words contain finitely many antisquares,true,\forall_\R \exists \forall^2,6
-T.8,All Sturmian words contain cubes,true,\forall_\R \exists^2,6
-T.9,Sturmian words are not eventually one if and only if they start with arbitrarily long cubes.,true,\forall_\R \forall \exists \forall \exists \forall \exists,17
-T.10,All Sturmian words that are not eventually one contain fourth powers,true,\forall_\R \exists^2,3
-T.11,Sturmian words are balanced.,true,\forall_\R \forall^4 \exists^4,18
-T.12,Sturmian words contain palindromes of every length.,true, \forall_\R \forall \exists,6
-T.13,For all Sturmian words if n is even then it contains exactly one palindrome of length n and if n is odd then it contains exactly two palindromes of length n.,true,\forall_\R \forall \exists^3 \forall^2,22
-T.14,Sturmian words start with arbitarily long palindromes,true,\forall_\R \forall \exists^2,8
+T.7,All Sturmian words contain finitely many antisquares,true,\forall_\R\exists\forall^2,6
+T.8,All Sturmian words contain cubes,true,\forall_\R\exists^2,6
+T.9,Sturmian words are not eventually one if and only if they start with arbitrarily long cubes.,true,\forall_\R\forall\exists\forall\exists\forall\exists,17
+T.10,All Sturmian words that are not eventually one contain fourth powers,true,\forall_\R\exists^2,3
+T.11,Sturmian words are balanced.,true,\forall_\R\forall^4\exists^4,18
+T.12,Sturmian words contain palindromes of every length.,true,\forall_\R\forall\exists,6
+T.13,For all Sturmian words if n is even then it contains exactly one palindrome of length n and if n is odd then it contains exactly two palindromes of length n.,true,\forall_\R\forall\exists^3\forall^2,22
+T.14,Sturmian words start with arbitarily long palindromes,true,\forall_\R\forall\exists^2,8
 T.15,All Sturmian words contain finitely many antipalindromes.,true,\forall_\R\exists\forall^2,6
 T.16,Maximum order of antisquares and maximum length of antipalindromes is 4 digits long and maximum length of antisquares is 6 digits long.,true,\forall_\R\exists^3,7
-T.17,The maximum length of palindromes in a Sturmian word is bounded by the maximum order of its antisquares and the maximum length of its antisquare.,true,\forall_\R \exists^3,7
-T.18,Both extremes have witnesses_1,true,\exists_\R \exists^2,4
-T.19,Both extremes have witnesses_2,true,\exists_\R \exists^2,4
-T.20,Every Sturmian word is mirror invariant.,true,\forall_\R \forall^2,7
-T.21,Special factors are unique,true,\forall_\R \forall^3,7
-T.22,The unique special factor of length n is C[1..n]^R,true,\forall_\R \forall^2 \exists,10
-T.23,If p is a least period of a factor of C_alpha then p is the denominator of a semiconvergent of alpha.,true,\forall_\R \forall,4
-T.24,All factors of Sturmian words are recurrent.,true,\forall_\R \forall^2,7
-T.25,Every unbordered factor has a length that is the denominator of a semiconvergent.,true,\forall_\R \forall^2,9
-T.26,The least period if C[i..j] is the length of the longest unbordered factor of C[i..j].,\forall_\R \forall^3,13
-T.27,All Sturmian words contain exactly two unbordered factors of each length.,\forall_\R \exists^2 \forall,9
-T.28,Theorem 6 (b) from 'An inequality for the number of periods in a word',true,\forall_\R \forall^2,7
+T.17,The maximum length of palindromes in a Sturmian word is bounded by the maximum order of its antisquares and the maximum length of its antisquare.,true,\forall_\R\exists^3,7
+T.18,Both extremes have witnesses_1,true,\exists_\R\exists^2,4
+T.19,Both extremes have witnesses_2,true,\exists_\R\exists^2,4
+T.20,Every Sturmian word is mirror invariant.,true,\forall_\R\forall^2,7
+T.21,Special factors are unique,true,\forall_\R\forall^3,7
+T.22,The unique special factor of length n is C[1..n]^R,true,\forall_\R\forall^2\exists,10
+T.23,If p is a least period of a factor of C_alpha then p is the denominator of a semiconvergent of alpha.,true,\forall_\R\forall,4
+T.24,All factors of Sturmian words are recurrent.,true,\forall_\R\forall^2,7
+T.25,Every unbordered factor has a length that is the denominator of a semiconvergent.,true,\forall_\R\forall^2,9
+T.26,The least period if C[i..j] is the length of the longest unbordered factor of C[i..j].,\forall_\R\forall^3,13
+T.27,All Sturmian words contain exactly two unbordered factors of each length.,\forall_\R\exists^2\forall,9
+T.28,Theorem 6 (b) from 'An inequality for the number of periods in a word',true,\forall_\R\forall^2,7
 

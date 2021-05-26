@@ -1,0 +1,21 @@
+#import("ostrowski_defs.pn")
+
+#load("automata/factor_lt_len_semidet.aut", "hoa", factor_lt_len(a, i, n, j))
+
+first_factor_lt_len(a,i,n,j) := @postprocess[
+    factor_lt_len(a,i,n,j) &
+    !(exists k. @postprocess[factor_lt_len(a,k,n,j) & bco_lt(k,i)])
+]
+#save_aut("automata/first_factor_lt_len.aut", first_factor_lt_len)
+
+factor_len_alt(a,i,n,j) := @postprocess[
+    exists k. @postprocess[first_factor_lt_len(a,k,n,j) & first_factor_lt_len(a,k,n,i)]
+]
+#save_aut("automata/factor_len_alt3.aut", factor_len_alt)
+
+// #load("automata/factor_len_alt.aut", "hoa", factor_len_alt(a,i,n,j))
+// #load("../SturmianWords/automata/factor_len.aut", "hoa", factor_len(a, i, n, j))
+
+// Let i,j,n be ostrowski(a).
+// Example using ostrowskiFormat of { @postprocess[i > 0 & j > 0 & n > 0] & @no_simplify[factor_len_alt(a,i,n,j) & !factor_len(a,i,n,j)] }.
+
