@@ -1,0 +1,29 @@
+// This automata is part of the Ostrowski numeration system for the intervals I_{alpha} (see paper)
+// This automata accepts (a, b) such that a_k =/= b_k for infinitely many odd k
+// Note that all other checking is done by bco_lsd_valid_pre (because otherwise the two systems are the same)
+{0,1,2} {0,1,2}
+
+start: 0
+2 2 -> odd,dig_eq
+
+odd,dig_eq: 0
+0 0 -> odd,dig_eq
+1 1 -> odd,dig_eq
+0 1 -> odd,dig_neq
+1 0 -> odd,dig_neq
+2 2 -> even
+
+even: 0
+0 0 -> even
+1 0 -> even
+0 1 -> even
+1 1 -> even
+2 2 -> odd,dig_eq
+
+odd,dig_neq: 1
+0 0 -> odd,dig_neq
+0 1 -> odd,dig_neq
+1 0 -> odd,dig_neq
+1 1 -> odd,dig_neq
+2 2 -> even
+
