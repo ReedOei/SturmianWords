@@ -218,3 +218,5 @@ Define genVars num :=
 //     let pred := test prev vars in
 //         emit { test(a) := pred }.
 
+#load("ostrowski-automata/sturmian_word.aut", "hoa", $C(n))
+

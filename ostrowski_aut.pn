@@ -1,7 +1,5 @@
 #import("ostrowski_defs.pn")
 
-#load("ostrowski-automata/sturmian_word.aut", "hoa", $C(n))
-
 Restrict i, j, k, l, p, n are ostrowski(a).
 // eventually_periodic(a, p) := @postprocess[p > 0 & exists n. forall i. i > n => $C[i] = $C[i + p]]
 // #save_aut("automata/eventually_periodic.aut", eventually_periodic)
@@ -63,12 +61,16 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 // ]]]
 // #save_aut("automata/factor_lt.aut", factor_lt)
 #load("automata/factor_lt.aut", "hoa", factor_lt(a, i, j, k))
+#load("automata/factor_lt_det.aut", "hoa", factor_lt_det(a, i, j, k))
 
 // factor_lt_len(a, i, n, j) := @postprocess[
 //     factor_lt(a, i, i + n, j)
 // ]
 // #save_aut("automata/factor_lt_len.aut", factor_lt_len)
 #load("automata/factor_lt_len.aut", "hoa", factor_lt_len(a, i, n, j))
+
+// #load("automata/factor.aut", "hoa", factor(a,i,j,k))
+#load("automata/factor.aut_hoa.aut_ba_small_medium.aut", "hoa", factor(a,i,j,k))
 
 // // True when C_a[i..j] = C_a[k + 1..l + 1]^R
 // // where l - k = j - i
@@ -206,13 +208,6 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 //     forall l. if factor_lt(a,i,j,l) then k <= i
 // #save_aut("automata/first_factor_lt.aut", first_factor_lt)
 
-#load("automata/factor_len_alt.aut", "hoa", factor_len_alt(a,i,n,j))
-// True when C_a[i..j] = C_a[k..k+(j-i)]
-// factor(a,i,j,k) :=
-//     exists n. @postprocess[bco_adder(a,n,i,j) & factor_len_alt(a,i,n,k)]
-// #save_aut("automata/factor.aut", factor)
-#load("automata/factor.aut", "hoa", factor(a,i,j,k))
-
 // Restrict i,j,k,l,n,t are ostrowski(a).
 // shift_idx(a,i,j,k,t) :=
 //     // i <= t &  // This is redundant because of the structure of factor.
@@ -275,10 +270,29 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 //     exists t. factor_lt(a,t,j,k) & factor_lt(a,i,t,(k+j)-t)
 // #save_aut("automata/shift_idx2_lt.aut", shift_idx2_lt)
 
-// shift_lt(a,i,j,n,t) :=
-//     exists it. bco_adder(a,i,t,it) & exists nt. factor_lt_len(a,j,nt,it) & @postprocess[bco_adder(a,nt,t,n) &
-//     exists jnt. @postprocess[bco_adder(a,j,nt,jnt) & factor_lt_len(a,i,t,jnt)]]
+
+// TODO: Need to verify these actually do what we need!
+// shift_lt(a,i,j,k,t) :=
+//     factor_lt(a,t,j,k) &
+//     bco_leq(i,t) & bco_lt(t, j) &
+//     exists l. bco_adder(a,l,i,k) &
+//     exists lt. @postprocess[bco_adder(a,l,t,lt) & factor_lt(a,i,j,lt)]
 // #save_aut("automata/shift_lt.aut", shift_lt)
+
+
+shift_idx(a,i,j,k,t) :=
+    @postprocess[factor(a,t,j,k) &
+    @postprocess[bco_leq(i,t) & bco_lt(t, j) &
+    exists l. bco_adder(a,l,i,k) &
+    exists lt. @postprocess[bco_adder(a,l,t,lt) & factor(a,i,j,lt)]]]
+#save_aut("automata/shift_idx.aut", shift_idx)
+
+// shift_lt3(a,i,j,k,t) :=
+//     @postprocess[factor_lt_det(a,t,j,k) &
+//     @postprocess[bco_leq(i,t) & bco_lt(t, j) &
+//     exists l. @postprocess[bco_adder(a,l,i,k) &
+//     exists lt. @postprocess[bco_adder(a,l,t,lt) & factor_lt_det(a,i,j,lt)]]]]
+// #save_aut("automata/shift_lt3.aut", shift_lt3)
 
 // shift(a,i,j,n,t) := @postprocess[@no_simplify[
 //     exists it,nt. @postprocess[factor_len_alt(a,j,nt,it) & @postprocess[bco_adder(a,i,t,it) & @postprocess[bco_adder(a,nt,t,n) &
@@ -324,18 +338,20 @@ Restrict i, j, k, l, p, n are ostrowski(a).
 
 Let i,j,n,s,t be ostrowski(a).
 
-// not_shift(a,i,j,n,t) :=
-//     exists s. (s < n - t & exists js is ostrowski(a). js = j + s & exists its is ostrowski(a). its = i + t + s & $C[js] != $C[its])
-//             | (s < t & exists si is ostrowski(a). si = s + i & exists jnst is ostrowski(a). jnst = (j + n + s) - t & $C[si] != $C[jnst])
+// not_shift(a,i,j,n,t) := exists nt is ostrowski(a). nt = n - t & (!factor_len_alt(a,j,nt,i+t) | !factor_len_alt(a,i,t,j+nt))
 // #save_aut("automata/not_shift.aut", not_shift)
 
-not_shift2(a,i,j,n,t) :=
-    @no_simplify[exists s. bco_lt(s,t) &
-    exists nt. bco_adder(a,nt,t,n) &
-    exists sj. bco_adder(a,s,j,sj) &
-    @simplify[exists sjnt. @postprocess[bco_adder_valid(a,sj,nt,sjnt) &
-    exists si. @postprocess[bco_adder_valid(a,s,i,si) & @postprocess[$C[si] != $C[sjnt]]]]]]
-#save_aut("automata/not_shift2.aut", not_shift2)
+// not_shift2(a,i,j,n,t) :=
+//     @no_simplify[exists s.
+//     exists nt.
+//     exists sj.
+//     exists sjnt.
+//     bco_lt(s,t) &
+//     bco_adder(a,nt,t,n) &
+//     bco_adder(a,s,j,sj) &
+//     @postprocess[bco_adder_valid(a,sj,nt,sjnt) &
+//     @simplify[exists si. @postprocess[bco_adder_valid(a,s,i,si) & @postprocess[$C[si] != $C[sjnt]]]]]]
+// #save_aut("automata/not_shift2.aut", not_shift2)
 
 // not_shift3(a,i,j,n,t) :=
 //     exists s.

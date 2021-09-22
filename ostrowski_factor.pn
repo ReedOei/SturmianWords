@@ -1,17 +1,44 @@
 #import("ostrowski_defs.pn")
 
 #load("automata/factor_lt_len_semidet.aut", "hoa", factor_lt_len(a, i, n, j))
+#load("automata/factor_lt_det.aut", "hoa", factor_lt_det(a, i, j, k))
+
+// factor_lt_comm(a, i, j, k) := @postprocess[@no_simplify[@postprocess[
+//     @postprocess_high[bco_positive(i) & bco_leq(i, j) & bco_valid3(a,i,j,k)] &
+//     exists ik.
+//         @no_simplify[bco_adder(a,ik,k,i)] &
+//         @simplify[
+//             forall t. @postprocess[
+//                 forall tik. @postprocess_medium[
+//                     if @postprocess_high[bco_leq(i,t) & bco_lt(t,j) & bco_adder_valid(a, tik, ik, t)] then
+//                         $C[t] = $C[tik]
+//                 ]
+//             ]
+//         ]
+// ]]]
+// #save_aut("automata/factor_lt_comm.aut", factor_lt_comm)
+
+// factor(a,i,j,k) := @postprocess[factor_lt_det(a,i,j,k) | factor_lt_comm(a,i,j,k)]
+// #save_aut("automata/factor.aut", factor)
+#load("automata/factor.aut", "hoa", factor(a,i,j,k))
+
+// Let i,n be ostrowski(a).
+// factor_lt_len(a, i, n, j) := @postprocess[
+//     factor_lt_det(a, i, i + n, j)
+// ]
+// #save_aut("automata/factor_lt_len_det.aut", factor_lt_len)
+#load("automata/factor_lt_len_det.aut_hoa.aut_ba_det_high.aut", "hoa", factor_lt_len(a,i,n,j))
 
 first_factor_lt_len(a,i,n,j) := @postprocess[
     factor_lt_len(a,i,n,j) &
-    !(exists k. @postprocess[factor_lt_len(a,k,n,j) & bco_lt(k,i)])
+    !(exists k. @postprocess_medium[factor_lt_len(a,k,n,j) & bco_lt(k,i)])
 ]
 #save_aut("automata/first_factor_lt_len.aut", first_factor_lt_len)
 
 factor_len_alt(a,i,n,j) := @postprocess[
     exists k. @postprocess[first_factor_lt_len(a,k,n,j) & first_factor_lt_len(a,k,n,i)]
 ]
-#save_aut("automata/factor_len_alt3.aut", factor_len_alt)
+#save_aut("automata/factor_len_alt2.aut", factor_len_alt)
 
 // #load("automata/factor_len_alt.aut", "hoa", factor_len_alt(a,i,n,j))
 // #load("../SturmianWords/automata/factor_len.aut", "hoa", factor_len(a, i, n, j))
